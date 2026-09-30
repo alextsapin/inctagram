@@ -1,0 +1,6 @@
+*.css
+*.scss
+*.json
+*.d.ts
+.next
+node_modules
