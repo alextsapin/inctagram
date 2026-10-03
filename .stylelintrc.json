@@ -1,0 +1,19 @@
+{
+    "extends": ["stylelint-config-standard"],
+    "overrides": [
+        {
+            "files": ["**/*.module.css"],
+            "extends": ["stylelint-config-standard", "stylelint-config-css-modules"]
+        }
+    ],
+    "rules": {
+        "custom-property-pattern": null,
+        "selector-class-pattern": [
+            "^([a-z][a-z0-9]*)(-[a-z0-9]+)*$",
+            {
+                "message": "Expected class selector to be kebab-case"
+            }
+        ],
+        "media-feature-range-notation": null
+    }
+}
