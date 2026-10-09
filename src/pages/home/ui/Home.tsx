@@ -1,4 +1,4 @@
-import { Header } from '@/widgets/Header';
+import { Header } from '@/widgets/header';
 
 export const Home = (): React.JSX.Element => {
     return (

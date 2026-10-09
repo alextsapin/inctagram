@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import logo from '@/widgets/Header/assets/logo.svg';
-import styles from '@/widgets/Header/ui/header.module.scss';
+import logo from '@/widgets/header/assets/logo.svg';
+import styles from '@/widgets/header/ui/header.module.scss';
 
 export const Header = (): React.JSX.Element => {
     return (
