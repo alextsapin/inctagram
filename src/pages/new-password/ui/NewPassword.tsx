@@ -1,7 +1,7 @@
 ﻿export const NewPassword = (): React.JSX.Element => {
     return (
-        <div>
+        <main className="container">
             <h1>New Password</h1>
-        </div>
+        </main>
     );
 };

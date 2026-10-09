@@ -1,7 +1,7 @@
 ﻿export const ProfileSettings = (): React.JSX.Element => {
     return (
-        <div>
+        <main className="container">
             <h1>Profile Settings</h1>
-        </div>
+        </main>
     );
 };

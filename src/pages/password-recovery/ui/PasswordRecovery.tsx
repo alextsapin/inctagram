@@ -1,7 +1,7 @@
 ﻿export const PasswordRecovery = (): React.JSX.Element => {
     return (
-        <div>
+        <main className="container">
             <h1>Password Recovery</h1>
-        </div>
+        </main>
     );
 };

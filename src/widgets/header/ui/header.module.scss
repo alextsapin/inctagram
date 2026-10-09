@@ -1,11 +1,17 @@
 @use '@/shared/styles/vars' as *;
 
 .header {
-    background-color: $dark;
     padding: 12px 0;
+    border-bottom: 1px solid $gray;
 }
 
 .logo {
     display: inline-block;
-    margin-top: 10px;
+    margin-top: 5px;
+}
+
+.inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }

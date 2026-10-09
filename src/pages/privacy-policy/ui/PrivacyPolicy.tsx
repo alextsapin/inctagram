@@ -1,7 +1,7 @@
 ﻿export const PrivacyPolicy = (): React.JSX.Element => {
     return (
-        <div>
+        <main className="container">
             <h1>Privacy Policy</h1>
-        </div>
+        </main>
     );
 };

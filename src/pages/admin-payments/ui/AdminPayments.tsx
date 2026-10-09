@@ -1,7 +1,7 @@
 ﻿export const AdminPayments = (): React.JSX.Element => {
     return (
-        <div>
+        <main className="container">
             <h1>Admin Payments</h1>
-        </div>
+        </main>
     );
 };

@@ -1,7 +1,7 @@
 ﻿export const TermsOfService = (): React.JSX.Element => {
     return (
-        <div>
+        <main className="container">
             <h1>Terms of Service</h1>
-        </div>
+        </main>
     );
 };

@@ -1,7 +1,7 @@
 ﻿export const Statistics = (): React.JSX.Element => {
     return (
-        <div>
+        <main className="container">
             <h1>Statistics</h1>
-        </div>
+        </main>
     );
 };

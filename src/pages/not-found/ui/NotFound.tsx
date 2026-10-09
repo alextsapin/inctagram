@@ -1,10 +1,7 @@
-import Link from 'next/link';
-
-export const NotFound: React.FC = () => {
+export const NotFound = (): React.JSX.Element => {
     return (
         <main className="container">
-            <h1>Error 404! Page not found!</h1>
-            <Link href="/">Back to Home</Link>
+            <h1>Not Found</h1>
         </main>
     );
 };

@@ -1,7 +1,7 @@
 ﻿export const AdminSignIn = (): React.JSX.Element => {
     return (
-        <div>
+        <main className="container">
             <h1>Admin Sign In</h1>
-        </div>
+        </main>
     );
 };
