@@ -2,7 +2,8 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    width: 163px;
+    width: 100%;
+    max-width: 163px;
     height: 36px;
     padding: 0 12px;
     border: 1px solid #4c4c4c;
@@ -34,16 +35,11 @@
     width: 163px;
 }
 
-.language {
-    width: 100%;
-}
-
 .dropdown {
     position: absolute;
     top: 100%;
     left: 0;
     z-index: 10;
-
     width: 100%;
     background: #171717;
     border: 1px solid #4c4c4c;

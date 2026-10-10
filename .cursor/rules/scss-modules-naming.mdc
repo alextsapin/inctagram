@@ -1,0 +1,17 @@
+---
+description: CSS Modules filenames must be lowercase
+globs: **/*.module.scss
+alwaysApply: true
+---
+
+# CSS Modules naming
+
+- Always name style modules in **lowercase**: `header.module.scss`, `language.module.scss`
+- Never use PascalCase for modules: ~~`Header.module.scss`~~
+- Import with the same lowercase path:
+
+```ts
+import css from '@/widgets/header/ui/header.module.scss';
+```
+
+On Windows the filesystem is case-insensitive, so the editor may show the wrong casing. Prefer the lowercase path when opening or renaming files.

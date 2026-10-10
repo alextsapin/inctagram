@@ -1,8 +1,9 @@
 'use client';
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import Image from 'next/image';
 
@@ -20,10 +21,36 @@ export const Language = (): React.JSX.Element => {
     const [language, setLanguage] = useState<'en' | 'ru'>('en');
     const [isOpen, setIsOpen] = useState(false);
 
+    const wrapperRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!isOpen) return;
+    
+        const handleClickOutside = (event: MouseEvent): void => {
+            if (event.target instanceof Node && !wrapperRef.current?.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+    
+        const handleEscape = (event: KeyboardEvent): void => {
+            if (event.key === 'Escape') {
+                setIsOpen(false);
+            }
+        };
+    
+        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('keydown', handleEscape);
+    
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('keydown', handleEscape);
+        };
+    }, [isOpen]);
+
     const selected = language === 'en' ? languages[0] : languages[1];
 
     return (
-        <div className={css.wrapper}>
+        <div ref={wrapperRef} className={css.wrapper}>
             <button
                 className={css.language}
                 type="button"

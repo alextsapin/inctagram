@@ -6,8 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx && pnpm stylelint",
+    "lint": "node scripts/check-lowercase-module-scss.mjs && eslint . --ext .js,.jsx,.ts,.tsx && pnpm stylelint",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix && pnpm stylelint:fix",
+    "lint:filenames": "node scripts/check-lowercase-module-scss.mjs",
     "stylelint": "stylelint \"**/*.{css,scss}\"",
     "stylelint:fix": "stylelint \"**/*.{css,scss}\" --fix",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\""

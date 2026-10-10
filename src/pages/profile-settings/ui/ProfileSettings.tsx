@@ -1,7 +1,12 @@
-﻿export const ProfileSettings = (): React.JSX.Element => {
+﻿import { Header } from '@/widgets/header';
+
+export const ProfileSettings = (): React.JSX.Element => {
     return (
-        <main className="container">
-            <h1>Profile Settings</h1>
-        </main>
+        <>
+            <Header />
+            <main className="container">
+                <h1>Profile Settings</h1>
+            </main>
+        </>
     );
 };

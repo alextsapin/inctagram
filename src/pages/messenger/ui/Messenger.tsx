@@ -1,7 +1,12 @@
-﻿export const Messenger = (): React.JSX.Element => {
+﻿import { Header } from '@/widgets/header';
+
+export const Messenger = (): React.JSX.Element => {
     return (
-        <main className="container">
-            <h1>Messenger</h1>
-        </main>
+        <>
+            <Header />
+            <main className="container">
+                <h1>Messenger</h1>
+            </main>
+        </>
     );
 };

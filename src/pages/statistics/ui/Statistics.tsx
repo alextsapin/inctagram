@@ -1,7 +1,12 @@
-﻿export const Statistics = (): React.JSX.Element => {
+﻿import { Header } from '@/widgets/header';
+
+export const Statistics = (): React.JSX.Element => {
     return (
-        <main className="container">
-            <h1>Statistics</h1>
-        </main>
+        <>
+            <Header />
+            <main className="container">
+                <h1>Statistics</h1>
+            </main>
+        </>
     );
 };

@@ -1,7 +1,12 @@
-﻿export const PasswordRecovery = (): React.JSX.Element => {
+﻿import { Header } from '@/widgets/header';
+
+export const PasswordRecovery = (): React.JSX.Element => {
     return (
-        <main className="container">
-            <h1>Password Recovery</h1>
-        </main>
+        <>
+            <Header />
+            <main className="container">
+                <h1>Password Recovery</h1>
+            </main>
+        </>
     );
 };

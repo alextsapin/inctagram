@@ -9,13 +9,18 @@ import css from '@/widgets/header/ui/header.module.scss';
 export const Header = (): React.JSX.Element => {
     return (
         <header className={css.header}>
-            <div className="container">
-                <div className={css.inner}>
-                    <Link href="/" className={css.logo}>
-                        <Image src={logo} width={124} height={25} priority alt="logo" />
-                    </Link>
+            <div className={`container ${css.inner}`}>
+                <Link href="/" className={css.logo}>
+                    <Image src={logo} width={124} height={25} priority alt="logo" />
+                </Link>
 
+                <div className={css.language}>
                     <Language />
+                </div>
+
+                <div className={css.wrap}>
+                    <Link href="/sign-in/" className={css.link}>Sign in</Link>
+                    <Link href="/sign-up/" className={css.button}>Sign up</Link>
                 </div>
             </div>
         </header>
