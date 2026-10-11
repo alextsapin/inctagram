@@ -6,7 +6,11 @@ import { Language } from '@/features/change-language';
 import logo from '@/widgets/header/assets/logo.svg';
 import css from '@/widgets/header/ui/header.module.scss';
 
-export const Header = (): React.JSX.Element => {
+type HeaderProps = {
+    showAuthLinks?: boolean;
+};
+
+export const Header = ({ showAuthLinks = true }: HeaderProps): React.JSX.Element => {
     return (
         <header className={css.header}>
             <div className={`container ${css.inner}`}>
@@ -18,10 +22,12 @@ export const Header = (): React.JSX.Element => {
                     <Language />
                 </div>
 
-                <div className={css.wrap}>
-                    <Link href="/sign-in/" className={css.link}>Sign in</Link>
-                    <Link href="/sign-up/" className={css.button}>Sign up</Link>
-                </div>
+                {showAuthLinks && (
+                    <div className={css.wrap}>
+                        <Link href="/sign-in/" className={css.link}>Sign in</Link>
+                        <Link href="/sign-up/" className={css.button}>Sign up</Link>
+                    </div>
+                )}
             </div>
         </header>
     );

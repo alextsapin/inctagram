@@ -1,5 +1,8 @@
 {
     "files.eol": "\n",
+    "files.exclude": {
+        "**/.cursor": true
+    },
     "files.associations": {
         "*.scss": "scss",
         "*.module.scss": "scss"
