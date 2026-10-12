@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# Authentication
+Disallow: /sign-in
+Disallow: /sign-up
+Disallow: /forgot-password
+Disallow: /password-recovery
+Disallow: /new-password
+
+# Private pages
+Disallow: /feed
+Disallow: /messenger
+Disallow: /profile/settings
+Disallow: /search
+Disallow: /statistics
+
+# Administration
+Disallow: /admin/
