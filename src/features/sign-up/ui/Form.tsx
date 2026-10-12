@@ -15,17 +15,34 @@ type SignUpValues = {
 };
 
 export const SignUpForm = (): React.JSX.Element => {
-    const { register, handleSubmit } = useForm<SignUpValues>();
+    const {register, handleSubmit, formState: { errors }} = useForm<SignUpValues>();
 
     const onSubmit = (data: SignUpValues): void => {
         console.log(data);
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <label className={css.field} htmlFor="username">
+        <form className={css.form} onSubmit={handleSubmit(onSubmit)}>
+            <label className={errors.username ? `${css.field} ${css.field_error}` : css.field} htmlFor="username">
                 Username
-                <input id="username" {...register('username')} />
+                <input id="username"
+                    {...register('username', {
+                        required: 'Username is required',
+                        minLength: {
+                            value: 6,
+                            message: 'Minimum number of characters 6',
+                        },
+                        maxLength: {
+                            value: 30,
+                            message: 'Maximum number of characters 30',
+                        },
+                    })}
+                />
+                {errors.username && (
+                    <span className={css.error}>
+                        {errors.username.message}
+                    </span>
+                )}
             </label>
 
             <label className={css.field} htmlFor="email">
