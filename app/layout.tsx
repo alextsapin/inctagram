@@ -1,12 +1,15 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
+import { Header } from '@/widgets/header';
+
 import './globals.scss';
 
 const inter = Inter({
     subsets: ['latin', 'cyrillic'],
     variable: '--font-inter',
     display: 'swap',
+    preload: false,
 });
 
 export const metadata: Metadata = {
@@ -17,7 +20,10 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: { children: React.ReactNode }): React.JSX.Element => {
     return (
         <html lang="en" className={inter.variable}>
-            <body>{children}</body>
+            <body className={inter.className}>
+                <Header />
+                {children}
+            </body>
         </html>
     );
 };

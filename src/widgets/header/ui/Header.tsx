@@ -1,16 +1,18 @@
+'use client';
+
 /* eslint-disable prettier/prettier */
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 import { Language } from '@/features/change-language';
 import logo from '@/widgets/header/assets/logo.svg';
 import css from '@/widgets/header/ui/header.module.scss';
 
-type HeaderProps = {
-    showAuthLinks?: boolean;
-};
+export const Header = (): React.JSX.Element => {
+    const pathname = usePathname();
+    const showAuthLinks = !pathname.startsWith('/sign-up');
 
-export const Header = ({ showAuthLinks = true }: HeaderProps): React.JSX.Element => {
     return (
         <header className={css.header}>
             <div className={`container ${css.inner}`}>
