@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-
+import { QueryProvider } from '@/app/providers';
 import { Header } from '@/widgets/header';
-
 import './globals.scss';
 
 const inter = Inter({
@@ -21,8 +20,10 @@ const RootLayout = ({ children }: { children: React.ReactNode }): React.JSX.Elem
     return (
         <html lang="en" className={inter.variable}>
             <body className={inter.className}>
+                <QueryProvider>
                 <Header />
                 {children}
+                </QueryProvider>
             </body>
         </html>
     );
