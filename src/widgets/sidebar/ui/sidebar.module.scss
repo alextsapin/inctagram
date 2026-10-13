@@ -1,0 +1,41 @@
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 220px;
+    min-height: 660px;
+    padding: 60px 0 24px;
+    border-right: 1px solid #333;
+    background-color: #0d0d0d;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 24px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24px;
+    text-decoration: none;
+
+    &:hover {
+        color: #397df6;
+    }
+}

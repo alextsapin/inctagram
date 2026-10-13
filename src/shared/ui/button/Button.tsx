@@ -6,18 +6,20 @@ interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'typ
     children: ReactNode;
     type?: 'button' | 'submit';
     fullWidth?: boolean;
+    variant?: 'primary' | 'secondary';
 }
 
 export const Button = ({
     children,
     type = 'button',
     fullWidth,
+    variant = 'primary',
     className,
     ...props
 }: ButtonProps): React.JSX.Element => {
-    const buttonClass = `${css.button} ${fullWidth ? css['full-width'] : ''} ${
-        className || ''
-    }`.trim();
+    const buttonClass = `${css.button} ${css[variant]} ${
+        fullWidth ? css['full-width'] : ''
+    } ${className || ''}`.trim();
 
     return (
         <button

@@ -1,0 +1,102 @@
+﻿.layout {
+    display: flex;
+}
+
+.profile {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    flex: 1;
+    padding: 60px 24px 0;
+}
+
+.info {
+    display: flex;
+    gap: 30px;
+}
+
+.avatar {
+    flex-shrink: 0;
+    width: 204px;
+    height: 204px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #d9d9d9;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+}
+
+.name-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.name {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 36px;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+}
+
+.stats {
+    display: flex;
+    gap: 37px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-value {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 24px;
+}
+
+.stat-label {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+.description {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+.link {
+    color: #397df6;
+    text-decoration: underline;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.post {
+    position: relative;
+    aspect-ratio: 1 / 0.974;
+    border-radius: 2px;
+    overflow: hidden;
+    background-color: #d9d9d9;
+}
+
+.image {
+    object-fit: cover;
+}
