@@ -1,0 +1,32 @@
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 0 24px;
+    border: none;
+    border-radius: 2px;
+    background-color: #397df6;
+    color: #fff;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    &:hover:not(:disabled) {
+        background-color: #73a5ff;
+    }
+    &:active:not(:disabled) {
+        background-color: #2f68cc;
+    }
+    &:focus-visible {
+        outline: 2px solid #397df6;
+        outline-offset: 2px;
+    }
+    &:disabled {
+        background-color: #234e99;
+        color: #8d9094;
+        cursor: not-allowed;
+    }
+}

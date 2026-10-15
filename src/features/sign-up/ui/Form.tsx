@@ -3,7 +3,10 @@
 /* eslint-disable lines-around-directive */
 'use client';
 
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
+
+import { Button } from '@/shared/ui/button';
 
 import css from './form.module.scss';
 
@@ -12,20 +15,28 @@ type SignUpValues = {
     email: string;
     password: string;
     passwordConfirmation: string;
+    agree: boolean;
 };
 
 export const SignUpForm = (): React.JSX.Element => {
-    const {register, handleSubmit, formState: { errors }} = useForm<SignUpValues>();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<SignUpValues>({
+        mode: 'onBlur',
+    });
 
     const onSubmit = (data: SignUpValues): void => {
         console.log(data);
     };
 
     return (
-        <form className={css.form} onSubmit={handleSubmit(onSubmit)}>
+        <form className={css.form} onSubmit={handleSubmit(onSubmit)} noValidate>
             <label className={errors.username ? `${css.field} ${css.field_error}` : css.field} htmlFor="username">
                 Username
-                <input id="username"
+                <input
+                    id="username"
                     {...register('username', {
                         required: 'Username is required',
                         minLength: {
@@ -39,15 +50,30 @@ export const SignUpForm = (): React.JSX.Element => {
                     })}
                 />
                 {errors.username && (
-                    <span className={css.error}>
-                        {errors.username.message}
-                    </span>
+                    <span className={css.error}>{errors.username.message}</span>
                 )}
             </label>
 
-            <label className={css.field} htmlFor="email">
+            <label
+                className={errors.email ? `${css.field} ${css.field_error}` : css.field}
+                htmlFor="email"
+            >
                 Email
-                <input id="email" type="email" {...register('email')} />
+                <input
+                    id="email"
+                    type="email"
+                    {...register('email', {
+                        required: 'Email is required',
+                        pattern: {
+                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                            message:
+                                'The email must match the format example@example.com',
+                        },
+                    })}
+                />
+                {errors.email && (
+                    <span className={css.error}>{errors.email.message}</span>
+                )}
             </label>
 
             <label className={css.field} htmlFor="password">
@@ -64,7 +90,38 @@ export const SignUpForm = (): React.JSX.Element => {
                 />
             </label>
 
-            <button type="submit">Sign Up</button>
+            <label className={css.agree} htmlFor="agree">
+                <input
+                    id="agree"
+                    type="checkbox"
+                    className={css.checkbox}
+                    {...register('agree', {
+                        required: true,
+                    })}
+                />
+                <span>
+                    I agree to the{' '}
+                    <Link
+                        href="/terms-of-service"
+                        className={css.agreeLink}
+                        onClick={event => event.stopPropagation()}
+                    >
+                        Terms of Service
+                    </Link>{' '}
+                    and{' '}
+                    <Link
+                        href="/privacy-policy"
+                        className={css.agreeLink}
+                        onClick={event => event.stopPropagation()}
+                    >
+                        Privacy Policy
+                    </Link>
+                </span>
+            </label>
+
+            <Button type="submit" className={css.submit}>
+                Sign Up
+            </Button>
         </form>
     );
 };
