@@ -15,16 +15,20 @@ type SignUpValues = {
     email: string;
     password: string;
     passwordConfirmation: string;
-    agree: boolean;
+    termsAccepted: boolean;
 };
 
 export const SignUpForm = (): React.JSX.Element => {
     const {
         register,
         handleSubmit,
+        getValues,
         formState: { errors },
     } = useForm<SignUpValues>({
         mode: 'onBlur',
+        defaultValues: {
+            termsAccepted: false,
+        },
     });
 
     const onSubmit = (data: SignUpValues): void => {
@@ -47,17 +51,16 @@ export const SignUpForm = (): React.JSX.Element => {
                             value: 30,
                             message: 'Maximum number of characters 30',
                         },
+                        pattern: {
+                            value: /^[A-Za-z0-9_-]+$/,
+                            message: 'Only Latin letters, numbers, _ and - are allowed',
+                        },
                     })}
                 />
-                {errors.username && (
-                    <span className={css.error}>{errors.username.message}</span>
-                )}
+                {errors.username && <span className={css.error}>{errors.username.message}</span>}
             </label>
 
-            <label
-                className={errors.email ? `${css.field} ${css.field_error}` : css.field}
-                htmlFor="email"
-            >
+            <label className={errors.email ? `${css.field} ${css.field_error}` : css.field} htmlFor="email">
                 Email
                 <input
                     id="email"
@@ -69,59 +72,73 @@ export const SignUpForm = (): React.JSX.Element => {
                             message:
                                 'The email must match the format example@example.com',
                         },
+                        maxLength: {
+                            value: 255,
+                            message: 'Maximum number of characters 255',
+                        },
                     })}
                 />
-                {errors.email && (
-                    <span className={css.error}>{errors.email.message}</span>
-                )}
+                {errors.email && <span className={css.error}>{errors.email.message}</span>}
             </label>
 
-            <label className={css.field} htmlFor="password">
+            <label className={errors.password ? `${css.field} ${css.field_error}` : css.field} htmlFor="password">
                 Password
-                <input id="password" type="password" {...register('password')} />
+                <input
+                    id="password"
+                    type="password"
+                    {...register('password', {
+                        required: 'Password is required',
+                        minLength: {
+                            value: 6,
+                            message: 'Minimum number of characters 6',
+                        },
+                        maxLength: {
+                            value: 20,
+                            message: 'Maximum number of characters 20',
+                        },
+                    })}
+                />
+                {errors.password && <span className={css.error}>{errors.password.message}</span>}
             </label>
 
-            <label className={css.field} htmlFor="passwordConfirmation">
+            <label
+                className={
+                    errors.passwordConfirmation
+                        ? `${css.field} ${css.field_error}`
+                        : css.field
+                }
+                htmlFor="passwordConfirmation"
+            >
                 Password confirmation
                 <input
                     id="passwordConfirmation"
                     type="password"
-                    {...register('passwordConfirmation')}
-                />
-            </label>
-
-            <label className={css.agree} htmlFor="agree">
-                <input
-                    id="agree"
-                    type="checkbox"
-                    className={css.checkbox}
-                    {...register('agree', {
-                        required: true,
+                    {...register('passwordConfirmation', {
+                        required: 'Password confirmation is required',
+                        validate: value =>
+                            value === getValues('password') || 'The passwords must match',
                     })}
                 />
-                <span>
-                    I agree to the{' '}
-                    <Link
-                        href="/terms-of-service"
-                        className={css.agreeLink}
-                        onClick={event => event.stopPropagation()}
-                    >
-                        Terms of Service
-                    </Link>{' '}
-                    and{' '}
-                    <Link
-                        href="/privacy-policy"
-                        className={css.agreeLink}
-                        onClick={event => event.stopPropagation()}
-                    >
-                        Privacy Policy
-                    </Link>
-                </span>
+                {errors.passwordConfirmation && <span className={css.error}>{errors.passwordConfirmation.message}</span>}
             </label>
 
-            <Button type="submit" className={css.submit}>
-                Sign Up
-            </Button>
+            <label className={css.agree} htmlFor="termsAccepted">
+                <input
+                    id="termsAccepted"
+                    type="checkbox"
+                    {...register('termsAccepted', {
+                        required: 'You must agree to the terms',
+                    })}
+                />
+            </label>
+            {errors.termsAccepted && <span className={css.error}>{errors.termsAccepted.message}</span>}
+
+            <Button type="submit" className={css.submit}>Sign Up</Button>
+
+            <div className={css.redirect}>
+                <span>Do you have an account?</span>
+                <Link href="/sign-in">Sign In</Link>
+            </div>
         </form>
     );
 };
