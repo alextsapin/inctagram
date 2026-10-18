@@ -24,7 +24,7 @@ export const SignInForm = (): React.JSX.Element => {
     };
 
     return (
-        <form className={css.form} onSubmit={handleSubmit(onSubmit)}>
+        <form className={css.form} onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className={css.field}>
                 <label htmlFor="email">Email</label>
                 <Input
