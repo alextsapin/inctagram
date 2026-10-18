@@ -133,7 +133,9 @@ export const SignUpForm = (): React.JSX.Element => {
             </label>
             {errors.termsAccepted && <span className={css.error}>{errors.termsAccepted.message}</span>}
 
-            <Button type="submit" className={css.submit}>Sign Up</Button>
+            <Button type="submit" fullWidth>
+                Sign Up
+            </Button>
 
             <div className={css.redirect}>
                 <span>Do you have an account?</span>

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 
-import { Button } from '@/shared/ui';
+import { Button } from '@/shared/ui/button';
 
 import eyeOff from '../assets/eye-off.svg';
 import eye from '../assets/eye.svg';

@@ -1,11 +1,31 @@
-/* eslint-disable prettier/prettier */
 import css from './button.module.scss';
 
-type ButtonProps = React.ComponentProps<'button'>;
+export type ButtonVariant = 'primary' | 'secondary' | 'outlined' | 'text';
 
-export const Button = ({children, className, ...props}: ButtonProps): React.JSX.Element => {
+type ButtonProps = React.ComponentProps<'button'> & {
+    variant?: ButtonVariant;
+    fullWidth?: boolean;
+};
+
+export const Button = ({
+    children,
+    className,
+    fullWidth = false,
+    variant = 'primary',
+    type = 'button',
+    ...props
+}: ButtonProps): React.JSX.Element => {
+    const buttonClass = [
+        css.button,
+        css[variant],
+        fullWidth && css['full-width'],
+        className,
+    ]
+        .filter(Boolean)
+        .join(' ');
+
     return (
-        <button type="button" className={`${css.button} ${className ?? ''}`} {...props}>
+        <button type={type} className={buttonClass} {...props}>
             {children}
         </button>
     );
