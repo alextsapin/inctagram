@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/shared/ui/button';
+import { Checkbox } from '@/shared/ui/checkbox';
 
 import css from './form.module.scss';
 
@@ -122,15 +123,24 @@ export const SignUpForm = (): React.JSX.Element => {
                 {errors.passwordConfirmation && <span className={css.error}>{errors.passwordConfirmation.message}</span>}
             </label>
 
-            <label className={css.agree} htmlFor="termsAccepted">
-                <input
-                    id="termsAccepted"
-                    type="checkbox"
-                    {...register('termsAccepted', {
-                        required: 'You must agree to the terms',
-                    })}
-                />
-            </label>
+            <div className={css.agree}>
+                <label className={css['agree-label']} htmlFor="termsAccepted">
+                    <Checkbox
+                        id="termsAccepted"
+                        {...register('termsAccepted', {
+                            required: 'You must agree to the terms',
+                        })}
+                    />
+                    I agree to the{' '}
+                </label>
+                <Link href="/terms-of-service" className={css['agree-link']}>
+                    Terms of Service
+                </Link>
+                <span className={css['agree-separator']}> and </span>
+                <Link href="/privacy-policy" className={css['agree-link']}>
+                    Privacy Policy
+                </Link>
+            </div>
             {errors.termsAccepted && <span className={css.error}>{errors.termsAccepted.message}</span>}
 
             <Button type="submit" fullWidth>
