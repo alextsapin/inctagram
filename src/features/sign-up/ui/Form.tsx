@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-console */
 /* eslint-disable lines-around-directive */
+/* eslint-disable jsx-a11y/label-has-associated-control */
 'use client';
 
 import Link from 'next/link';
@@ -8,6 +9,7 @@ import { useForm } from 'react-hook-form';
 
 import { Button } from '@/shared/ui/button';
 import { Checkbox } from '@/shared/ui/checkbox';
+import { Input } from '@/shared/ui/input';
 
 import css from './form.module.scss';
 
@@ -38,10 +40,13 @@ export const SignUpForm = (): React.JSX.Element => {
 
     return (
         <form className={css.form} onSubmit={handleSubmit(onSubmit)} noValidate>
-            <label className={errors.username ? `${css.field} ${css.field_error}` : css.field} htmlFor="username">
-                Username
-                <input
+            <div className={css.field}>
+                <label htmlFor="username">Username</label>
+                <Input
                     id="username"
+                    error={!!errors.username}
+                    aria-invalid={!!errors.username}
+                    aria-describedby={errors.username ? 'username-error' : undefined}
                     {...register('username', {
                         required: 'Username is required',
                         minLength: {
@@ -58,14 +63,21 @@ export const SignUpForm = (): React.JSX.Element => {
                         },
                     })}
                 />
-                {errors.username && <span className={css.error}>{errors.username.message}</span>}
-            </label>
+                {errors.username && (
+                    <span id="username-error" className={css.error}>
+                        {errors.username.message}
+                    </span>
+                )}
+            </div>
 
-            <label className={errors.email ? `${css.field} ${css.field_error}` : css.field} htmlFor="email">
-                Email
-                <input
+            <div className={css.field}>
+                <label htmlFor="email">Email</label>
+                <Input
                     id="email"
                     type="email"
+                    error={!!errors.email}
+                    aria-invalid={!!errors.email}
+                    aria-describedby={errors.email ? 'email-error' : undefined}
                     {...register('email', {
                         required: 'Email is required',
                         pattern: {
@@ -79,14 +91,22 @@ export const SignUpForm = (): React.JSX.Element => {
                         },
                     })}
                 />
-                {errors.email && <span className={css.error}>{errors.email.message}</span>}
-            </label>
+                {errors.email && (
+                    <span id="email-error" className={css.error}>
+                        {errors.email.message}
+                    </span>
+                )}
+            </div>
 
-            <label className={errors.password ? `${css.field} ${css.field_error}` : css.field} htmlFor="password">
-                Password
-                <input
+            <div className={css.field}>
+                <label htmlFor="password">Password</label>
+                <Input
                     id="password"
                     type="password"
+                    showPasswordToggle
+                    error={!!errors.password}
+                    aria-invalid={!!errors.password}
+                    aria-describedby={errors.password ? 'password-error' : undefined}
                     {...register('password', {
                         required: 'Password is required',
                         minLength: {
@@ -99,29 +119,38 @@ export const SignUpForm = (): React.JSX.Element => {
                         },
                     })}
                 />
-                {errors.password && <span className={css.error}>{errors.password.message}</span>}
-            </label>
+                {errors.password && (
+                    <span id="password-error" className={css.error}>
+                        {errors.password.message}
+                    </span>
+                )}
+            </div>
 
-            <label
-                className={
-                    errors.passwordConfirmation
-                        ? `${css.field} ${css.field_error}`
-                        : css.field
-                }
-                htmlFor="passwordConfirmation"
-            >
-                Password confirmation
-                <input
+            <div className={css.field}>
+                <label htmlFor="passwordConfirmation">Password confirmation</label>
+                <Input
                     id="passwordConfirmation"
                     type="password"
+                    showPasswordToggle
+                    error={!!errors.passwordConfirmation}
+                    aria-invalid={!!errors.passwordConfirmation}
+                    aria-describedby={
+                        errors.passwordConfirmation
+                            ? 'passwordConfirmation-error'
+                            : undefined
+                    }
                     {...register('passwordConfirmation', {
                         required: 'Password confirmation is required',
                         validate: value =>
                             value === getValues('password') || 'The passwords must match',
                     })}
                 />
-                {errors.passwordConfirmation && <span className={css.error}>{errors.passwordConfirmation.message}</span>}
-            </label>
+                {errors.passwordConfirmation && (
+                    <span id="passwordConfirmation-error" className={css.error}>
+                        {errors.passwordConfirmation.message}
+                    </span>
+                )}
+            </div>
 
             <div className={css.agree}>
                 <label className={css['agree-label']} htmlFor="termsAccepted">

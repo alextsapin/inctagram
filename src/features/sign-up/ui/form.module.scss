@@ -12,24 +12,7 @@
     flex-direction: column;
     gap: 6px;
     font-size: 14px;
-    color: #8D9094;
-    input {
-        width: 100%;
-        height: 36px;
-        padding: 8px 10px;
-        box-sizing: border-box;
-        border: 1px solid #4c4c4c;
-        background: #171717;
-        color: #fff;
-        font: inherit;
-        &:focus-visible {
-            outline: 1px solid #397df6;
-        }
-    }
-}
-
-.field_error input {
-    outline: 1px solid $error !important;
+    color: #8d9094;
 }
 
 .error {
@@ -69,10 +52,12 @@
     align-items: center;
     gap: 8px;
     font-size: 14px;
+
     a {
         color: #397df6;
         text-decoration: none;
         font-weight: 600;
+
         &:hover {
             text-decoration: underline;
         }
