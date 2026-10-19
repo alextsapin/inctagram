@@ -1,0 +1,86 @@
+.checkbox {
+    appearance: none;
+    position: relative;
+    box-sizing: border-box;
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background-color: transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        box-sizing: border-box;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #fff;
+        border-radius: 3px;
+        background-color: transparent;
+        transform: translate(-50%, -50%);
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 47%;
+        left: 50%;
+        width: 9px;
+        height: 5px;
+        border-left: 2px solid #0d0d0d;
+        border-bottom: 2px solid #0d0d0d;
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(-45deg);
+    }
+
+    &:checked::before {
+        border-color: #fff;
+        background-color: #fff;
+    }
+
+    &:checked::after {
+        opacity: 1;
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &:focus-visible {
+        background-color: #171717;
+        outline: none;
+        box-shadow: 0 0 0 2px #fff;
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+
+        &::before {
+            border-color: #4c4c4c;
+            background-color: transparent;
+        }
+
+        &::after {
+            border-color: #333;
+        }
+
+        &:checked::before {
+            border-color: #4c4c4c;
+            background-color: #4c4c4c;
+        }
+    }
+
+    &:hover:not(:disabled) {
+        background-color: #333;
+    }
+
+    &:active:not(:disabled) {
+        background-color: #4c4c4c;
+    }
+}

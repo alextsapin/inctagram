@@ -51,8 +51,11 @@ h3 {
 }
 
 a {
-    color: inherit;
+    color: #4C8DFF;
     text-decoration: none;
+    &:hover {
+        text-decoration: underline;
+    }
 }
 
 .container {

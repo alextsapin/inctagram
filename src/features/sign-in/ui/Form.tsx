@@ -1,13 +1,9 @@
-import { useState } from 'react';
-
-import Image from 'next/image';
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 
-import { Button } from '@/shared/ui';
-
-import eyeOff from '../assets/eye-off.svg';
-import eye from '../assets/eye.svg';
+import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
 
 import css from './form.module.scss';
 
@@ -23,27 +19,20 @@ export const SignInForm = (): React.JSX.Element => {
         formState: { errors },
     } = useForm<SignInValues>();
 
-    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
-    const handleTogglePassword = (): void => {
-        setIsPasswordVisible(prev => !prev);
-    };
-
     const onSubmit = (): void => {
         // TODO: send sign in request to API
     };
 
     return (
-        <form className={css.form} onSubmit={handleSubmit(onSubmit)}>
-            <label
-                className={
-                    errors.email ? `${css.field} ${css['field-error']}` : css.field
-                }
-                htmlFor="email"
-            >
-                Email
-                <input
+        <form className={css.form} onSubmit={handleSubmit(onSubmit)} noValidate>
+            <div className={css.field}>
+                <label htmlFor="email">Email</label>
+                <Input
                     id="email"
+                    type="email"
+                    error={!!errors.email}
+                    aria-invalid={!!errors.email}
+                    aria-describedby={errors.email ? 'email-error' : undefined}
                     {...register('email', {
                         required: 'Email is required',
                         pattern: {
@@ -54,41 +43,29 @@ export const SignInForm = (): React.JSX.Element => {
                     })}
                 />
                 {errors.email && (
-                    <span className={css.error}>{errors.email.message}</span>
+                    <span id="email-error" className={css.error}>
+                        {errors.email.message}
+                    </span>
                 )}
-            </label>
+            </div>
 
-            <label
-                className={
-                    errors.password ? `${css.field} ${css['field-error']}` : css.field
-                }
-                htmlFor="password"
-            >
-                Password
-                <div className={css['password-wrapper']}>
-                    <input
-                        id="password"
-                        type={isPasswordVisible ? 'text' : 'password'}
-                        {...register('password', { required: 'Password is required' })}
-                    />
-                    <button
-                        type="button"
-                        className={css['password-toggle']}
-                        onClick={handleTogglePassword}
-                        aria-label={isPasswordVisible ? 'Hide password' : 'Show password'}
-                    >
-                        <Image
-                            src={isPasswordVisible ? eyeOff : eye}
-                            alt=""
-                            width={24}
-                            height={24}
-                        />
-                    </button>
-                </div>
+            <div className={css.field}>
+                <label htmlFor="password">Password</label>
+                <Input
+                    id="password"
+                    type="password"
+                    showPasswordToggle
+                    error={!!errors.password}
+                    aria-invalid={!!errors.password}
+                    aria-describedby={errors.password ? 'password-error' : undefined}
+                    {...register('password', { required: 'Password is required' })}
+                />
                 {errors.password && (
-                    <span className={css.error}>{errors.password.message}</span>
+                    <span id="password-error" className={css.error}>
+                        {errors.password.message}
+                    </span>
                 )}
-            </label>
+            </div>
 
             <div className={css['forgot-password']}>
                 <Link href="/forgot-password">Forgot Password</Link>

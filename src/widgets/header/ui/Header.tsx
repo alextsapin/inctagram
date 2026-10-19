@@ -11,7 +11,7 @@ import css from '@/widgets/header/ui/header.module.scss';
 
 export const Header = (): React.JSX.Element => {
     const pathname = usePathname();
-    const showAuthLinks = !pathname.startsWith('/sign-up');
+    const showAuthLinks = pathname !== '/sign-up' && pathname !== '/sign-in';
 
     return (
         <header className={css.header}>
