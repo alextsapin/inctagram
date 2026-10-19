@@ -1,6 +1,9 @@
-import Image from 'next/image';
+import type { JSX } from 'react';
 
-import { Button } from '@/shared/ui';
+import Image from 'next/image';
+import Link from 'next/link';
+
+import { Button } from '@/shared/ui/button';
 import { Sidebar } from '@/widgets/sidebar';
 
 import css from './profile.module.scss';
@@ -20,12 +23,12 @@ const POSTS = [
     { src: '/profile/post-8.png', alt: 'post 8' },
 ];
 
-export const Profile = ({ username }: ProfileProps): React.JSX.Element => {
+export const Profile = ({ username }: ProfileProps): JSX.Element => {
     return (
-        <main className={css.layout}>
+        <div className={css.layout}>
             <Sidebar />
 
-            <div className={css.profile}>
+            <main className={css.profile}>
                 <section className={css.info}>
                     <div className={css.avatar}>
                         <Image
@@ -65,7 +68,10 @@ export const Profile = ({ username }: ProfileProps): React.JSX.Element => {
                             do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                             Ut enim ad minim veniam, quis nostrud exercitation ullamco
                             laboris nisi ut aliquip ex ea commodo{' '}
-                            <span className={css.link}>consequat</span>.
+                            <Link href="/search?tag=consequat" className={css.link}>
+                                consequat
+                            </Link>
+                            .
                         </p>
                     </div>
                 </section>
@@ -83,7 +89,7 @@ export const Profile = ({ username }: ProfileProps): React.JSX.Element => {
                         </div>
                     ))}
                 </section>
-            </div>
-        </main>
+            </main>
+        </div>
     );
 };
