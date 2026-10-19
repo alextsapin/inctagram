@@ -33,7 +33,7 @@ export const Profile = ({ username }: ProfileProps): JSX.Element => {
                     <div className={css.avatar}>
                         <Image
                             src="/profile/avatar.png"
-                            alt="avatar"
+                            alt={`${username} avatar`} // П.5: Информативный alt
                             width={204}
                             height={204}
                         />
@@ -84,7 +84,8 @@ export const Profile = ({ username }: ProfileProps): JSX.Element => {
                                 alt={post.alt}
                                 fill
                                 className={css.image}
-                                sizes="(max-width: 1160px) 25vw, 234px"
+                                // П.9: Пересчитанный sizes под новую адаптивную сетку
+                                sizes="(max-width: 768px) 50vw, (max-width: 1160px) 33vw, 234px"
                             />
                         </div>
                     ))}

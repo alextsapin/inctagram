@@ -1,5 +1,10 @@
 ﻿.layout {
     display: flex;
+
+    // Мобилка: сайдбар уходит наверх, контент вниз
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
 }
 
 .profile {
@@ -8,20 +13,33 @@
     gap: 40px;
     flex: 1;
     padding: 60px 24px 0;
+
+    @media (max-width: 768px) {
+        padding: 24px 12px 0;
+        gap: 24px;
+    }
 }
 
 .info {
     display: flex;
     gap: 30px;
+
+    // На планшетах и мобилках аватарка и текст встают в колонку
+    @media (max-width: 900px) {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
 
 .avatar {
     flex-shrink: 0;
-    width: 204px;
-    height: 204px;
+    // Аватарка адаптивная: от 96px на мобилке до 204px на десктопе
+    width: clamp(96px, 18vw, 204px);
+    height: clamp(96px, 18vw, 204px);
     border-radius: 50%;
     overflow: hidden;
-    background-color: #d9d9d9;
+    // TODO: заменить на токен фона (например, var(--bg-secondary)), если есть
+    background-color: #d9d9d9; 
 }
 
 .content {
@@ -29,6 +47,7 @@
     flex-direction: column;
     gap: 24px;
     min-width: 0;
+    width: 100%; // важно для мобилки
 }
 
 .name-row {
@@ -36,6 +55,12 @@
     align-items: center;
     justify-content: space-between;
     gap: 24px;
+
+    @media (max-width: 600px) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
 }
 
 .name {
@@ -51,7 +76,8 @@
 
 .stats {
     display: flex;
-    gap: 37px;
+    // Убрал магические 37px (П.13), вернул к сетке кратности 4 (36px)
+    gap: 36px; 
 }
 
 .stat {
@@ -79,6 +105,7 @@
 }
 
 .link {
+    // TODO: заменить на токен (например, var(--accent-color))
     color: #397df6;
     text-decoration: underline;
 }
@@ -87,11 +114,20 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
+
+    // Адаптивная сетка постов
+    @media (max-width: 1160px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 .post {
     position: relative;
-    aspect-ratio: 1 / 0.974;
+    // П.14: сделал читаемо (234 / 228)
+    aspect-ratio: 234 / 228; 
     border-radius: 2px;
     overflow: hidden;
     background-color: #d9d9d9;
