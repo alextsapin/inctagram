@@ -1,8 +1,14 @@
 @use '@/shared/styles/vars' as *;
 
 .header {
+    /* Шапка зафиксирована сверху при прокрутке; z-index выше сайдбара,
+       чтобы сайдбар её не перекрывал. Автор: Chernov-Vpnpm */
+    position: sticky;
+    top: 0;
+    z-index: 20;
     padding: 12px 0;
     border-bottom: 1px solid $gray;
+    background-color: $dark;
 }
 
 .logo {

@@ -7,6 +7,15 @@
     padding: 60px 0 24px;
     border-right: 1px solid #333;
     background-color: #0d0d0d;
+
+    /* Сайдбар прилипает при прокрутке контента справа (только на десктопе).
+       top: 65px — высота шапки, чтобы сайдбар не перекрывал её.
+       Автор: Chernov-Vpnpm */
+    @media (min-width: 769px) {
+        position: sticky;
+        top: 65px;
+        align-self: flex-start;
+    }
 }
 
 .list {
