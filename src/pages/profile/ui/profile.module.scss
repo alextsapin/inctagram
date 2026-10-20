@@ -12,10 +12,10 @@
     flex-direction: column;
     gap: 40px;
     flex: 1;
-    padding: 60px 24px 0;
+    padding: 60px 24px 49px;
 
     @media (max-width: 768px) {
-        padding: 24px 12px 0;
+        padding: 24px 12px 40px;
         gap: 24px;
     }
 }
@@ -76,7 +76,7 @@
 
 .stats {
     display: flex;
-    // Убрал магические 37px (П.13), вернул к сетке кратности 4 (36px)
+
     gap: 36px; 
 }
 
@@ -126,7 +126,7 @@
 
 .post {
     position: relative;
-    // П.14: сделал читаемо (234 / 228)
+
     aspect-ratio: 234 / 228; 
     border-radius: 2px;
     overflow: hidden;
