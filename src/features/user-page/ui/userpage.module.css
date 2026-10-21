@@ -1,0 +1,61 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mainImage {
+  width: 234px;
+  height: 240px;
+  object-fit: cover;
+  display: block;
+}
+
+.mainCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 234px;
+}
+
+.mainDescription{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mainAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.mainName {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #fff;
+}
+
+.timeAgo {
+  margin: 0 0 4px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  color: #8d9094;
+}
+
+.mainText {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: #fff;
+}
+
+
+
+
