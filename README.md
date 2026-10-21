@@ -411,7 +411,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 │   ├── 📁 avatar/
 │   └── 📁 loader/
 ├── 📁 api/
-│   └── 📄 client.ts
+│   └── 📄 instance.ts
 ├── 📁 lib/
 ├── 📁 config/
 ├── 📁 styles/
@@ -508,6 +508,8 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 ### Другие документы проекта
 
 - [TanStack Query — настройка и использование](docs/tanstack-query.md).
+- [API — axios instance, access token, переменные окружения](docs/api.md).
+- [Вход в систему (Sign In) — бизнес-логика и структура слайсов](docs/sign-in.md).
 
 ---
 
