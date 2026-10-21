@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import { Profile } from '@/pages/profile';
+import { UserProfile } from '@/pages/user-profile';
 
 type ProfilePageProps = {
     params: Promise<{ username: string }>;
@@ -20,7 +20,7 @@ export const generateMetadata = async ({
 const ProfilePage = async ({ params }: ProfilePageProps): Promise<React.JSX.Element> => {
     const { username } = await params;
 
-    return <Profile username={username} />;
+    return <UserProfile username={username} />;
 };
 
 export default ProfilePage;

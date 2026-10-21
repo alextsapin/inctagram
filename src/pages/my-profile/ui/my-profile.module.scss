@@ -1,0 +1,47 @@
+.layout {
+    display: flex;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
+}
+
+.profile {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    flex: 1;
+    padding: 60px 24px 49px;
+
+    @media (max-width: 768px) {
+        padding: 24px 12px 40px;
+        gap: 24px;
+    }
+}
+
+.message {
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.settings-link {
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 24px;
+    border-radius: 2px;
+    background-color: #333;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+        background-color: #4c4c4c;
+        text-decoration: none;
+    }
+
+    &:focus-visible {
+        outline: 1px solid #4c8dff;
+    }
+}
