@@ -243,9 +243,9 @@ select/
 │   ├── isSameLetterRepeated.ts  ← набрана ли одна буква несколько раз («kkk»)
 │   └── types.ts                 ← тип SelectOption
 ├── ui/
-│   ├── Select.tsx            ← разметка: кнопка, список, классы
-│   ├── ArrowIcon.tsx         ← стрелка из Figma
-│   └── select.module.scss    ← стили
+│   ├── Select.tsx               ← разметка: кнопка, список, классы
+│   ├── ArrowIcon.tsx            ← стрелка из Figma
+│   └── select.module.scss       ← стили
 ├── index.ts
 └── README.md
 ```
