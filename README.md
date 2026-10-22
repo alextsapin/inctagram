@@ -406,6 +406,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 │   ├── 📁 modal/
 │   ├── 📁 select/
 │   ├── 📁 checkbox/
+│   ├── 📁 date-picker/
 │   ├── 📁 radio/
 │   ├── 📁 tabs/
 │   ├── 📁 pagination/
@@ -422,7 +423,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 └── 📁 types/
 ```
 
-**Общие UI-компоненты, уже подготовленные в проекте:** `Button`, `Checkbox`, `Input`, `Textarea`. Их подробное описание и примеры использования вынесены в [собственные README](#документация-общих-компонентов). Остальные названия в дереве — элементы целевой схемы и не означают, что компоненты уже реализованы.
+**Общие UI-компоненты, уже подготовленные в проекте: Button, Checkbox, DatePicker и DateRangePicker, Input, Textarea. Их подробное описание и примеры использования вынесены в [собственные README](#документация-общих-компонентов). Остальные названия в дереве — элементы целевой схемы и не означают, что компоненты уже реализованы.
 
 ### Примеры готовых слайсов
 
@@ -502,6 +503,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 |---|---|---|
 | **Button** | `src/shared/ui/button/` | [README Button](src/shared/ui/button/README.md) |
 | **Checkbox** | `src/shared/ui/checkbox/` | [README Checkbox](src/shared/ui/checkbox/README.md) |
+| **DatePicker, DateRangePicker** | `src/shared/ui/date-picker/` | [README DatePicker](src/shared/ui/date-picker/README.md) |
 | **Input** | `src/shared/ui/input/` | [README Input](src/shared/ui/input/README.md) |
 | **Textarea** | `src/shared/ui/textarea/` | [README Textarea](src/shared/ui/textarea/README.md) |
 
