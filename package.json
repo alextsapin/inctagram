@@ -45,6 +45,7 @@
         "stylelint": "^17.16.0",
         "stylelint-config-css-modules": "^4.6.0",
         "stylelint-config-standard": "^40.0.0",
+        "stylelint-config-standard-scss": "^17.0.0",
         "typescript": "^5"
     },
     "packageManager": "pnpm@12.9.1"

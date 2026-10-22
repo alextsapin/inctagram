@@ -26,8 +26,12 @@ export const Header = (): React.JSX.Element => {
 
                 {showAuthLinks && (
                     <div className={css.wrap}>
-                        <Link href="/sign-in/" className={css.link}>Sign in</Link>
-                        <Link href="/sign-up/" className={css.button}>Sign up</Link>
+                        <Link href="/sign-in/" className={css.link}>
+                            Sign in
+                        </Link>
+                        <Link href="/sign-up/" className={css.button}>
+                            Sign up
+                        </Link>
                     </div>
                 )}
             </div>

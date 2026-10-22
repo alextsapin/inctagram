@@ -254,6 +254,9 @@ importers:
       stylelint-config-standard:
         specifier: ^40.0.0
         version: 40.0.0(stylelint@17.16.0(supports-color@10.2.2)(typescript@5.9.3))
+      stylelint-config-standard-scss:
+        specifier: ^17.0.0
+        version: 17.0.0(postcss@8.5.31)(stylelint@17.16.0(supports-color@10.2.2)(typescript@5.9.3))
       typescript:
         specifier: ^5
         version: 5.9.3
@@ -2033,6 +2036,12 @@ packages:
     peerDependencies:
       postcss: ^8.4.31
 
+  postcss-scss@4.0.9:
+    resolution: {integrity: sha512-AjKOeiwAitL/MXxQW2DliT28EKukvvbEWx3LBmJIRN8KfBGZbRTxNYW0kSqi1COiTZ57nZ9NW06S6ux//N1c9A==}
+    engines: {node: '>=12.0'}
+    peerDependencies:
+      postcss: ^8.4.29
+
   postcss-selector-parser@7.1.7:
     resolution: {integrity: sha512-wWBro/7hJ40ye6TPiXkUQoXKCw23xSsjriUvqd7Uls9Sso3oLiON1flc18cCdnjgCRXw4fBVqUJJeOdDTh3P3g==}
     engines: {node: '>=4'}
@@ -2336,11 +2345,31 @@ packages:
     peerDependencies:
       stylelint: ^14.5.1 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
+  stylelint-config-recommended-scss@17.0.1:
+    resolution: {integrity: sha512-x5DVehzJudcwF0od3sGpgkln2PLLranFE7twwbp7dqDINCyZvwzFkMc6TLhNOvazRiVBJYATQLouJY0xPGB8WA==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      postcss: ^8.3.3
+      stylelint: ^17.0.0
+    peerDependenciesMeta:
+      postcss:
+        optional: true
+
   stylelint-config-recommended@18.0.0:
     resolution: {integrity: sha512-mxgT2XY6YZ3HWWe3Di8umG6aBmWmHTblTgu/f10rqFXnyWxjKWwNdjSWkgkwCtxIKnqjSJzvFmPT5yabVIRxZg==}
     engines: {node: '>=20.19.0'}
     peerDependencies:
       stylelint: ^17.0.0
+
+  stylelint-config-standard-scss@17.0.0:
+    resolution: {integrity: sha512-uLJS6xgOCBw5EMsDW7Ukji8l28qRoMnkRch15s0qwZpskXvWt9oPzMmcYM307m9GN4MxuWLsQh4I6hU9yI53cQ==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      postcss: ^8.3.3
+      stylelint: ^17.0.0
+    peerDependenciesMeta:
+      postcss:
+        optional: true
 
   stylelint-config-standard@40.0.0:
     resolution: {integrity: sha512-EznGJxOUhtWck2r6dJpbgAdPATIzvpLdK9+i5qPd4Lx70es66TkBPljSg4wN3Qnc6c4h2n+WbUrUynQ3fanjHw==}
@@ -4001,8 +4030,7 @@ snapshots:
 
   is-path-inside@4.0.0: {}
 
-  is-plain-object@5.1.0:
-    optional: true
+  is-plain-object@5.1.0: {}
 
   is-regex@1.2.1:
     dependencies:
@@ -4093,8 +4121,7 @@ snapshots:
 
   kind-of@6.0.3: {}
 
-  known-css-properties@0.37.0:
-    optional: true
+  known-css-properties@0.37.0: {}
 
   language-subtag-registry@0.3.23: {}
 
@@ -4290,13 +4317,15 @@ snapshots:
 
   possible-typed-array-names@1.1.0: {}
 
-  postcss-media-query-parser@0.2.3:
-    optional: true
+  postcss-media-query-parser@0.2.3: {}
 
-  postcss-resolve-nested-selector@0.1.7:
-    optional: true
+  postcss-resolve-nested-selector@0.1.7: {}
 
   postcss-safe-parser@7.1.0(postcss@8.5.31):
+    dependencies:
+      postcss: 8.5.31
+
+  postcss-scss@4.0.9(postcss@8.5.31):
     dependencies:
       postcss: 8.5.31
 
@@ -4657,9 +4686,26 @@ snapshots:
     optionalDependencies:
       stylelint-scss: 7.3.0(stylelint@17.16.0(supports-color@10.2.2)(typescript@5.9.3))
 
+  stylelint-config-recommended-scss@17.0.1(postcss@8.5.31)(stylelint@17.16.0(supports-color@10.2.2)(typescript@5.9.3)):
+    dependencies:
+      postcss-scss: 4.0.9(postcss@8.5.31)
+      stylelint: 17.16.0(supports-color@10.2.2)(typescript@5.9.3)
+      stylelint-config-recommended: 18.0.0(stylelint@17.16.0(supports-color@10.2.2)(typescript@5.9.3))
+      stylelint-scss: 7.3.0(stylelint@17.16.0(supports-color@10.2.2)(typescript@5.9.3))
+    optionalDependencies:
+      postcss: 8.5.31
+
   stylelint-config-recommended@18.0.0(stylelint@17.16.0(supports-color@10.2.2)(typescript@5.9.3)):
     dependencies:
       stylelint: 17.16.0(supports-color@10.2.2)(typescript@5.9.3)
+
+  stylelint-config-standard-scss@17.0.0(postcss@8.5.31)(stylelint@17.16.0(supports-color@10.2.2)(typescript@5.9.3)):
+    dependencies:
+      stylelint: 17.16.0(supports-color@10.2.2)(typescript@5.9.3)
+      stylelint-config-recommended-scss: 17.0.1(postcss@8.5.31)(stylelint@17.16.0(supports-color@10.2.2)(typescript@5.9.3))
+      stylelint-config-standard: 40.0.0(stylelint@17.16.0(supports-color@10.2.2)(typescript@5.9.3))
+    optionalDependencies:
+      postcss: 8.5.31
 
   stylelint-config-standard@40.0.0(stylelint@17.16.0(supports-color@10.2.2)(typescript@5.9.3)):
     dependencies:
@@ -4680,7 +4726,6 @@ snapshots:
       postcss-selector-parser: 7.1.7
       postcss-value-parser: 4.2.0
       stylelint: 17.16.0(supports-color@10.2.2)(typescript@5.9.3)
-    optional: true
 
   stylelint@17.16.0(supports-color@10.2.2)(typescript@5.9.3):
     dependencies:

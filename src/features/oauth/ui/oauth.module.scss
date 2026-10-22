@@ -16,9 +16,11 @@
     border: none;
     background: transparent;
     cursor: pointer;
+
     &:hover {
         opacity: 0.75;
     }
+
     &:focus-visible {
         outline: 2px solid #397df6;
         outline-offset: 3px;
