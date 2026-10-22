@@ -66,3 +66,8 @@ a {
     padding-right: 15px;
     padding-left: 15px;
 }
+
+/* Пока открыто модальное окно, страница под ним не прокручивается */
+html:has(dialog:modal) {
+    overflow: hidden;
+}
