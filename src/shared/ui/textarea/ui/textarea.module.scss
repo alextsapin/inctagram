@@ -1,0 +1,49 @@
+.textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 84px;
+    padding: 6px 12px;
+    border: 1px solid #4c4c4c;
+    border-radius: 2px;
+    background-color: #171717;
+    color: #fff;
+    font: inherit;
+    font-size: 16px;
+    line-height: 24px;
+    resize: vertical;
+
+    &::placeholder {
+        color: #8d9094;
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &:focus-visible {
+        border-color: #2f68cc;
+        outline: 1px solid #2f68cc;
+    }
+
+    &:disabled {
+        color: #4c4c4c;
+        cursor: not-allowed;
+
+        &::placeholder {
+            color: #4c4c4c;
+        }
+    }
+
+    &:active:not(:disabled) {
+        border-color: #fff;
+    }
+}
+
+.error {
+    border-color: #cc1439;
+
+    &:focus-visible {
+        border-color: #cc1439;
+        outline-color: #cc1439;
+    }
+}
