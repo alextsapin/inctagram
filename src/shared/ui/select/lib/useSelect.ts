@@ -167,7 +167,9 @@ export const useSelect = ({
         setActiveIndex(nextIndex);
     };
 
-    // Enter, пробел, Escape и Tab в открытом списке
+    // Enter, пробел и Tab в открытом списке.
+    // Escape сюда не доходит: его раньше всех ловит useCloseOnOutsideClick
+    // и закрывает только список, а модалку, в которой стоит Select, — нет
     const handleOpenListKey = (event: ButtonKeyboardEvent): void => {
         if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault(); // иначе сработает клик по кнопке и список закроется без выбора
@@ -176,15 +178,6 @@ export const useSelect = ({
             if (activeOption) {
                 choose(activeOption);
             }
-        }
-
-        if (event.key === 'Escape') {
-            // Закрываем только список, а модалку, в которой стоит Select, — нет.
-            // stopPropagation: Escape не дойдёт до обработчика модалки.
-            // preventDefault: браузер сам не закроет <dialog> по Escape.
-            event.stopPropagation();
-            event.preventDefault();
-            close();
         }
 
         if (event.key === 'Tab') {

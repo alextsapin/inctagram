@@ -250,11 +250,11 @@ select/
 └── README.md
 ```
 
--   `lib/useSelect.ts` — хук со всем поведением. Какой пункт подсвечен, хранит `activeIndex`: его меняют мышь, стрелки и поиск по буквам, поэтому подсветка одна на все способы. Набранные буквы хранятся в `useRef` и сбрасываются таймером через `SEARCH_RESET_DELAY` (500 мс). Нажатия клавиш разобраны по трём обработчикам: `handleSearchKey` (буквы), `handleArrowKey` (стрелки), `handleOpenListKey` (Enter, пробел, Escape и Tab в открытом списке), а `handleKeyDown` только решает, какой из них вызвать. Хук возвращает компоненту всё, что нужно для разметки: `isOpen`, `activeIndex`, `selectedOption`, обработчики `toggle`, `choose`, `highlight`, `handleKeyDown`.
+-   `lib/useSelect.ts` — хук со всем поведением. Какой пункт подсвечен, хранит `activeIndex`: его меняют мышь, стрелки и поиск по буквам, поэтому подсветка одна на все способы. Набранные буквы хранятся в `useRef` и сбрасываются таймером через `SEARCH_RESET_DELAY` (500 мс). Нажатия клавиш разобраны по трём обработчикам: `handleSearchKey` (буквы), `handleArrowKey` (стрелки), `handleOpenListKey` (Enter, пробел и Tab в открытом списке), а `handleKeyDown` только решает, какой из них вызвать. Хук возвращает компоненту всё, что нужно для разметки: `isOpen`, `activeIndex`, `selectedOption`, обработчики `toggle`, `choose`, `highlight`, `handleKeyDown`.
 -   `lib/findOptionByText.ts`, `lib/isSearchKey.ts`, `lib/isSameLetterRepeated.ts` — маленькие функции без React. Каждая отвечает на один вопрос, их легко читать и проверять отдельно.
 -   `ui/Select.tsx` — только JSX и классы. Чтобы поменять вид, не нужно разбираться в клавиатуре, и наоборот.
 -   `ui/ArrowIcon.tsx` — стрелка из Figma (`arrow-ios-Down-outline`) с `currentColor`. В открытом списке её поворачивает CSS.
--   Закрытие по клику мимо делает общий хук `useCloseOnOutsideClick` из `@/shared/lib`, им же пользуется `DatePicker`.
+-   Закрытие по клику мимо и по Escape делает общий хук `useCloseOnOutsideClick` из `@/shared/lib`, им же пользуется `DatePicker`. Escape хук ловит на перехвате (capture), раньше модалки, поэтому в `Modal` он закрывает только список.
 
 ## Использование в Next.js
 

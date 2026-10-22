@@ -20,18 +20,26 @@ export const useCloseOnOutsideClick = (
 
         const handleKeyDown = (event: KeyboardEvent): void => {
             if (event.key === 'Escape') {
+                // Escape закрывает только выпадающую часть, а модалку, в которой она стоит, — нет.
+                // stopPropagation: событие не дойдёт до обработчика модалки.
+                // preventDefault: браузер сам не закроет <dialog> по Escape
+                event.stopPropagation();
+                event.preventDefault();
                 onClose();
             }
         };
 
-        // Пока открыто, слушаем клики и клавиши на всей странице
+        // Пока открыто, слушаем клики и клавиши на всей странице.
+        // У клавиш третий аргумент true — слушаем на перехвате (capture):
+        // событие сначала идёт сверху вниз от document к элементу, и на этом пути
+        // хук узнаёт про Escape раньше модалки и успевает его остановить
         document.addEventListener('mousedown', handleClick);
-        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('keydown', handleKeyDown, true);
 
-        // Закрылось — перестаём слушать
+        // Закрылось — перестаём слушать. Снимать нужно с тем же true
         return () => {
             document.removeEventListener('mousedown', handleClick);
-            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('keydown', handleKeyDown, true);
         };
     }, [ref, isOpen, onClose]);
 };
