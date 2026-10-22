@@ -22,14 +22,15 @@ import { Select, type SelectOption } from '@/shared/ui/select';
 
 ## Свойства (Props)
 
-| Prop          | Тип                       | По умолчанию | Назначение                                  |
-| ------------- | ------------------------- | ------------ | ------------------------------------------- |
-| `options`     | `SelectOption[]`          | —            | Пункты списка (обязательный)                |
-| `onChange`    | `(value: string) => void` | —            | Вызывается при выборе пункта (обязательный) |
-| `value`       | `string`                  | —            | `value` выбранного пункта                   |
-| `id`          | `string`                  | —            | id поля — для связи с `<label htmlFor>`     |
-| `placeholder` | `string`                  | `Select`     | Текст, пока ничего не выбрано               |
-| `disabled`    | `boolean`                 | `false`      | Отключение поля                             |
+| Prop          | Тип                       | По умолчанию | Назначение                                        |
+| ------------- | ------------------------- | ------------ | ------------------------------------------------- |
+| `options`     | `SelectOption[]`          | —            | Пункты списка (обязательный)                      |
+| `onChange`    | `(value: string) => void` | —            | Вызывается при выборе пункта (обязательный)       |
+| `value`       | `string`                  | —            | `value` выбранного пункта                         |
+| `id`          | `string`                  | —            | id поля — для связи с `<label htmlFor>`           |
+| `placeholder` | `string`                  | `Select`     | Текст, пока ничего не выбрано                     |
+| `disabled`    | `boolean`                 | `false`      | Отключение поля                                   |
+| `aria-label`  | `string`                  | —            | Название поля для скринридера, если нет `<label>` |
 
 Пункт списка:
 
@@ -84,6 +85,11 @@ type SelectOption = {
 ### Скринридер
 
 Поле — `role="combobox"`, список — `role="listbox"`, пункты — `role="option"` с `aria-selected`. Подсвеченный пункт сообщается через `aria-activedescendant`. Скринридер прочитает, например: «Select your country, Belarus, список».
+
+У поля обязательно должно быть название, иначе скринридер прочитает просто «список». Есть два способа:
+
+-   видимая подпись `<label htmlFor="...">` и тот же `id` у `Select` (как в General information);
+-   `aria-label`, если подписи на экране нет по макету (выбор языка в шапке, причина бана в Ban user).
 
 ## Практические примеры
 
@@ -197,7 +203,12 @@ const languages: SelectOption[] = [
 ];
 
 <div className={css.language}>
-    <Select options={languages} value={language} onChange={setLanguage} />
+    <Select
+        options={languages}
+        value={language}
+        onChange={setLanguage}
+        aria-label="Language"
+    />
 </div>;
 ```
 
@@ -207,7 +218,8 @@ const languages: SelectOption[] = [
 }
 ```
 
-`alt=""`: флаг — украшение, название языка уже есть в тексте.
+-   `alt=""`: флаг — украшение, название языка уже есть в тексте.
+-   `aria-label="Language"`: в шапке у поля нет видимой подписи, а скринридеру нужно знать, что это за поле.
 
 ### 5. Внутри модалки
 

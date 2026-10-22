@@ -341,6 +341,7 @@ export const BanUserModal = ({
                     value={reason}
                     onChange={setReason}
                     placeholder="Reason for ban"
+                    aria-label="Reason for ban"
                 />
             </div>
         </Modal>
@@ -359,6 +360,8 @@ export const BanUserModal = ({
     margin-bottom: 48px;
 }
 ```
+
+`aria-label="Reason for ban"`: подписи над полем в макете нет, только плейсхолдер, а скринридеру нужно название поля.
 
 Почему `margin-bottom: 48px`, а не 30px. У ряда `actions` уже есть свой `margin-top: 18px`, но соседние вертикальные отступы не складываются, а **схлопываются**: остаётся больший из двух. Поэтому, чтобы между полем и кнопками было 48px, у обёртки поля ставим все 48px.
 

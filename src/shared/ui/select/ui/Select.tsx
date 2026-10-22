@@ -13,6 +13,8 @@ type SelectProps = {
     id?: string;
     placeholder?: string;
     disabled?: boolean;
+    // Название поля для скринридера, когда видимой подписи (<label>) нет. Например, выбор языка в шапке
+    'aria-label'?: string;
 };
 
 // Только разметка и классы. Как список открывается, что подсвечено
@@ -24,6 +26,8 @@ export const Select = ({
     id,
     placeholder = 'Select',
     disabled = false,
+    // Имя с дефисом нельзя сделать переменной, поэтому при разборе пропсов переименовываем
+    'aria-label': ariaLabel,
 }: SelectProps): React.JSX.Element => {
     const {
         rootRef,
@@ -50,6 +54,7 @@ export const Select = ({
                 aria-expanded={isOpen}
                 aria-controls={listId}
                 aria-activedescendant={isOpen ? getOptionId(activeIndex) : undefined}
+                aria-label={ariaLabel}
                 className={triggerClass}
                 disabled={disabled}
                 onClick={toggle}
