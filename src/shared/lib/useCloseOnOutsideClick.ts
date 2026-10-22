@@ -1,13 +1,13 @@
 import { useEffect, type RefObject } from 'react';
 
-// Закрывает календарь, если кликнули мимо него или нажали Escape
+// Закрывает выпадающий элемент (календарь, список), если кликнули мимо него или нажали Escape
 export const useCloseOnOutsideClick = (
-    ref: RefObject<HTMLDivElement | null>, // обёртка компонента (поле + календарь)
+    ref: RefObject<HTMLDivElement | null>, // обёртка компонента (поле + выпадающая часть)
     isOpen: boolean,
     onClose: () => void,
 ): void => {
     useEffect(() => {
-        // Календарь закрыт — следить не за чем
+        // Закрыто — следить не за чем
         if (!isOpen) return;
 
         const handleClick = (event: MouseEvent): void => {
@@ -24,11 +24,11 @@ export const useCloseOnOutsideClick = (
             }
         };
 
-        // Пока календарь открыт, слушаем клики и клавиши на всей странице
+        // Пока открыто, слушаем клики и клавиши на всей странице
         document.addEventListener('mousedown', handleClick);
         document.addEventListener('keydown', handleKeyDown);
 
-        // Календарь закрылся — перестаём слушать
+        // Закрылось — перестаём слушать
         return () => {
             document.removeEventListener('mousedown', handleClick);
             document.removeEventListener('keydown', handleKeyDown);
