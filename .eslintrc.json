@@ -30,16 +30,29 @@
         "react-hooks",
         "@typescript-eslint"
     ],
-    "overrides": [{ "files": [
-        ".js",
-        ".ts",
-        ".jsx",
-        ".tsx",
-        "**/*.spec.js",
-        "**/*.test.ts",
-        "**/*.test.tsx",
-        "**/*.spec.tsx"
-    ] }],
+    "overrides": [
+        {
+            "files": [
+                ".js",
+                ".ts",
+                ".jsx",
+                ".tsx",
+                "**/*.spec.js",
+                "**/*.test.ts",
+                "**/*.test.tsx",
+                "**/*.spec.tsx"
+            ]
+        },
+        {
+            "files": ["scripts/**/*.mjs"],
+            "rules": {
+                "no-console": "off",
+                "no-continue": "off",
+                "no-restricted-syntax": "off",
+                "@typescript-eslint/explicit-function-return-type": "off"
+            }
+        }
+    ],
     "rules": {
         "import/order": [
             "error",
