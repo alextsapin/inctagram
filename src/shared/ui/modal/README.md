@@ -288,15 +288,24 @@ const deletePost = (): void => {
 ```tsx
 'use client';
 
+import { useState } from 'react';
+
 import { Button } from '@/shared/ui/button';
 import { Modal } from '@/shared/ui/modal';
+import { Select, type SelectOption } from '@/shared/ui/select';
 
 import css from './banUserModal.module.scss';
+
+const reasons: SelectOption[] = [
+    { value: 'bad-behavior', label: 'Bad behavior' },
+    { value: 'advertising', label: 'Advertising placement' },
+    { value: 'another', label: 'Another reason' },
+];
 
 type BanUserModalProps = {
     open: boolean;
     userName: string;
-    onConfirm: () => void;
+    onConfirm: (reason?: string) => void;
     onClose: () => void;
 };
 
@@ -306,6 +315,8 @@ export const BanUserModal = ({
     onConfirm,
     onClose,
 }: BanUserModalProps): React.JSX.Element => {
+    const [reason, setReason] = useState<string>();
+
     return (
         <Modal
             open={open}
@@ -315,24 +326,24 @@ export const BanUserModal = ({
             actions={
                 <>
                     <Button onClick={onClose}>No</Button>
-                    <Button variant="outlined" onClick={onConfirm}>
+                    <Button variant="outlined" onClick={() => onConfirm(reason)}>
                         Yes
                     </Button>
                 </>
             }
         >
-            <p>
+            <p className={css.text}>
                 Are you sure to ban this user, <b>{userName}?</b>
             </p>
-            {/* Общего Select пока нет, временно нативный select */}
-            <select className={css.select} defaultValue="" aria-label="Reason for ban">
-                <option value="" disabled>
-                    Reason for ban
-                </option>
-                <option value="bad-behavior">Bad behavior</option>
-                <option value="advertising">Advertising placement</option>
-                <option value="another">Another reason</option>
-            </select>
+            <div className={css.reason}>
+                <Select
+                    options={reasons}
+                    value={reason}
+                    onChange={setReason}
+                    placeholder="Reason for ban"
+                    aria-label="Reason for ban"
+                />
+            </div>
         </Modal>
     );
 };
@@ -340,17 +351,23 @@ export const BanUserModal = ({
 
 ```scss
 /* banUserModal.module.scss */
-.select {
-    width: 100%;
-    height: 36px;
-    margin-top: 18px;
-    border: 1px solid #4c4c4c;
-    background-color: #333;
-    color: #fff;
+.text {
+    margin: 0 0 18px;
+}
+
+/* До кнопок 48px, как в макете: здесь помещается открытый список причин */
+.reason {
+    margin-bottom: 48px;
 }
 ```
 
-`Un-Ban user` такой же, только без `select` и с текстом `Are you sure want to un-ban …?`.
+`aria-label="Reason for ban"`: подписи над полем в макете нет, только плейсхолдер, а скринридеру нужно название поля.
+
+Почему `margin-bottom: 48px`, а не 30px. У ряда `actions` уже есть свой `margin-top: 18px`, но соседние вертикальные отступы не складываются, а **схлопываются**: остаётся больший из двух. Поэтому, чтобы между полем и кнопками было 48px, у обёртки поля ставим все 48px.
+
+С этим отступом окно получается высотой как в макете (288px), а открытый список ложится поверх кнопок и помещается внутри окна. Если отступ меньше, список выйдет за нижний край, и у окна появится прокрутка.
+
+`Un-Ban user` такой же, только без `Select` и его обёртки и с текстом `Are you sure want to un-ban …?`.
 
 ### 4. Чекбокс или вторая кнопка слева
 

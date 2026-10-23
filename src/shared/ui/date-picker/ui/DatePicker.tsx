@@ -4,8 +4,9 @@ import { useRef, useState } from 'react';
 
 import { DayPicker } from '@daypicker/react';
 
+import { useCloseOnOutsideClick } from '@/shared/lib';
+
 import { formatDate } from '../lib/formatDate';
-import { useCloseOnOutsideClick } from '../lib/useCloseOnOutsideClick';
 
 import { CalendarIcon } from './CalendarIcon';
 import { calendarProps } from './calendarProps';
