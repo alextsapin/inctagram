@@ -2,25 +2,28 @@
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 
+import { getSignInErrorText } from '@/features/sign-in/model/getSignInErrorText';
+import { SignInValues } from '@/features/sign-in/model/types';
+import { useSignIn } from '@/features/sign-in/model/useSignIn';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 
 import css from './form.module.scss';
 
-type SignInValues = {
-    email: string;
-    password: string;
-};
-
 export const SignInForm = (): React.JSX.Element => {
     const {
         register,
         handleSubmit,
-        formState: { errors },
-    } = useForm<SignInValues>();
+        formState: { errors, isValid },
+    } = useForm<SignInValues>({
+        mode: 'onTouched', // проверяем поле, когда пользователь из него ушёл
+        defaultValues: { email: '', password: '' },
+    });
 
-    const onSubmit = (): void => {
-        // TODO: send sign in request to API
+    const { mutate, isPending, error } = useSignIn();
+
+    const onSubmit = (values: SignInValues): void => {
+        mutate(values);
     };
 
     return (
@@ -38,7 +41,7 @@ export const SignInForm = (): React.JSX.Element => {
                         pattern: {
                             value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                             message:
-                                'The email or password are incorrect. Try again please',
+                                'The email must match the format example@example.com',
                         },
                     })}
                 />
@@ -65,13 +68,14 @@ export const SignInForm = (): React.JSX.Element => {
                         {errors.password.message}
                     </span>
                 )}
+                {error && <span className={css.error}>{getSignInErrorText(error)}</span>}
             </div>
 
             <div className={css['forgot-password']}>
                 <Link href="/forgot-password">Forgot Password</Link>
             </div>
 
-            <Button type="submit" fullWidth>
+            <Button type="submit" fullWidth disabled={!isValid || isPending}>
                 Sign In
             </Button>
 
