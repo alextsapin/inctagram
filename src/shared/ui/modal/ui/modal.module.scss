@@ -1,0 +1,95 @@
+.modal {
+    box-sizing: border-box;
+    max-width: calc(100vw - 32px);
+    padding: 0;
+    border: 1px solid #4c4c4c;
+    border-radius: 2px;
+    background-color: #333;
+    color: #fff;
+
+    &::backdrop {
+        background-color: rgb(0 0 0 / 60%);
+    }
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 24px;
+    border-bottom: 1px solid #4c4c4c;
+}
+
+/* Своя шапка: три колонки, заголовок ровно по центру */
+.header-centered {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+}
+
+.header-left {
+    display: flex;
+    justify-self: start;
+}
+
+.header-right {
+    display: flex;
+    justify-self: end;
+}
+
+.title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 36px;
+}
+
+.close {
+    display: flex;
+    padding: 0;
+    border: none;
+    background: none;
+    color: #fff;
+    cursor: pointer;
+
+    &:focus {
+        outline: none;
+    }
+
+    &:focus-visible {
+        outline: 1px solid #397df6;
+        border-radius: 2px;
+    }
+
+    &:hover {
+        color: #8d9094;
+    }
+}
+
+/* Крестик снаружи окна: в правом верхнем углу экрана, как в просмотре поста */
+.close-outside {
+    position: fixed;
+    top: 60px;
+    right: 22px;
+}
+
+.body {
+    padding: 30px 24px 36px;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.no-padding {
+    padding: 0;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 24px;
+    margin-top: 18px;
+}
+
+.actions-between {
+    justify-content: space-between;
+}

@@ -1,0 +1,52 @@
+.layout {
+    display: flex;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
+}
+
+.settings {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    flex: 1;
+    padding: 60px 24px 49px;
+
+    @media (max-width: 768px) {
+        padding: 24px 12px 40px;
+    }
+}
+
+.title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 36px;
+    text-align: left;
+}
+
+.message {
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 14px;
+}
+
+.error {
+    color: #cc1439;
+    font-size: 12px;
+}

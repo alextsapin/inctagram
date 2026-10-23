@@ -25,22 +25,25 @@ export const Language = (): React.JSX.Element => {
 
     useEffect(() => {
         if (!isOpen) return;
-    
+
         const handleClickOutside = (event: MouseEvent): void => {
-            if (event.target instanceof Node && !wrapperRef.current?.contains(event.target)) {
+            if (
+                event.target instanceof Node &&
+                !wrapperRef.current?.contains(event.target)
+            ) {
                 setIsOpen(false);
             }
         };
-    
+
         const handleEscape = (event: KeyboardEvent): void => {
             if (event.key === 'Escape') {
                 setIsOpen(false);
             }
         };
-    
+
         document.addEventListener('mousedown', handleClickOutside);
         document.addEventListener('keydown', handleEscape);
-    
+
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
             document.removeEventListener('keydown', handleEscape);

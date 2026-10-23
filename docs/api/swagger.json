@@ -1,0 +1,854 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/auth/ping": {
+      "get": {
+        "operationId": "AuthController_ping",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PingResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "operationId": "AuthController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing, invalid or expired"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get the current user by the access token",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "401": {
+            "description": "Invalid email or password"
+          },
+          "403": {
+            "description": "Email is not confirmed"
+          },
+          "429": {
+            "description": "Too many requests from this IP"
+          }
+        },
+        "summary": "Log in with email and password",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/refresh": {
+      "post": {
+        "description": "The used refresh token stops working. Presenting an already used token revokes the whole session.",
+        "operationId": "AuthController_refresh",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Refresh token is missing, invalid, expired or already used"
+          },
+          "429": {
+            "description": "Too many requests from this IP"
+          }
+        },
+        "security": [
+          {
+            "refreshToken": []
+          }
+        ],
+        "summary": "Issue a new token pair by the refresh token cookie",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Session ended, cookie cleared"
+          },
+          "401": {
+            "description": "Refresh token is missing, invalid, expired or already used"
+          },
+          "429": {
+            "description": "Too many requests from this IP"
+          }
+        },
+        "security": [
+          {
+            "refreshToken": []
+          }
+        ],
+        "summary": "End the current session",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/registration": {
+      "post": {
+        "operationId": "AuthController_registration",
+        "parameters": [
+          {
+            "name": "X-Recaptcha-Token",
+            "in": "header",
+            "description": "reCAPTCHA v2 token from the widget. Not verified yet: the endpoint accepts requests without it for now.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "403": {
+            "description": "reCAPTCHA token is missing or rejected (not enforced yet)"
+          },
+          "409": {
+            "description": "Email or username is already taken (confirmed or not)"
+          },
+          "429": {
+            "description": "Too many requests from this IP"
+          }
+        },
+        "summary": "Register a new user and send an email confirmation link",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/confirm-email": {
+      "post": {
+        "operationId": "AuthController_confirmEmail",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmEmailDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Email confirmed"
+          },
+          "400": {
+            "description": "Code is invalid, already used or expired"
+          },
+          "429": {
+            "description": "Too many requests from this IP"
+          }
+        },
+        "summary": "Confirm email with the code from the link",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/resend-verification": {
+      "post": {
+        "description": "The response is the same whether the email is unknown, unconfirmed or already confirmed; the email is sent only to unconfirmed users.",
+        "operationId": "AuthController_resendVerification",
+        "parameters": [
+          {
+            "name": "X-Recaptcha-Token",
+            "in": "header",
+            "description": "reCAPTCHA v2 token from the widget. Not verified yet: the endpoint accepts requests without it for now.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendVerificationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "403": {
+            "description": "reCAPTCHA token is missing or rejected (not enforced yet)"
+          },
+          "429": {
+            "description": "Too many requests from this IP"
+          }
+        },
+        "summary": "Send a new confirmation link (previous links stop working)",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/password-recovery": {
+      "post": {
+        "description": "The response is the same whether the email is registered or not; the email is sent only to registered users.",
+        "operationId": "AuthController_passwordRecovery",
+        "parameters": [
+          {
+            "name": "X-Recaptcha-Token",
+            "in": "header",
+            "description": "reCAPTCHA v2 token from the widget. Not verified yet: the endpoint accepts requests without it for now.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordRecoveryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Request accepted"
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "403": {
+            "description": "reCAPTCHA token is missing or rejected (not enforced yet)"
+          },
+          "429": {
+            "description": "Too many requests from this IP"
+          }
+        },
+        "summary": "Send a password recovery link (previous links stop working)",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/new-password": {
+      "post": {
+        "description": "Also marks the email as confirmed and ends all sessions of the user.",
+        "operationId": "AuthController_newPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Password changed"
+          },
+          "400": {
+            "description": "Validation failed, passwords do not match, or the code is invalid, already used or expired"
+          },
+          "429": {
+            "description": "Too many requests from this IP"
+          }
+        },
+        "summary": "Set a new password with the code from the recovery link",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/sessions": {
+      "get": {
+        "operationId": "SessionController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SessionResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Refresh token is missing, invalid, expired or already used"
+          }
+        },
+        "security": [
+          {
+            "refreshToken": []
+          }
+        ],
+        "summary": "List active sessions of the current user",
+        "tags": [
+          "sessions"
+        ]
+      },
+      "delete": {
+        "operationId": "SessionController_endOthers",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Other sessions ended"
+          },
+          "401": {
+            "description": "Refresh token is missing, invalid, expired or already used"
+          }
+        },
+        "security": [
+          {
+            "refreshToken": []
+          }
+        ],
+        "summary": "End all sessions of the current user except this one",
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/api/auth/sessions/{deviceId}": {
+      "delete": {
+        "description": "Ending the current session also clears the refresh cookie.",
+        "operationId": "SessionController_endOne",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Session ended"
+          },
+          "400": {
+            "description": "deviceId is not a UUID"
+          },
+          "401": {
+            "description": "Refresh token is missing, invalid, expired or already used"
+          },
+          "404": {
+            "description": "No such session among the current user sessions"
+          }
+        },
+        "security": [
+          {
+            "refreshToken": []
+          }
+        ],
+        "summary": "End one session of the current user",
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/api/auth/google": {
+      "get": {
+        "description": "Open with a full-page navigation (window.location), not fetch. Redirects to the Google consent page; Google then returns the user to the callback endpoint.",
+        "operationId": "OAuthController_google",
+        "parameters": [],
+        "responses": {
+          "302": {
+            "description": "Redirect to Google consent page"
+          },
+          "501": {
+            "description": "Not implemented yet"
+          }
+        },
+        "summary": "Start login with Google (stub)",
+        "tags": [
+          "oauth"
+        ]
+      }
+    },
+    "/api/auth/google/callback": {
+      "get": {
+        "description": "Called by Google, not by the frontend. On success: creates or links the user, starts a session, sets the refresh token cookie and redirects to FRONTEND_URL/auth/oauth/success. The frontend then calls POST /api/auth/refresh to get the access token. On failure: redirects to FRONTEND_URL/auth/oauth/failure?error=<reason>.",
+        "operationId": "OAuthController_googleCallback",
+        "parameters": [
+          {
+            "name": "code",
+            "required": false,
+            "in": "query",
+            "schema": {}
+          },
+          {
+            "name": "state",
+            "required": false,
+            "in": "query",
+            "schema": {}
+          },
+          {
+            "name": "error",
+            "required": false,
+            "in": "query",
+            "description": "Set by the provider when the user denied access",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect to the frontend"
+          },
+          "501": {
+            "description": "Not implemented yet"
+          }
+        },
+        "summary": "Google OAuth callback (stub)",
+        "tags": [
+          "oauth"
+        ]
+      }
+    },
+    "/api/auth/github": {
+      "get": {
+        "description": "Open with a full-page navigation (window.location), not fetch. Redirects to the GitHub consent page; GitHub then returns the user to the callback endpoint.",
+        "operationId": "OAuthController_github",
+        "parameters": [],
+        "responses": {
+          "302": {
+            "description": "Redirect to GitHub consent page"
+          },
+          "501": {
+            "description": "Not implemented yet"
+          }
+        },
+        "summary": "Start login with GitHub (stub)",
+        "tags": [
+          "oauth"
+        ]
+      }
+    },
+    "/api/auth/github/callback": {
+      "get": {
+        "description": "Called by GitHub, not by the frontend. On success: creates or links the user, starts a session, sets the refresh token cookie and redirects to FRONTEND_URL/auth/oauth/success. The frontend then calls POST /api/auth/refresh to get the access token. On failure: redirects to FRONTEND_URL/auth/oauth/failure?error=<reason>.",
+        "operationId": "OAuthController_githubCallback",
+        "parameters": [
+          {
+            "name": "code",
+            "required": false,
+            "in": "query",
+            "schema": {}
+          },
+          {
+            "name": "state",
+            "required": false,
+            "in": "query",
+            "schema": {}
+          },
+          {
+            "name": "error",
+            "required": false,
+            "in": "query",
+            "description": "Set by the provider when the user denied access",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect to the frontend"
+          },
+          "501": {
+            "description": "Not implemented yet"
+          }
+        },
+        "summary": "GitHub OAuth callback (stub)",
+        "tags": [
+          "oauth"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Inctagram API",
+    "description": "",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      },
+      "refreshToken": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "refreshToken"
+      }
+    },
+    "schemas": {
+      "PingResponseDto": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string",
+            "description": "Name of the responding module",
+            "example": "auth"
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Server time, ISO 8601",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "service",
+          "timestamp"
+        ]
+      },
+      "MeResponseDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string",
+            "example": "ivan_petrov"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "ivan@example.com"
+          }
+        },
+        "required": [
+          "userId",
+          "username",
+          "email"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Trimmed and lowercased before validation",
+            "example": "ivan@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "Qwerty1!",
+            "minLength": 6,
+            "maxLength": 20
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "JWT access token; default expiry is 15 minutes"
+          }
+        },
+        "required": [
+          "accessToken"
+        ]
+      },
+      "RegistrationDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 30,
+            "pattern": "^[0-9A-Za-z_-]+$",
+            "description": "Unique case-insensitively; stored as typed",
+            "example": "ivan_petrov"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 255,
+            "description": "Trimmed and lowercased before validation",
+            "example": "ivan@example.com"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 20,
+            "description": "Password must contain 0-9, a-z, A-Z, ! \" # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \\ ] ^ _ { } ~",
+            "example": "Qwerty1!"
+          },
+          "passwordConfirmation": {
+            "type": "string",
+            "description": "Must be equal to password",
+            "example": "Qwerty1!"
+          },
+          "termsAccepted": {
+            "type": "boolean",
+            "enum": [
+              true
+            ],
+            "description": "Must be true"
+          }
+        },
+        "required": [
+          "username",
+          "email",
+          "password",
+          "passwordConfirmation",
+          "termsAccepted"
+        ]
+      },
+      "RegistrationResponseDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Address the confirmation link was sent to",
+            "example": "ivan@example.com"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "ConfirmEmailDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Confirmation code from the link in the email (the `code` query parameter)",
+            "example": "q3Jx0l8m3VZ6bJ9a0nYp1cK7wR2tE5uH4iO6pA8sD0f"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      },
+      "ResendVerificationDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Trimmed and lowercased before validation",
+            "example": "ivan@example.com"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "PasswordRecoveryDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Trimmed and lowercased before validation",
+            "example": "ivan@example.com"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "NewPasswordDto": {
+        "type": "object",
+        "properties": {
+          "newPassword": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 20,
+            "description": "Password must contain 0-9, a-z, A-Z, ! \" # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \\ ] ^ _ { } ~",
+            "example": "Qwerty1!"
+          },
+          "passwordConfirmation": {
+            "type": "string",
+            "description": "Must be equal to newPassword",
+            "example": "Qwerty1!"
+          },
+          "code": {
+            "type": "string",
+            "description": "Recovery code from the link in the email (the `code` query parameter)",
+            "example": "q3Jx0l8m3VZ6bJ9a0nYp1cK7wR2tE5uH4iO6pA8sD0f"
+          }
+        },
+        "required": [
+          "newPassword",
+          "passwordConfirmation",
+          "code"
+        ]
+      },
+      "SessionResponseDto": {
+        "type": "object",
+        "properties": {
+          "deviceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Session (device) id"
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true,
+            "example": "203.0.113.7"
+          },
+          "userAgent": {
+            "type": "string",
+            "nullable": true,
+            "description": "Raw User-Agent of the device",
+            "example": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/141.0"
+          },
+          "lastActiveAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Last token refresh"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Login time on this device"
+          },
+          "current": {
+            "type": "boolean",
+            "description": "The session of this request"
+          }
+        },
+        "required": [
+          "deviceId",
+          "ipAddress",
+          "userAgent",
+          "lastActiveAt",
+          "createdAt",
+          "current"
+        ]
+      }
+    }
+  }
+}

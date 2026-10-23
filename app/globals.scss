@@ -12,7 +12,11 @@ html {
 html,
 body {
     max-width: 100vw;
-    overflow-x: hidden;
+
+    /* overflow-x: clip вместо hidden: hidden ломает position: sticky у потомков,
+       clip скрывает горизонтальный скролл, но не ломает sticky.
+       Автор: Chernov-Vpnpm */
+    overflow-x: clip;
 }
 
 body {
@@ -25,7 +29,7 @@ body {
     line-height: 24px;
     color: white;
     background: $dark;
-    }
+}
 
 h1 {
     margin-top: 35px;
@@ -51,8 +55,9 @@ h3 {
 }
 
 a {
-    color: #4C8DFF;
+    color: #4c8dff;
     text-decoration: none;
+
     &:hover {
         text-decoration: underline;
     }
@@ -65,4 +70,9 @@ a {
     margin-left: auto;
     padding-right: 15px;
     padding-left: 15px;
+}
+
+/* Пока открыто модальное окно, страница под ним не прокручивается */
+html:has(dialog:modal) {
+    overflow: hidden;
 }

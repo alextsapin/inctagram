@@ -22,17 +22,17 @@ import { Input } from '@/shared/ui/input';
 
 ## Свойства (Props)
 
-| Prop | Тип | По умолчанию | Назначение |
-|---|---|---|---|
-| `type` | стандартный HTML | `text` | Тип поля (`text`, `email`, `password` и др.) |
-| `error` | `boolean` | `false` | Красная рамка ошибочного состояния |
-| `showPasswordToggle` | `boolean` | `false` | Кнопка показа/скрытия пароля |
-| `disabled` | `boolean` | `false` | Отключение поля |
-| `readOnly` | `boolean` | `false` | Только чтение |
-| `className` | `string` | — | Дополнительные CSS-классы на сам `<input>` |
-| `onChange` | Обработчик React | — | Реакция на изменение значения |
-| `onBlur` | Обработчик React | — | Реакция на потерю фокуса |
-| `ref` | `Ref<HTMLInputElement>` | — | Доступ к нативному input |
+| Prop                 | Тип                     | По умолчанию | Назначение                                   |
+| -------------------- | ----------------------- | ------------ | -------------------------------------------- |
+| `type`               | стандартный HTML        | `text`       | Тип поля (`text`, `email`, `password` и др.) |
+| `error`              | `boolean`               | `false`      | Красная рамка ошибочного состояния           |
+| `showPasswordToggle` | `boolean`               | `false`      | Кнопка показа/скрытия пароля                 |
+| `disabled`           | `boolean`               | `false`      | Отключение поля                              |
+| `readOnly`           | `boolean`               | `false`      | Только чтение                                |
+| `className`          | `string`                | —            | Дополнительные CSS-классы на сам `<input>`   |
+| `onChange`           | Обработчик React        | —            | Реакция на изменение значения                |
+| `onBlur`             | Обработчик React        | —            | Реакция на потерю фокуса                     |
+| `ref`                | `Ref<HTMLInputElement>` | —            | Доступ к нативному input                     |
 
 Также поддерживаются остальные стандартные HTML-атрибуты `<input>` (например `id`, `name`, `placeholder`, `value`, `defaultValue`, `autoComplete`, `aria-invalid`, `aria-describedby`), потому что пропсы расширяют `React.ComponentPropsWithRef<'input'>`.
 
@@ -65,12 +65,12 @@ import { Input } from '@/shared/ui/input';
 
 Поведение переключателя:
 
-- По умолчанию символы скрыты.
-- Клик по иконке глаза показывает пароль; повторный клик скрывает.
-- Кнопка имеет `type="button"` и не отправляет форму.
-- `aria-label` — `Show password` или `Hide password` в зависимости от состояния.
-- При `disabled` недоступны и поле, и кнопка.
-- Переключатель появляется только при `type="password"` вместе с `showPasswordToggle`.
+-   По умолчанию символы скрыты.
+-   Клик по иконке глаза показывает пароль; повторный клик скрывает.
+-   Кнопка имеет `type="button"` и не отправляет форму.
+-   `aria-label` — `Show password` или `Hide password` в зависимости от состояния.
+-   При `disabled` недоступны и поле, и кнопка.
+-   Переключатель появляется только при `type="password"` вместе с `showPasswordToggle`.
 
 **Важно:** если включён `showPasswordToggle`, не оборачивай весь блок (поле + кнопка) в HTML `<label>`. Связывай подпись через `htmlFor` и `id`, как в примере выше.
 
@@ -88,9 +88,9 @@ import { Input } from '@/shared/ui/input';
 <span id="email-error">Email is required</span>
 ```
 
-- `error` — только визуальная красная рамка.
-- Текст ошибки рендерит родитель.
-- `aria-describedby` связывает поле с сообщением для скринридеров.
+-   `error` — только визуальная красная рамка.
+-   Текст ошибки рендерит родитель.
+-   `aria-describedby` связывает поле с сообщением для скринридеров.
 
 ### 5. React Hook Form через `register`
 
@@ -171,7 +171,7 @@ const [email, setEmail] = useState('');
     type="email"
     value={email}
     onChange={event => setEmail(event.target.value)}
-/>
+/>;
 ```
 
 Не смешивай полноценный controlled-режим (`value`) и `defaultValue` в одном экземпляре.
@@ -183,7 +183,7 @@ const [email, setEmail] = useState('');
 ```tsx
 const inputRef = useRef<HTMLInputElement>(null);
 
-<Input ref={inputRef} id="search" />
+<Input ref={inputRef} id="search" />;
 ```
 
 Свой класс вместе с SCSS Modules:
@@ -193,7 +193,7 @@ import { Input } from '@/shared/ui/input';
 
 import css from './form.module.scss';
 
-<Input className={css.extra} id="title" />
+<Input className={css.extra} id="title" />;
 ```
 
 Классы компонента и твой `className` объединяются: базовые стили Input сохраняются, локальный класс добавляет или переопределяет нужное.
@@ -210,20 +210,20 @@ import css from './form.module.scss';
 
 Визуальные состояния уже описаны в `input.module.scss`. При использовании компонента отдельно прописывать hover/focus/error/disabled в своём SCSS не нужно.
 
-| Состояние | Как работает |
-|---|---|
-| Default | Фон `#171717`, рамка `#4C4C4C`, высота `36px`. |
-| Hover | Рамка светлеет (если поле не `disabled` и не `readOnly`). |
-| Focus | Рамка и outline `#397DF6` через `:focus-visible`. |
-| Error | Красная рамка `#CC1439`. При фокусе ошибочного поля остаётся error-оформление. |
-| Disabled | Приглушённые цвета и `cursor: not-allowed`. |
-| ReadOnly | Поле видно, но не редактируется; отличается от `disabled`. |
+| Состояние | Как работает                                                                   |
+| --------- | ------------------------------------------------------------------------------ |
+| Default   | Фон `#171717`, рамка `#4C4C4C`, высота `36px`.                                 |
+| Hover     | Рамка светлеет (если поле не `disabled` и не `readOnly`).                      |
+| Focus     | Рамка и outline `#397DF6` через `:focus-visible`.                              |
+| Error     | Красная рамка `#CC1439`. При фокусе ошибочного поля остаётся error-оформление. |
+| Disabled  | Приглушённые цвета и `cursor: not-allowed`.                                    |
+| ReadOnly  | Поле видно, но не редактируется; отличается от `disabled`.                     |
 
 ## Input и label
 
-- Для обычных полей связывай подпись через `<label htmlFor="...">` и `id` у `Input`.
-- Для пароля с `showPasswordToggle` тот же подход обязателен: кнопка глаза не должна оказаться внутри HTML `<label>`.
-- Текст ошибки, Checkbox, Button и ссылки — ответственность родительской формы, не `Input`.
+-   Для обычных полей связывай подпись через `<label htmlFor="...">` и `id` у `Input`.
+-   Для пароля с `showPasswordToggle` тот же подход обязателен: кнопка глаза не должна оказаться внутри HTML `<label>`.
+-   Текст ошибки, Checkbox, Button и ссылки — ответственность родительской формы, не `Input`.
 
 ## Использование в Next.js
 

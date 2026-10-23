@@ -2,8 +2,16 @@
     "extends": ["stylelint-config-standard"],
     "overrides": [
         {
+            "files": ["**/*.scss"],
+            "extends": ["stylelint-config-standard-scss"]
+        },
+        {
             "files": ["**/*.module.css"],
             "extends": ["stylelint-config-standard", "stylelint-config-css-modules"]
+        },
+        {
+            "files": ["**/*.module.scss"],
+            "extends": ["stylelint-config-standard-scss", "stylelint-config-css-modules"]
         }
     ],
     "rules": {

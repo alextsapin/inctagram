@@ -24,18 +24,18 @@ import { Checkbox } from '@/shared/ui/checkbox';
 
 Тип пропсов основан на `React.ComponentPropsWithRef<'input'>`, но свойство `type` зафиксировано внутри компонента как `"checkbox"` и снаружи недоступно.
 
-| Prop | Тип | По умолчанию | Назначение |
-|---|---|---|---|
-| `checked` | `boolean` | — | Controlled-состояние (отмечен / не отмечен) |
-| `defaultChecked` | `boolean` | — | Начальное состояние для uncontrolled-режима |
-| `onChange` | Обработчик React | — | Реакция на изменение |
-| `onBlur` | Обработчик React | — | Реакция на потерю фокуса |
-| `name` | `string` | — | Имя поля формы |
-| `disabled` | `boolean` | `false` | Отключение чекбокса |
-| `id` | `string` | — | Связь с `<label htmlFor>` |
-| `className` | `string` | — | Дополнительные CSS-классы |
-| `ref` | `Ref<HTMLInputElement>` | — | Доступ к нативному input |
-| `aria-*` | стандартные ARIA | — | Доступность для скринридеров |
+| Prop             | Тип                     | По умолчанию | Назначение                                  |
+| ---------------- | ----------------------- | ------------ | ------------------------------------------- |
+| `checked`        | `boolean`               | —            | Controlled-состояние (отмечен / не отмечен) |
+| `defaultChecked` | `boolean`               | —            | Начальное состояние для uncontrolled-режима |
+| `onChange`       | Обработчик React        | —            | Реакция на изменение                        |
+| `onBlur`         | Обработчик React        | —            | Реакция на потерю фокуса                    |
+| `name`           | `string`                | —            | Имя поля формы                              |
+| `disabled`       | `boolean`               | `false`      | Отключение чекбокса                         |
+| `id`             | `string`                | —            | Связь с `<label htmlFor>`                   |
+| `className`      | `string`                | —            | Дополнительные CSS-классы                   |
+| `ref`            | `Ref<HTMLInputElement>` | —            | Доступ к нативному input                    |
+| `aria-*`         | стандартные ARIA        | —            | Доступность для скринридеров                |
 
 Также поддерживаются остальные стандартные HTML-атрибуты `<input>` (кроме `type`), потому что пропсы расширяют `React.ComponentPropsWithRef<'input'>`.
 
@@ -60,15 +60,15 @@ const [isChecked, setIsChecked] = useState(false);
     id="newsletter"
     checked={isChecked}
     onChange={event => setIsChecked(event.target.checked)}
-/>
+/>;
 ```
 
 Не смешивай в одном экземпляре одновременно полноценный controlled-режим (`checked`) и `defaultChecked`: выбери один подход.
 
 ## Как работают `checked` и `defaultChecked`
 
-- `checked` — текущее значение «под контролем» родителя. Меняется только если родитель обновил проп (обычно в `onChange`).
-- `defaultChecked` — только стартовое значение. Дальше пользователь и браузер переключают чекбокс сами.
+-   `checked` — текущее значение «под контролем» родителя. Меняется только если родитель обновил проп (обычно в `onChange`).
+-   `defaultChecked` — только стартовое значение. Дальше пользователь и браузер переключают чекбокс сами.
 
 Для чтения значения без controlled-режима можно использовать `ref` или работу через форму (`FormData`, React Hook Form).
 
@@ -138,8 +138,7 @@ export const ExampleForm = (): React.JSX.Element => {
 ```tsx
 <div>
     <label htmlFor="termsAccepted">
-        <Checkbox id="termsAccepted" />
-        I agree to the{' '}
+        <Checkbox id="termsAccepted" />I agree to the{' '}
     </label>
     <Link href="/terms-of-service">Terms of Service</Link>
     <span> and </span>
@@ -157,13 +156,13 @@ export const ExampleForm = (): React.JSX.Element => {
 
 Визуальные состояния описаны в `checkbox.module.scss`. Отдельно прописывать hover/focus/disabled в своём SCSS не нужно.
 
-| Состояние | Как работает |
-|---|---|
-| Default | Unchecked — квадрат 16×16 с белой рамкой. Checked — белый квадрат с тёмной галочкой. |
-| Hover | Круглая подложка `#333` (если не `disabled`). |
-| Active | Круглая подложка `#4C4C4C` в момент нажатия. |
-| Focus | Круглая подложка `#171717` и белое кольцо `box-shadow` через `:focus-visible` — заметно на `#0d0d0d` и `#171717`. |
-| Disabled | Приглушённые серые цвета (`#4C4C4C`), `cursor: not-allowed`, без hover/active. |
+| Состояние | Как работает                                                                                                      |
+| --------- | ----------------------------------------------------------------------------------------------------------------- |
+| Default   | Unchecked — квадрат 16×16 с белой рамкой. Checked — белый квадрат с тёмной галочкой.                              |
+| Hover     | Круглая подложка `#333` (если не `disabled`).                                                                     |
+| Active    | Круглая подложка `#4C4C4C` в момент нажатия.                                                                      |
+| Focus     | Круглая подложка `#171717` и белое кольцо `box-shadow` через `:focus-visible` — заметно на `#0d0d0d` и `#171717`. |
+| Disabled  | Приглушённые серые цвета (`#4C4C4C`), `cursor: not-allowed`, без hover/active.                                    |
 
 Переключение мышью и клавишей Space, а также фокус по Tab сохраняются за счёт нативного `<input type="checkbox">`.
 
@@ -185,8 +184,8 @@ export const ExampleForm = (): React.JSX.Element => {
 
 `Checkbox` в `shared` не должен знать про Sign Up, тексты согласия, ссылки на Terms/Privacy или тексты ошибок валидации.
 
-- Универсальный компонент = только контрол и его внешний вид.
-- Подпись, ссылки, ошибки, `register`, `defaultValues` — ответственность фичи (`features/sign-up` и т.п.).
+-   Универсальный компонент = только контрол и его внешний вид.
+-   Подпись, ссылки, ошибки, `register`, `defaultValues` — ответственность фичи (`features/sign-up` и т.п.).
 
 Так компонент остаётся переиспользуемым: тот же Checkbox можно поставить в настройки, модалку или другую форму без копирования кода.
 

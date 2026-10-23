@@ -35,24 +35,24 @@ import { Button, type ButtonVariant } from '@/shared/ui/button';
 <Button variant="text">Text</Button>
 ```
 
-| Вариант | Когда уместен |
-|---|---|
-| `primary` | Главное действие на экране или в форме (Sign Up, Sign In, Save). |
-| `secondary` | Второстепенное действие рядом с основным (Cancel, Back). |
-| `outlined` | Действие средней важности, когда нужна кнопка с обводкой без заливки. |
-| `text` | Лёгкое текстовое действие без сильного визуального акцента. |
+| Вариант     | Когда уместен                                                         |
+| ----------- | --------------------------------------------------------------------- |
+| `primary`   | Главное действие на экране или в форме (Sign Up, Sign In, Save).      |
+| `secondary` | Второстепенное действие рядом с основным (Cancel, Back).              |
+| `outlined`  | Действие средней важности, когда нужна кнопка с обводкой без заливки. |
+| `text`      | Лёгкое текстовое действие без сильного визуального акцента.           |
 
 ## Свойства (Props)
 
-| Prop | Тип | По умолчанию | Назначение |
-|---|---|---|---|
-| `variant` | `ButtonVariant` | `primary` | Вариант оформления |
-| `fullWidth` | `boolean` | `false` | Растягивание на всю ширину |
-| `type` | `button` / `submit` / `reset` | `button` | HTML-поведение |
-| `disabled` | `boolean` | `false` | Отключение кнопки |
-| `className` | `string` | — | Дополнительные CSS-классы |
-| `onClick` | Обработчик React | — | Действие при нажатии |
-| `children` | `ReactNode` | — | Содержимое кнопки |
+| Prop        | Тип                           | По умолчанию | Назначение                 |
+| ----------- | ----------------------------- | ------------ | -------------------------- |
+| `variant`   | `ButtonVariant`               | `primary`    | Вариант оформления         |
+| `fullWidth` | `boolean`                     | `false`      | Растягивание на всю ширину |
+| `type`      | `button` / `submit` / `reset` | `button`     | HTML-поведение             |
+| `disabled`  | `boolean`                     | `false`      | Отключение кнопки          |
+| `className` | `string`                      | —            | Дополнительные CSS-классы  |
+| `onClick`   | Обработчик React              | —            | Действие при нажатии       |
+| `children`  | `ReactNode`                   | —            | Содержимое кнопки          |
 
 Также поддерживаются остальные стандартные HTML-атрибуты `<button>` (например `id`, `aria-label`, `form`), потому что пропсы расширяют `React.ComponentProps<'button'>`.
 
@@ -63,9 +63,7 @@ import { Button, type ButtonVariant } from '@/shared/ui/button';
 ### 1. Обычная кнопка с `onClick`
 
 ```tsx
-<Button onClick={() => console.log('clicked')}>
-    Click me
-</Button>
+<Button onClick={() => console.log('clicked')}>Click me</Button>
 ```
 
 ### 2. Кнопка отправки формы (`type="submit"`)
@@ -97,8 +95,8 @@ import { Button, type ButtonVariant } from '@/shared/ui/button';
 
 **Разница `type="button"` и `type="submit"` (важно для React Hook Form):**
 
-- `type="submit"` — браузер отправляет форму, срабатывает `onSubmit` у `<form>`, а вместе с ним `handleSubmit(...)` из React Hook Form.
-- `type="button"` — только выполняет `onClick` (если он есть), форма не отправляется.
+-   `type="submit"` — браузер отправляет форму, срабатывает `onSubmit` у `<form>`, а вместе с ним `handleSubmit(...)` из React Hook Form.
+-   `type="button"` — только выполняет `onClick` (если он есть), форма не отправляется.
 
 Если внутри формы забыть указать тип и получить поведение submit по ошибке, валидация и отправка могут запуститься неожиданно. Поэтому для любых кнопок «не отправлять форму» явно используй `type="button"` (или полагайся на дефолт компонента).
 
@@ -125,7 +123,7 @@ import css from './form.module.scss';
 
 <Button className={css.extra} variant="secondary">
     Cancel
-</Button>
+</Button>;
 ```
 
 Классы компонента и твой `className` объединяются: базовые стили Button сохраняются, локальный класс добавляет или переопределяет нужное.
@@ -137,27 +135,27 @@ import { Button, type ButtonVariant } from '@/shared/ui/button';
 
 const actionVariant: ButtonVariant = 'outlined';
 
-<Button variant={actionVariant}>Edit</Button>
+<Button variant={actionVariant}>Edit</Button>;
 ```
 
 ## Состояния кнопки
 
 Визуальные состояния уже описаны в `button.module.scss`. При использовании компонента отдельно прописывать hover/focus/disabled в своём SCSS не нужно.
 
-| Состояние | Как работает |
-|---|---|
-| Default | Базовый вид выбранного `variant`. |
-| Hover | Меняется фон, обводка или цвет текста (если кнопка не `disabled`). |
-| Active | Вид в момент нажатия. |
-| Focus | Стили через `:focus-visible` — обводка появляется при фокусе с клавиатуры. |
-| Disabled | Кнопка неактивна: приглушённые цвета и `cursor: not-allowed`. |
+| Состояние | Как работает                                                               |
+| --------- | -------------------------------------------------------------------------- |
+| Default   | Базовый вид выбранного `variant`.                                          |
+| Hover     | Меняется фон, обводка или цвет текста (если кнопка не `disabled`).         |
+| Active    | Вид в момент нажатия.                                                      |
+| Focus     | Стили через `:focus-visible` — обводка появляется при фокусе с клавиатуры. |
+| Disabled  | Кнопка неактивна: приглушённые цвета и `cursor: not-allowed`.              |
 
 Точные цвета зависят от `variant` (`primary`, `secondary`, `outlined`, `text`).
 
 ## Button или Link?
 
-- `Button` — для действий: отправить форму, открыть модалку, переключить видимость пароля.
-- `Link` из `next/link` — для перехода на другую страницу (`/sign-in`, `/sign-up` и т.д.).
+-   `Button` — для действий: отправить форму, открыть модалку, переключить видимость пароля.
+-   `Link` из `next/link` — для перехода на другую страницу (`/sign-in`, `/sign-up` и т.д.).
 
 Не заменяй обычную навигацию связкой `Button` + `router.push()`, если достаточно ссылки. Ссылка лучше для доступности, SEO и поведения браузера (открытие в новой вкладке, копирование URL).
 
