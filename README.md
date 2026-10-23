@@ -432,7 +432,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 │   ├── 📁 avatar/
 │   └── 📁 loader/
 ├── 📁 api/
-│   └── 📄 queryClient.ts
+│   └── 📄 instance.ts
 ├── 📁 lib/
 ├── 📁 config/
 ├── 📁 styles/
@@ -531,4 +531,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 
 ### Другие документы проекта
 
--   [TanStack Query — настройка и использование](docs/tanstack-query.md).
+*Источник архитектурных схем и деревьев: `inctagram-fsd-v3(1).pdf` (8 страниц). Изображения каждой страницы включены рядом с соответствующим текстовым разделом. Корневой README — основная текстовая документация архитектуры; PDF хранить в репозитории необязательно.*
+- [TanStack Query — настройка и использование](docs/tanstack-query.md).
+- [API — axios instance, access token, переменные окружения](docs/api.md).
+- [Вход в систему (Sign In) — бизнес-логика и структура слайсов](docs/sign-in.md).

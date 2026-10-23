@@ -1,20 +1,12 @@
-import type { Me } from '../model/types';
-
+import { instance } from '@/shared/api';
 import { MOCK_ME, USE_MOCKS } from './mock';
 
+import type { Me } from '../model/types';
+
 export const getMe = async (): Promise<Me> => {
-    if (USE_MOCKS) {
+      if (USE_MOCKS) {
         return MOCK_ME;
     }
+    const response = await instance.get<Me>('/api/auth/me');
 
-    const response = await fetch('/api/auth/me', {
-        credentials: 'include',
-        headers: { Accept: 'application/json' },
-    });
-
-    if (!response.ok) {
-        throw new Error(`Failed to load current user: ${response.status}`);
-    }
-
-    return (await response.json()) as Me;
-};
+    return response.data;
