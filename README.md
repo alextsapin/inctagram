@@ -442,7 +442,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 └── 📁 types/
 ```
 
-**Общие UI-компоненты, уже подготовленные в проекте:** `Button`, `Checkbox`, `DatePicker` и `DateRangePicker`, `Input`, `Modal`, `Select`, `Textarea`. Их подробное описание и примеры использования вынесены в [собственные README](#документация-общих-компонентов). Остальные названия в дереве — элементы целевой схемы и не означают, что компоненты уже реализованы.
+**Общие UI-компоненты, уже подготовленные в проекте:** `Button`, `Checkbox`, `DatePicker` и `DateRangePicker`, `Input`, `Modal`, `Select`, `Tabs`, `Textarea`. Их подробное описание и примеры использования вынесены в [собственные README](#документация-общих-компонентов). Остальные названия в дереве — элементы целевой схемы и не означают, что компоненты уже реализованы.
 
 ### Примеры готовых слайсов
 
@@ -526,6 +526,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 | **Input**                       | `src/shared/ui/input/`       | [README Input](src/shared/ui/input/README.md)            |
 | **Modal**                       | `src/shared/ui/modal/`       | [README Modal](src/shared/ui/modal/README.md)            |
 | **Select**                      | `src/shared/ui/select/`      | [README Select](src/shared/ui/select/README.md)          |
+| **Tabs**                        | `src/shared/ui/tabs/`        | [README Tabs](src/shared/ui/tabs/README.md)              |
 | **Textarea**                    | `src/shared/ui/textarea/`    | [README Textarea](src/shared/ui/textarea/README.md)      |
 
 Для их использования импортируем компоненты через публичные API соответствующих папок (`index.ts`). Подробные props, состояния, примеры и интеграцию с React Hook Form **не дублируем здесь** — они описаны в README каждого компонента.
