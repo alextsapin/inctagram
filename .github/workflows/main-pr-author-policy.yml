@@ -1,0 +1,37 @@
+name: Main PR author policy
+
+on:
+  pull_request_target:
+    branches:
+      - main
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - edited
+      - ready_for_review
+
+# This workflow only inspects GitHub event metadata.
+# Never check out or execute code from a pull request here.
+permissions: {}
+
+jobs:
+  main-pr-author-check:
+    name: Main PR author check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Allow only designated maintainers
+        shell: bash
+        env:
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          case "${PR_AUTHOR,,}" in
+            alextsapin|gromovaviktoriya)
+              echo "Authorized PR author: ${PR_AUTHOR}"
+              ;;
+            *)
+              echo "::error::Only alextsapin and GromovaViktoriya may open PRs targeting main."
+              echo "Ask one of the maintainers to open a new PR from this branch."
+              exit 1
+              ;;
+          esac
