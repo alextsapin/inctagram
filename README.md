@@ -523,17 +523,17 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 | **Button**                      | `src/shared/ui/button/`      | [README Button](src/shared/ui/button/README.md)          |
 | **Checkbox**                    | `src/shared/ui/checkbox/`    | [README Checkbox](src/shared/ui/checkbox/README.md)      |
 | **DatePicker, DateRangePicker** | `src/shared/ui/date-picker/` | [README DatePicker](src/shared/ui/date-picker/README.md) |
-
-| **Input** | `src/shared/ui/input/` | [README Input](src/shared/ui/input/README.md) |
-| **Modal** | `src/shared/ui/modal/` | [README Modal](src/shared/ui/modal/README.md) |
-| **Select** | `src/shared/ui/select/` | [README Select](src/shared/ui/select/README.md) |
-| **Textarea** | `src/shared/ui/textarea/` | [README Textarea](src/shared/ui/textarea/README.md) |
+| **Input**                       | `src/shared/ui/input/`       | [README Input](src/shared/ui/input/README.md)            |
+| **Modal**                       | `src/shared/ui/modal/`       | [README Modal](src/shared/ui/modal/README.md)            |
+| **Select**                      | `src/shared/ui/select/`      | [README Select](src/shared/ui/select/README.md)          |
+| **Textarea**                    | `src/shared/ui/textarea/`    | [README Textarea](src/shared/ui/textarea/README.md)      |
 
 Для их использования импортируем компоненты через публичные API соответствующих папок (`index.ts`). Подробные props, состояния, примеры и интеграцию с React Hook Form **не дублируем здесь** — они описаны в README каждого компонента.
 
 ### Другие документы проекта
 
-*Источник архитектурных схем и деревьев: `inctagram-fsd-v3(1).pdf` (8 страниц). Изображения каждой страницы включены рядом с соответствующим текстовым разделом. Корневой README — основная текстовая документация архитектуры; PDF хранить в репозитории необязательно.*
-- [TanStack Query — настройка и использование](docs/tanstack-query.md).
-- [API — axios instance, access token, переменные окружения](docs/api.md).
-- [Вход в систему (Sign In) — бизнес-логика и структура слайсов](docs/sign-in.md).
+_Источник архитектурных схем и деревьев: `inctagram-fsd-v3(1).pdf` (8 страниц). Изображения каждой страницы включены рядом с соответствующим текстовым разделом. Корневой README — основная текстовая документация архитектуры; PDF хранить в репозитории необязательно._
+
+-   [TanStack Query — настройка и использование](docs/tanstack-query.md).
+-   [API — axios instance, access token, переменные окружения](docs/api.md).
+-   [Вход в систему (Sign In) — бизнес-логика и структура слайсов](docs/sign-in.md).
