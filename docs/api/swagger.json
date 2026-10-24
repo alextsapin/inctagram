@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/api/auth/ping": {
+    "/api/v1/auth/ping": {
       "get": {
         "operationId": "AuthController_ping",
         "parameters": [],
@@ -22,7 +22,7 @@
         ]
       }
     },
-    "/api/auth/me": {
+    "/api/v1/auth/me": {
       "get": {
         "operationId": "AuthController_me",
         "parameters": [],
@@ -52,7 +52,7 @@
         ]
       }
     },
-    "/api/auth/login": {
+    "/api/v1/auth/login": {
       "post": {
         "operationId": "AuthController_login",
         "parameters": [],
@@ -96,7 +96,7 @@
         ]
       }
     },
-    "/api/auth/refresh": {
+    "/api/v1/auth/refresh": {
       "post": {
         "description": "The used refresh token stops working. Presenting an already used token revokes the whole session.",
         "operationId": "AuthController_refresh",
@@ -130,7 +130,7 @@
         ]
       }
     },
-    "/api/auth/logout": {
+    "/api/v1/auth/logout": {
       "post": {
         "operationId": "AuthController_logout",
         "parameters": [],
@@ -156,7 +156,7 @@
         ]
       }
     },
-    "/api/auth/registration": {
+    "/api/v1/auth/registration": {
       "post": {
         "operationId": "AuthController_registration",
         "parameters": [
@@ -210,7 +210,7 @@
         ]
       }
     },
-    "/api/auth/confirm-email": {
+    "/api/v1/auth/confirm-email": {
       "post": {
         "operationId": "AuthController_confirmEmail",
         "parameters": [],
@@ -241,7 +241,7 @@
         ]
       }
     },
-    "/api/auth/resend-verification": {
+    "/api/v1/auth/resend-verification": {
       "post": {
         "description": "The response is the same whether the email is unknown, unconfirmed or already confirmed; the email is sent only to unconfirmed users.",
         "operationId": "AuthController_resendVerification",
@@ -293,7 +293,7 @@
         ]
       }
     },
-    "/api/auth/password-recovery": {
+    "/api/v1/auth/password-recovery": {
       "post": {
         "description": "The response is the same whether the email is registered or not; the email is sent only to registered users.",
         "operationId": "AuthController_passwordRecovery",
@@ -338,7 +338,7 @@
         ]
       }
     },
-    "/api/auth/new-password": {
+    "/api/v1/auth/new-password": {
       "post": {
         "description": "Also marks the email as confirmed and ends all sessions of the user.",
         "operationId": "AuthController_newPassword",
@@ -370,7 +370,7 @@
         ]
       }
     },
-    "/api/auth/sessions": {
+    "/api/v1/auth/sessions": {
       "get": {
         "operationId": "SessionController_findAll",
         "parameters": [],
@@ -424,7 +424,7 @@
         ]
       }
     },
-    "/api/auth/sessions/{deviceId}": {
+    "/api/v1/auth/sessions/{deviceId}": {
       "delete": {
         "description": "Ending the current session also clears the refresh cookie.",
         "operationId": "SessionController_endOne",
@@ -464,7 +464,7 @@
         ]
       }
     },
-    "/api/auth/google": {
+    "/api/v1/auth/google": {
       "get": {
         "description": "Open with a full-page navigation (window.location), not fetch. Redirects to the Google consent page; Google then returns the user to the callback endpoint.",
         "operationId": "OAuthController_google",
@@ -483,9 +483,9 @@
         ]
       }
     },
-    "/api/auth/google/callback": {
+    "/api/v1/auth/google/callback": {
       "get": {
-        "description": "Called by Google, not by the frontend. On success: creates or links the user, starts a session, sets the refresh token cookie and redirects to FRONTEND_URL/auth/oauth/success. The frontend then calls POST /api/auth/refresh to get the access token. On failure: redirects to FRONTEND_URL/auth/oauth/failure?error=<reason>.",
+        "description": "Called by Google, not by the frontend. On success: creates or links the user, starts a session, sets the refresh token cookie and redirects to FRONTEND_URL/auth/oauth/success. The frontend then calls POST /api/v1/auth/refresh to get the access token. On failure: redirects to FRONTEND_URL/auth/oauth/failure?error=<reason>.",
         "operationId": "OAuthController_googleCallback",
         "parameters": [
           {
@@ -522,7 +522,7 @@
         ]
       }
     },
-    "/api/auth/github": {
+    "/api/v1/auth/github": {
       "get": {
         "description": "Open with a full-page navigation (window.location), not fetch. Redirects to the GitHub consent page; GitHub then returns the user to the callback endpoint.",
         "operationId": "OAuthController_github",
@@ -541,9 +541,9 @@
         ]
       }
     },
-    "/api/auth/github/callback": {
+    "/api/v1/auth/github/callback": {
       "get": {
-        "description": "Called by GitHub, not by the frontend. On success: creates or links the user, starts a session, sets the refresh token cookie and redirects to FRONTEND_URL/auth/oauth/success. The frontend then calls POST /api/auth/refresh to get the access token. On failure: redirects to FRONTEND_URL/auth/oauth/failure?error=<reason>.",
+        "description": "Called by GitHub, not by the frontend. On success: creates or links the user, starts a session, sets the refresh token cookie and redirects to FRONTEND_URL/auth/oauth/success. The frontend then calls POST /api/v1/auth/refresh to get the access token. On failure: redirects to FRONTEND_URL/auth/oauth/failure?error=<reason>.",
         "operationId": "OAuthController_githubCallback",
         "parameters": [
           {
