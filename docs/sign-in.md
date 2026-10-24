@@ -4,15 +4,15 @@
 созданы, зачем каждый из них и почему он лежит именно в этом слое FSD.
 
 Требования — ТЗ, UC-2 «Вход в систему». Контракт с бэкендом — Swagger
-(`POST /api/auth/login`, `GET /api/auth/me`).
+(`POST /api/v1/auth/login`, `GET /api/v1/auth/me`).
 
 ## Как работает вход
 
 1. Пользователь заполняет форму и нажимает [ Sign In ].
-2. `POST /api/auth/login` с `{ email, password }`. Бэкенд возвращает
+2. `POST /api/v1/auth/login` с `{ email, password }`. Бэкенд возвращает
    `accessToken` в теле ответа и сам кладёт refresh-токен в httpOnly-cookie.
 3. Access token сохраняем в памяти.
-4. `GET /api/auth/me` с заголовком `Authorization: Bearer <token>` — получаем
+4. `GET /api/v1/auth/me` с заголовком `Authorization: Bearer <token>` — получаем
    `username`.
 5. Переходим на страницу аккаунта `/profile/<username>`.
 
@@ -54,9 +54,9 @@ src/
 
 Сущность «сессия» — это данные о том, кто сейчас вошёл в систему.
 
--   **Зачем `getMe` при входе.** В ответе `POST /api/auth/login` есть только
+-   **Зачем `getMe` при входе.** В ответе `POST /api/v1/auth/login` есть только
     `accessToken`, а для перехода на `/profile/<username>` нужен `username`.
-    Его возвращает `GET /api/auth/me`.
+    Его возвращает `GET /api/v1/auth/me`.
 -   **Почему отдельная сущность, а не файл внутри `features/sign-in`.** Текущий
     пользователь понадобится не только входу: шапке, выходу из системы (UC-4
     показывает email пользователя), защите страниц от неавторизованных. По FSD
@@ -71,7 +71,7 @@ src/
 
 ### api/api.ts
 
-`signIn(values)` — `POST /api/auth/login`. Лежит в фиче, потому что этот
+`signIn(values)` — `POST /api/v1/auth/login`. Лежит в фиче, потому что этот
 запрос нужен только форме входа.
 
 ### model/types.ts
@@ -148,7 +148,7 @@ TanStack Query. Если дублировать это в Redux, появятс�
 
 -   **После перезагрузки страницы нужно войти заново.** Access token хранится в
     памяти и пропадает при F5. Восстановление сессии через
-    `POST /api/auth/refresh` — отдельная задача.
+    `POST /api/v1/auth/refresh` — отдельная задача.
 -   Обновление access token через 15 минут (response interceptor для ответа
     401), защита страниц от неавторизованных и выход из системы — отдельные
     задачи.

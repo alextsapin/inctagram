@@ -3,7 +3,7 @@ import axios from 'axios';
 import { getAccessToken } from './accessToken';
 
 export const instance = axios.create({
-    // пусто — запросы идут на тот же домен (/api/...), как в кластере
+    // пусто — запросы идут на тот же домен (/api/v1/...), как в кластере
     baseURL: process.env.NEXT_PUBLIC_API_URL ?? '',
     // чтобы браузер сохранял и отправлял cookie с refresh-токеном
     withCredentials: true,

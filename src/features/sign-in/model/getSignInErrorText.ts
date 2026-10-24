@@ -1,6 +1,6 @@
 import { isAxiosError } from 'axios';
 
-// Коды ответов — из Swagger, POST /api/auth/login
+// Коды ответов — из Swagger, POST /api/v1/auth/login
 const BAD_REQUEST = 400;
 const UNAUTHORIZED = 401;
 const FORBIDDEN = 403;

@@ -9,7 +9,7 @@ export const getMe = async (): Promise<Me> => {
         return MOCK_ME;
     }
 
-    const response = await instance.get<Me>('/api/auth/me');
+    const response = await instance.get<Me>('/api/v1/auth/me');
 
     return response.data;
 };
