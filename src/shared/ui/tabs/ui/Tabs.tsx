@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useId, useRef } from 'react';
 
 import { getNextTabIndex } from '../lib/getNextTabIndex';
 import { type TabOption } from '../lib/types';
@@ -16,9 +16,11 @@ type TabsProps = {
     fullWidth?: boolean;
     // Название группы табов для скринридера, например «Profile settings»
     'aria-label'?: string;
+    // Содержимое выбранного таба. Компонент покажет его под табами.
+    // Без children под табами ничего нет, как у Week / Month в Statistics
+    children?: React.ReactNode;
 };
 
-// Только кнопки табов. Что показывать под ними, решает страница по value
 export const Tabs = ({
     options,
     value,
@@ -26,9 +28,21 @@ export const Tabs = ({
     fullWidth = false,
     // Имя с дефисом нельзя сделать переменной, поэтому при разборе пропсов переименовываем
     'aria-label': ariaLabel,
+    children,
 }: TabsProps): React.JSX.Element => {
     // Блок с табами: через него находим кнопку, на которую перевести фокус
     const listRef = useRef<HTMLDivElement>(null);
+
+    // Уникальный id от React: из него строим id табов и панели,
+    // чтобы они ссылались друг на друга (aria-controls и aria-labelledby)
+    const baseId = useId();
+    const panelId = `${baseId}-panel`;
+    const getTabId = (index: number): string => `${baseId}-tab-${index}`;
+
+    // Панель рисуем, только если передали содержимое
+    const hasPanel = children !== undefined;
+
+    const selectedIndex = options.findIndex(option => option.value === value);
 
     // Клавишей Tab в группу попадаем только на один таб: на выбранный,
     // а если он отключён или не найден — на первый доступный.
@@ -60,26 +74,49 @@ export const Tabs = ({
     const listClass = fullWidth ? `${css.tabs} ${css['full-width']}` : css.tabs;
 
     return (
-        <div ref={listRef} role="tablist" aria-label={ariaLabel} className={listClass}>
-            {options.map((option, index) => {
-                const isSelected = option.value === value;
+        <>
+            <div
+                ref={listRef}
+                role="tablist"
+                aria-label={ariaLabel}
+                className={listClass}
+            >
+                {options.map((option, index) => {
+                    const isSelected = option.value === value;
 
-                return (
-                    <button
-                        key={option.value}
-                        type="button"
-                        role="tab"
-                        aria-selected={isSelected}
-                        tabIndex={option.value === focusableValue ? 0 : -1}
-                        className={isSelected ? `${css.tab} ${css.selected}` : css.tab}
-                        disabled={option.disabled}
-                        onClick={() => onChange(option.value)}
-                        onKeyDown={event => handleKeyDown(event, index)}
-                    >
-                        {option.label}
-                    </button>
-                );
-            })}
-        </div>
+                    return (
+                        <button
+                            key={option.value}
+                            id={getTabId(index)}
+                            type="button"
+                            role="tab"
+                            aria-selected={isSelected}
+                            // Таб указывает, каким блоком он управляет. Панель одна на все табы
+                            aria-controls={hasPanel ? panelId : undefined}
+                            tabIndex={option.value === focusableValue ? 0 : -1}
+                            className={
+                                isSelected ? `${css.tab} ${css.selected}` : css.tab
+                            }
+                            disabled={option.disabled}
+                            onClick={() => onChange(option.value)}
+                            onKeyDown={event => handleKeyDown(event, index)}
+                        >
+                            {option.label}
+                        </button>
+                    );
+                })}
+            </div>
+
+            {/* Скринридер читает название панели по выбранному табу */}
+            {hasPanel && (
+                <div
+                    role="tabpanel"
+                    id={panelId}
+                    aria-labelledby={getTabId(selectedIndex)}
+                >
+                    {children}
+                </div>
+            )}
+        </>
     );
 };
