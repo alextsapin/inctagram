@@ -19,6 +19,8 @@ type DatePickerProps = {
     placeholder?: string;
     error?: boolean;
     disabled?: boolean;
+    // Растянуть поле на всю ширину родителя, например в форме настроек профиля
+    fullWidth?: boolean;
 };
 
 export const DatePicker = ({
@@ -28,6 +30,7 @@ export const DatePicker = ({
     placeholder = 'dd/mm/yyyy',
     error = false,
     disabled = false,
+    fullWidth = false,
 }: DatePickerProps): React.JSX.Element => {
     const [isOpen, setIsOpen] = useState(false);
     const rootRef = useRef<HTMLDivElement>(null);
@@ -45,9 +48,10 @@ export const DatePicker = ({
     };
 
     const fieldClass = error ? `${css.field} ${css.error}` : css.field;
+    const rootClass = fullWidth ? `${css.root} ${css['full-width']}` : css.root;
 
     return (
-        <div ref={rootRef} className={css.root}>
+        <div ref={rootRef} className={rootClass}>
             <button
                 id={id}
                 type="button"

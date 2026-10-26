@@ -41,6 +41,7 @@ import { type DateRange } from '@daypicker/react';
 | `placeholder` | `string`               | `dd/mm/yyyy` | Текст, пока дата не выбрана               |
 | `error`       | `boolean`              | `false`      | Красная рамка, текст и иконка             |
 | `disabled`    | `boolean`              | `false`      | Отключение поля                           |
+| `fullWidth`   | `boolean`              | `false`      | Поле на всю ширину родителя               |
 
 ### DateRangePicker
 

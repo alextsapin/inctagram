@@ -5,6 +5,15 @@
     display: inline-block;
 }
 
+/* Проп fullWidth: блок и поле занимают всю ширину родителя */
+.full-width {
+    display: block;
+
+    .field {
+        width: 100%;
+    }
+}
+
 .field {
     display: inline-flex;
     align-items: center;
