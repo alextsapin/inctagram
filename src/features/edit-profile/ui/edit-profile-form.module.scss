@@ -1,0 +1,58 @@
+@use '@/shared/styles/vars' as *;
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.fields {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.label {
+    color: #8d9094;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+.required {
+    color: $error;
+}
+
+/* Страна и город в одну строку */
+.row {
+    display: flex;
+    gap: 24px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
+}
+
+.error {
+    color: $error;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.error-link {
+    color: inherit;
+    text-decoration: underline;
+}
+
+/* Линия над кнопкой и кнопка справа */
+.footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 24px;
+    border-top: 1px solid $gray;
+}
