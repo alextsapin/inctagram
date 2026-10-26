@@ -47,7 +47,7 @@ jobs:
           commit_pattern = re.compile(
               r"^(feat|fix|refactor|docs|test|chore|ci|style|perf)"
               r"(?:\([A-Z]+-[1-9][0-9]*\))?: "
-              r"[a-z][A-Za-z0-9]*(?:[ .,/()_-][A-Za-z0-9]+)*$"
+              r"[a-z][^\r\n]*(?<![.\s])$"
           )
 
           repository = os.environ["GITHUB_REPOSITORY"]
