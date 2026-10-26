@@ -70,6 +70,70 @@
     color: #8d9094;
 }
 
+/* Поле DatePicker с вводом с клавиатуры: рамка общая, внутри input и кнопка-иконка.
+   Рамка фокуса через :focus-within — она загорается, когда фокус на input или на кнопке */
+.typed {
+    cursor: text;
+
+    &:focus-within {
+        border-color: #397df6;
+        outline: 1px solid #397df6;
+    }
+
+    &.error:focus-within {
+        border-color: #cc1439;
+        outline-color: #cc1439;
+    }
+}
+
+.input {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    color: inherit;
+    font: inherit;
+
+    &:focus {
+        outline: none;
+    }
+
+    &::placeholder {
+        color: #8d9094;
+    }
+
+    &:disabled {
+        color: #4c4c4c;
+        cursor: not-allowed;
+    }
+}
+
+/* Иконка календаря — отдельная кнопка: она открывает и закрывает календарь */
+.icon-button {
+    display: flex;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    color: inherit;
+    cursor: pointer;
+
+    &:focus {
+        outline: none;
+    }
+
+    /* Видно, что фокус именно на иконке, а не в поле ввода */
+    &:focus-visible {
+        border-radius: 2px;
+        outline: 1px solid #397df6;
+    }
+
+    &:disabled {
+        color: #4c4c4c;
+        cursor: not-allowed;
+    }
+}
+
 /* ---------- Календарь ---------- */
 
 .popup {
