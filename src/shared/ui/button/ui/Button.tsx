@@ -25,7 +25,11 @@ export const Button = ({
         .join(' ');
 
     return (
-        <button type={type} className={buttonClass} {...props}>
+        <button
+            type={type === 'submit' ? 'submit' : 'button'}
+            className={buttonClass}
+            {...props}
+        >
             {children}
         </button>
     );

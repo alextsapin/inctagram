@@ -53,17 +53,21 @@
     text-decoration: none;
     cursor: pointer;
     transition: background-color 0.15s ease;
-    &:hover:not(:disabled):not([aria-disabled='true']) {
+
+    &:hover:not(:disabled, [aria-disabled='true']) {
         background-color: #73a5ff;
     }
-    &:active:not(:disabled):not([aria-disabled='true']) {
+
+    &:active:not(:disabled, [aria-disabled='true']) {
         background-color: #2f68cc;
         color: #edf3fa;
     }
+
     &:focus-visible {
         outline: 2px solid #2f68cc;
         outline-offset: 2px;
     }
+
     &:disabled,
     &[aria-disabled='true'] {
         background-color: #234e99;
@@ -87,16 +91,20 @@
     text-decoration: none;
     cursor: pointer;
     transition: color 0.15s ease;
+
     &:hover:not([aria-disabled='true']) {
         color: #73a5ff;
     }
+
     &:active:not([aria-disabled='true']) {
         color: #2f68cc;
     }
+
     &:focus-visible {
         outline: 2px solid #397df6;
         outline-offset: 2px;
     }
+
     &[aria-disabled='true'] {
         color: #234e99;
         cursor: not-allowed;

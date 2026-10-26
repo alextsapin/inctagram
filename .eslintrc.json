@@ -23,31 +23,36 @@
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
-    "plugins": [
-        "react",
-        "import",
-        "prettier",
-        "react-hooks",
-        "@typescript-eslint"
+    "plugins": ["react", "import", "prettier", "react-hooks", "@typescript-eslint"],
+    "overrides": [
+        {
+            "files": [
+                ".js",
+                ".ts",
+                ".jsx",
+                ".tsx",
+                "**/*.spec.js",
+                "**/*.test.ts",
+                "**/*.test.tsx",
+                "**/*.spec.tsx"
+            ]
+        },
+        {
+            "files": ["scripts/**/*.mjs"],
+            "rules": {
+                "no-console": "off",
+                "no-continue": "off",
+                "no-restricted-syntax": "off",
+                "@typescript-eslint/explicit-function-return-type": "off"
+            }
+        }
     ],
-    "overrides": [{ "files": [
-        ".js",
-        ".ts",
-        ".jsx",
-        ".tsx",
-        "**/*.spec.js",
-        "**/*.test.ts",
-        "**/*.test.tsx",
-        "**/*.spec.tsx"
-    ] }],
     "rules": {
         "import/order": [
             "error",
             {
                 "newlines-between": "always",
-                "pathGroupsExcludedImportTypes": [
-                    "react"
-                ],
+                "pathGroupsExcludedImportTypes": ["react"],
                 "alphabetize": {
                     "order": "asc",
                     "caseInsensitive": true
@@ -79,9 +84,13 @@
         "consistent-return": "off",
         "padding-line-between-statements": [
             "error",
-            { "blankLine": "always", "prev": "*", "next": "return"},
-            { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
-            { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"]}
+            { "blankLine": "always", "prev": "*", "next": "return" },
+            { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*" },
+            {
+                "blankLine": "any",
+                "prev": ["const", "let", "var"],
+                "next": ["const", "let", "var"]
+            }
         ],
         "no-shadow": "off",
         "no-debugger": "error",
@@ -89,21 +98,17 @@
         "no-magic-numbers": [
             "error",
             {
-                "ignore": [
-                    0,
-                    1,
-                    -1
-                ]
+                "ignore": [0, 1, -1]
             }
         ],
         "no-use-before-define": "off",
-        "no-param-reassign": ["error", {
-            "props": true,
-            "ignorePropertyModificationsFor": [
-                "state",
-                "self"
-            ]
-        }],
+        "no-param-reassign": [
+            "error",
+            {
+                "props": true,
+                "ignorePropertyModificationsFor": ["state", "self"]
+            }
+        ],
         "react/display-name": "off",
         "react/react-in-jsx-scope": "off",
         "react/require-default-props": "off",
@@ -112,10 +117,7 @@
         "react/jsx-filename-extension": [
             1,
             {
-                "extensions": [
-                    ".jsx",
-                    ".tsx"
-                ]
+                "extensions": [".jsx", ".tsx"]
             }
         ],
         "react/function-component-definition": [
@@ -125,9 +127,12 @@
                 "unnamedComponents": "arrow-function"
             }
         ],
-        "react/jsx-props-no-spreading": [0, {
-            "html": "ignore"
-        }],
+        "react/jsx-props-no-spreading": [
+            0,
+            {
+                "html": "ignore"
+            }
+        ],
         "@typescript-eslint/no-unused-vars": ["error"],
         "@typescript-eslint/explicit-function-return-type": [
             "error",
@@ -143,12 +148,7 @@
                 "project": "./tsconfig.json"
             },
             "node": {
-                "extensions": [
-                    ".js",
-                    ".jsx",
-                    ".ts",
-                    ".tsx"
-                ]
+                "extensions": [".js", ".jsx", ".ts", ".tsx"]
             }
         }
     }

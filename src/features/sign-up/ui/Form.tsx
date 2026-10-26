@@ -170,7 +170,9 @@ export const SignUpForm = (): React.JSX.Element => {
                     Privacy Policy
                 </Link>
             </div>
-            {errors.termsAccepted && <span className={css.error}>{errors.termsAccepted.message}</span>}
+            {errors.termsAccepted && (
+                <span className={css.error}>{errors.termsAccepted.message}</span>
+            )}
 
             <Button type="submit" fullWidth>
                 Sign Up
