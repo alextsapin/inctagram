@@ -1,0 +1,78 @@
+@use '@/shared/styles/vars' as *;
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Слева фото, справа поля */
+.columns {
+    display: flex;
+    gap: 40px;
+
+    /* На планшете полям не хватает места рядом с фото, ставим фото сверху */
+    @media (max-width: 1024px) {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+.fields {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 24px;
+
+    /* Без min-width: 0 длинный текст в поле растягивает колонку шире экрана */
+    min-width: 0;
+
+    @media (max-width: 1024px) {
+        width: 100%;
+    }
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.label {
+    color: #8d9094;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+.required {
+    color: $error;
+}
+
+/* Страна и город в одну строку */
+.row {
+    display: flex;
+    gap: 24px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
+}
+
+.error {
+    color: $error;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.error-link {
+    color: inherit;
+    text-decoration: underline;
+}
+
+/* Линия над кнопкой и кнопка справа */
+.footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 24px;
+    border-top: 1px solid $gray;
+}

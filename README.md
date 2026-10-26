@@ -538,3 +538,4 @@ _Источник архитектурных схем и деревьев: `inct
 -   [TanStack Query — настройка и использование](docs/tanstack-query.md).
 -   [API — axios instance, access token, переменные окружения](docs/api.md).
 -   [Вход в систему (Sign In) — бизнес-логика и структура слайсов](docs/sign-in.md).
+-   [General Information — форма настроек профиля и фото профиля](docs/general-information.md).
