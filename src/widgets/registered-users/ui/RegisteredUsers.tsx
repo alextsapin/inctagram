@@ -1,5 +1,5 @@
 
-import styles from '@/page/main/ui/registered-users.module.scss';
+import styles from './registered-users.module.scss';
 
 
 
