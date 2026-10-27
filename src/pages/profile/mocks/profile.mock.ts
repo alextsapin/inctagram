@@ -12,7 +12,7 @@ export const MOCK_PROFILE: Profile = {
         followers: 2358,
         publications: 2764,
     },
-    isVerified: true,
+    isVerified: false,
 };
 
 // Профиль другого пользователя с отличным аватаром, чтобы визуально

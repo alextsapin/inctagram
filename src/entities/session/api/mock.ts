@@ -8,5 +8,5 @@ export const MOCK_ME: Me = {
     userId: '00000000-0000-0000-0000-000000000000',
     username: 'ivan_petrov',
     email: 'ivan@example.com',
-    isVerified: true,
+    isVerified: false,
 };

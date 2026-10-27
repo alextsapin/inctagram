@@ -9,7 +9,12 @@ import { ProfilePage } from '@/pages/profile';
 
 import css from './my-profile.module.scss';
 
-export const MyProfile = (): JSX.Element => {
+type MyProfileProps = {
+    // Переопределяет флаг верификации. Если не передан, берётся из данных пользователя.
+    isVerified?: boolean;
+};
+
+export const MyProfile = ({ isVerified }: MyProfileProps = {}): JSX.Element => {
     const { data: user, isPending, isError } = useCurrentUser();
 
     if (isPending) {
@@ -32,7 +37,7 @@ export const MyProfile = (): JSX.Element => {
         <ProfilePage
             username={user.username}
             avatarUrl="/profile/avatar.png"
-            isVerified={user.isVerified}
+            isVerified={isVerified ?? user.isVerified}
             actions={
                 <Link href="/profile/settings" className={css['settings-link']}>
                     Profile Settings
