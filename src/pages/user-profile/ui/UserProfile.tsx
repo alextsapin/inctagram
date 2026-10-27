@@ -13,16 +13,29 @@ type UserProfileProps = {
     username: string;
 };
 
-const POSTS = [
-    { src: '/profile/post-1.png', alt: 'post 1' },
-    { src: '/profile/post-2.png', alt: 'post 2' },
-    { src: '/profile/post-3.png', alt: 'post 3' },
-    { src: '/profile/post-4.png', alt: 'post 4' },
-    { src: '/profile/post-5.png', alt: 'post 5' },
-    { src: '/profile/post-6.png', alt: 'post 6' },
-    { src: '/profile/post-7.png', alt: 'post 7' },
-    { src: '/profile/post-8.png', alt: 'post 8' },
+// Временные данные для вёрстки. Будут заменены на данные из API,
+// когда появится endpoint получения профиля пользователя по username.
+const MOCK_POSTS = [
+    '/profile/post-1.png',
+    '/profile/post-2.png',
+    '/profile/post-3.png',
+    '/profile/post-4.png',
+    '/profile/post-5.png',
+    '/profile/post-6.png',
+    '/profile/post-7.png',
+    '/profile/post-8.png',
 ];
+
+const MOCK_STATS = {
+    following: '2 218',
+    followers: '2 358',
+    publications: '2 764',
+};
+
+const MOCK_DESCRIPTION =
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ' +
+    'tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, ' +
+    'quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.';
 
 export const UserProfile = ({ username }: UserProfileProps): JSX.Element => {
     return (
@@ -41,25 +54,28 @@ export const UserProfile = ({ username }: UserProfileProps): JSX.Element => {
                     stats={
                         <>
                             <div className={css.stat}>
-                                <span className={css['stat-value']}>2 218</span>
+                                <span className={css['stat-value']}>
+                                    {MOCK_STATS.following}
+                                </span>
                                 <span className={css['stat-label']}>Following</span>
                             </div>
                             <div className={css.stat}>
-                                <span className={css['stat-value']}>2 358</span>
+                                <span className={css['stat-value']}>
+                                    {MOCK_STATS.followers}
+                                </span>
                                 <span className={css['stat-label']}>Followers</span>
                             </div>
                             <div className={css.stat}>
-                                <span className={css['stat-value']}>2 764</span>
+                                <span className={css['stat-value']}>
+                                    {MOCK_STATS.publications}
+                                </span>
                                 <span className={css['stat-label']}>Publications</span>
                             </div>
                         </>
                     }
                     description={
                         <>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                            do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                            Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                            laboris nisi ut aliquip ex ea commodo{' '}
+                            {MOCK_DESCRIPTION}{' '}
                             <Link href="/search?tag=consequat" className={css.link}>
                                 consequat
                             </Link>
@@ -68,12 +84,12 @@ export const UserProfile = ({ username }: UserProfileProps): JSX.Element => {
                     }
                 />
 
-                <section className={css.grid}>
-                    {POSTS.map(post => (
-                        <div key={post.src} className={css.post}>
+                <section className={css.grid} aria-label="Publications">
+                    {MOCK_POSTS.map(src => (
+                        <div key={src} className={css.post}>
                             <Image
-                                src={post.src}
-                                alt={post.alt}
+                                src={src}
+                                alt="publication"
                                 fill
                                 className={css.image}
                                 sizes="(max-width: 768px) 50vw, (max-width: 1160px) 33vw, 234px"

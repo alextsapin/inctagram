@@ -24,6 +24,7 @@
         "react-redux": "^9.3.0"
     },
     "devDependencies": {
+        "@playwright/mcp": "^0.0.83",
         "@types/node": "^20",
         "@types/react": "^19",
         "@types/react-dom": "^19",

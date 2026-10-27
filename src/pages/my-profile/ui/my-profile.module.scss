@@ -24,6 +24,50 @@
     line-height: 24px;
 }
 
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-value {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 24px;
+}
+
+.stat-label {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+
+    @media (max-width: 1160px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.post {
+    position: relative;
+    aspect-ratio: 234 / 228;
+    border-radius: 2px;
+    overflow: hidden;
+    background-color: #d9d9d9;
+}
+
+.image {
+    object-fit: cover;
+}
+
 .settings-link {
     display: inline-flex;
     align-items: center;
