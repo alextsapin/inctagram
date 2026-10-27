@@ -2,28 +2,30 @@ import type { ReactNode } from 'react';
 
 import Image from 'next/image';
 
-import css from './profile-overview.module.scss';
+import css from './profile-header.module.scss';
 
 const AVATAR_SIZE = 204;
 
-type ProfileOverviewProps = {
+type ProfileHeaderProps = {
     username: string;
+    avatarUrl?: string;
     actions?: ReactNode;
     description?: ReactNode;
     stats?: ReactNode;
 };
 
-export const ProfileOverview = ({
+export const ProfileHeader = ({
     username,
+    avatarUrl = '/profile/avatar.png',
     actions,
     description,
     stats,
-}: ProfileOverviewProps): React.JSX.Element => {
+}: ProfileHeaderProps): React.JSX.Element => {
     return (
         <section className={css.info}>
             <div className={css.avatar}>
                 <Image
-                    src="/profile/avatar.png"
+                    src={avatarUrl}
                     alt={`${username} avatar`}
                     width={AVATAR_SIZE}
                     height={AVATAR_SIZE}

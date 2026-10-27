@@ -1,0 +1,79 @@
+'use client';
+
+import type { ReactNode } from 'react';
+import { useState } from 'react';
+
+import { ProfileHeader } from '@/widgets/profile-header';
+import { ProfileLayout } from '@/widgets/profile-layout';
+
+import { profileApi } from '../api/profileApi';
+import type { Post } from '../model/types';
+
+import { PostModal } from './PostModal';
+import { PostsGrid } from './PostsGrid';
+import css from './profile-page.module.scss';
+
+type ProfilePageProps = {
+    username: string;
+    actions?: ReactNode;
+};
+
+export const ProfilePage = ({
+    username,
+    actions,
+}: ProfilePageProps): React.JSX.Element => {
+    const [activePost, setActivePost] = useState<Post | null>(null);
+    const [isPostOpen, setIsPostOpen] = useState(false);
+
+    const profile = profileApi.getUserProfile(username);
+    const posts = profileApi.getPosts();
+
+    const formatNumber = (value: number): string =>
+        value.toLocaleString('en-US').replace(/,/g, ' ');
+
+    const handlePostClick = (post: Post): void => {
+        setActivePost(post);
+        setIsPostOpen(true);
+    };
+
+    const handleClose = (): void => {
+        setIsPostOpen(false);
+        setActivePost(null);
+    };
+
+    return (
+        <ProfileLayout>
+            <ProfileHeader
+                username={profile.username}
+                actions={actions}
+                stats={
+                    <>
+                        <div className={css.stat}>
+                            <span className={css['stat-value']}>
+                                {formatNumber(profile.stats.following)}
+                            </span>
+                            <span className={css['stat-label']}>Following</span>
+                        </div>
+                        <div className={css.stat}>
+                            <span className={css['stat-value']}>
+                                {formatNumber(profile.stats.followers)}
+                            </span>
+                            <span className={css['stat-label']}>Followers</span>
+                        </div>
+                        <div className={css.stat}>
+                            <span className={css['stat-value']}>
+                                {formatNumber(profile.stats.publications)}
+                            </span>
+                            <span className={css['stat-label']}>Publications</span>
+                        </div>
+                    </>
+                }
+                description={profile.aboutMe}
+            />
+
+            <PostsGrid posts={posts} onPostClick={handlePostClick} />
+
+            <PostModal open={isPostOpen} post={activePost} onClose={handleClose} />
+        </ProfileLayout>
+    );
+};

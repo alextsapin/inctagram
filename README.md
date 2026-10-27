@@ -348,7 +348,8 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 │       └── 📄 AdminSidebar.tsx
 ├── 📁 feed-list/
 ├── 📁 posts-grid/
-├── 📁 profile-overview/
+├── 📁 profile-header/
+├── 📃 profile-layout/
 ├── 📁 profile-gallery/
 ├── 📁 messenger/
 ├── 📁 profile-settings/
