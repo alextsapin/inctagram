@@ -4,6 +4,7 @@
 import { useState } from 'react';
 
 import Link from 'next/link';
+import ReCAPTCHA from 'react-google-recaptcha';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/shared/ui/button';
@@ -11,6 +12,7 @@ import { Input } from '@/shared/ui/input';
 import { Modal } from '@/shared/ui/modal';
 
 import { getErrorText } from '../model/errors';
+import { RECAPTCHA_SITE_KEY } from '../model/recaptcha';
 import type { ForgotPasswordValues } from '../model/types';
 import { useRecoverPassword } from '../model/useRecoverPassword';
 
@@ -94,7 +96,16 @@ export const ForgotPasswordForm = (): React.JSX.Element => {
                     Back to Sign In
                 </Link>
 
-                {/* TODO BLD-87: здесь будет reCAPTCHA */}
+                {/* Виджет Google «I'm not a robot». После отправки ссылки его нет, как в макете.
+                    Токен и отправка на бэкенд — задача BLD-87 */}
+                {!isLinkSent && (
+                    <ReCAPTCHA
+                        sitekey={RECAPTCHA_SITE_KEY}
+                        theme="dark"
+                        hl="en" // язык виджета, как у интерфейса; иначе Google возьмёт язык браузера
+                        className={css.captcha}
+                    />
+                )}
             </form>
 
             <Modal
