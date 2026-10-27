@@ -1,0 +1,61 @@
+
+
+.registeredUsers{
+  box-sizing: border-box;  
+  width: 100%;
+  max-width: 972px;  
+  height: auto;
+  margin: 20px 0;
+  background-color: #171717;
+  border: 1px solid #333333
+}
+
+.counterGroup {
+box-sizing: border-box;
+padding: 10px;
+flex-wrap: wrap;
+
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   gap: 16px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.counter {
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 1 203px;
+  width: 203px;
+  max-width: 100%;
+  height: 48px;
+  border: 1px solid #333333;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  
+}
+
+.digit {
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+.separator {
+  width: 1px;
+  height: 30px;
+  flex: 0 0 1px;
+  background-color: #333333;
+}
+

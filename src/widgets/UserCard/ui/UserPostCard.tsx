@@ -8,10 +8,6 @@ import Image, { type StaticImageData } from 'next/image';
 
 
 
-
-
-
-
 export const UserCard = () => {
 return(
   <Link href="/" className={styles.link}>
