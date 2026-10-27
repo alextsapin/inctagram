@@ -15,11 +15,15 @@ import css from './profile-page.module.scss';
 
 type ProfilePageProps = {
     username: string;
+    avatarUrl?: string;
+    isVerified?: boolean;
     actions?: ReactNode;
 };
 
 export const ProfilePage = ({
     username,
+    avatarUrl,
+    isVerified,
     actions,
 }: ProfilePageProps): React.JSX.Element => {
     const [activePost, setActivePost] = useState<Post | null>(null);
@@ -30,6 +34,9 @@ export const ProfilePage = ({
 
     const formatNumber = (value: number): string =>
         value.toLocaleString('en-US').replace(/,/g, ' ');
+
+    const verified = isVerified ?? profile.isVerified;
+    const avatar = avatarUrl ?? profile.avatarUrl;
 
     const handlePostClick = (post: Post): void => {
         setActivePost(post);
@@ -45,6 +52,8 @@ export const ProfilePage = ({
         <ProfileLayout>
             <ProfileHeader
                 username={profile.username}
+                avatarUrl={avatar}
+                isVerified={verified}
                 actions={actions}
                 stats={
                     <>

@@ -31,6 +31,8 @@ export const MyProfile = (): JSX.Element => {
     return (
         <ProfilePage
             username={user.username}
+            avatarUrl="/profile/avatar.png"
+            isVerified={user.isVerified}
             actions={
                 <Link href="/profile/settings" className={css['settings-link']}>
                     Profile Settings

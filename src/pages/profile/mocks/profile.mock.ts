@@ -12,6 +12,14 @@ export const MOCK_PROFILE: Profile = {
         followers: 2358,
         publications: 2764,
     },
+    isVerified: true,
+};
+
+// Профиль другого пользователя с отличным аватаром, чтобы визуально
+// отличать чужой профиль от собственного.
+export const MOCK_OTHER_PROFILE: Profile = {
+    ...MOCK_PROFILE,
+    avatarUrl: '/profile/avatar-other-2.png',
 };
 
 const COMMENT_TEXT =

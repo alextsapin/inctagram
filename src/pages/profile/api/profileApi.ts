@@ -1,4 +1,4 @@
-import { MOCK_POSTS, MOCK_PROFILE } from '../mocks/profile.mock';
+import { MOCK_OTHER_PROFILE, MOCK_POSTS, MOCK_PROFILE } from '../mocks/profile.mock';
 import type { Post, Profile } from '../model/types';
 
 // Заглушки API. Когда появятся реальные endpoints, замени тела функций
@@ -21,7 +21,7 @@ export const profileApi = {
     // TODO: заменить на GET /api/profile/{username}
     getUserProfile(username: string): Profile {
         if (USE_MOCKS) {
-            return { ...MOCK_PROFILE, username };
+            return { ...MOCK_OTHER_PROFILE, username };
         }
 
         throw new Error('User profile API is not implemented yet');
