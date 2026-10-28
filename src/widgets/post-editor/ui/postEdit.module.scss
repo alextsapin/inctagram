@@ -1,0 +1,40 @@
+.content {
+    display: flex;
+    height: 80vh;
+    max-height: 500px;
+    max-width: 972px;
+}
+
+.image-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+    flex-shrink: 0;
+    max-width: 490px;
+}
+
+.image {
+    object-fit: cover;
+}
+
+.sidebar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-dark-300, #333);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+}
+
+.username {
+    font-weight: 600;
+    color: var(--color-light-100, white);
+}
