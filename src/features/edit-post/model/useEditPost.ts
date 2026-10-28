@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 import { useState } from 'react';
 
 type EditPostPayload = {
@@ -15,7 +16,7 @@ export const useEditPost = (): UseEditPostReturn => {
         setIsPending(true);
 
         await new Promise(resolve => {
-            setTimeout(resolve, 800);
+            setTimeout(() => resolve(payload), 800);
         });
 
         setIsPending(false);

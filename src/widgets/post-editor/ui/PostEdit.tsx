@@ -7,7 +7,7 @@ import { MOCK_POSTS } from '@/entities/post/model/mock';
 import { EditPostForm } from '@/features/edit-post';
 import { Avatar } from '@/shared/ui/avatar';
 
-import s from './postEdit.module.scss';
+import s from './post-edit.module.scss';
 
 type Props = {
     postId: string;

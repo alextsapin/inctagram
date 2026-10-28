@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
-import s from './iconButton.module.scss';
+import s from './icon-button.module.scss';
 
 type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
     label: string;
@@ -13,7 +13,7 @@ type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 export const IconButton = ({
     label,
     children,
-    size = 16,
+    size,
     isActive,
     className,
     text,

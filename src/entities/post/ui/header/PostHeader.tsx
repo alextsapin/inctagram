@@ -4,7 +4,7 @@ import { Avatar } from '@/shared/ui/avatar';
 
 import { User } from '../../model/type';
 
-import s from './postHeader.module.scss';
+import s from './post-header.module.scss';
 
 type Props = {
     author: User;

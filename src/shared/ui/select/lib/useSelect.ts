@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState, type RefObject } from 'react';
 
-import { useCloseOnOutsideClick } from '@/shared/lib';
+import { useCloseOnOutsideClick } from '@/shared/hooks';
 
 import { findOptionByText } from './findOptionByText';
 import { isSameLetterRepeated } from './isSameLetterRepeated';

@@ -3,7 +3,9 @@ import { Avatar } from '@/shared/ui/avatar';
 
 import { User } from '../../model/type';
 
-import s from './postMeta.module.scss';
+import s from './post-meta.module.scss';
+
+const MAX_VISIBLE_AVATARS = 3;
 
 type Props = {
     likedBy: User[];
@@ -29,7 +31,7 @@ export const PostMeta = ({
             >
                 {hasLikes && (
                     <div className={s.stack}>
-                        {likedBy.slice(0, 3).map(avatar => (
+                        {likedBy.slice(0, MAX_VISIBLE_AVATARS).map(avatar => (
                             <div key={avatar.id} className={s.item}>
                                 <Avatar
                                     src={avatar.avatarUrl}

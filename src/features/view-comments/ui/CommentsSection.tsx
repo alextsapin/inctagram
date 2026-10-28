@@ -4,7 +4,7 @@ import type { CommentType } from '@/entities/comment';
 import { CommentThread } from '@/entities/comment';
 import { MOCK_COMMENTS } from '@/entities/post';
 
-import s from './commentsSection.module.scss';
+import s from './comments-section.module.scss';
 
 type Props = {
     postId: string;

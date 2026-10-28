@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 import type { CommentType } from '@/entities/comment'; // Убедись, что путь верный
 
 // --- Импорты картинок для постов ---

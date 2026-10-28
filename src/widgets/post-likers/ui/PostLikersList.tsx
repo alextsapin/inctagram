@@ -8,7 +8,7 @@ import { Avatar } from '@/shared/ui/avatar';
 import { SearchIcon } from '@/shared/ui/icons';
 import { Input } from '@/shared/ui/input';
 
-import s from './postLikesList.module.scss';
+import s from './post-likes-llst.module.scss';
 
 type Props = {
     postId: string;

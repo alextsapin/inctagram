@@ -5,7 +5,7 @@ import { Avatar } from '@/shared/ui/avatar';
 
 import type { CommentType } from '../../model/type';
 
-import s from './commentItem.module.scss';
+import s from './comment-item.module.scss';
 
 type Props = {
     comment: CommentType;

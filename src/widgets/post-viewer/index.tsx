@@ -1,1 +1,1 @@
-export { PostViewer  } from './ui/PostViewer';
+export { PostViewer } from './ui/PostViewer';

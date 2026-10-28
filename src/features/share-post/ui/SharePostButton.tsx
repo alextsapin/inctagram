@@ -9,8 +9,9 @@ type Props = {
     postId?: string;
 };
 
-export const SharePostButton = ({ postId = '' }: Props): React.JSX.Element => {
-    const { isCopied, handleShare } = useSharePost(postId);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const SharePostButton = ({ postId }: Props): React.JSX.Element => {
+    const { isCopied, handleShare } = useSharePost();
 
     // TODO модалка с сообщениями
     return (

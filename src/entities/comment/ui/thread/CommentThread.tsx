@@ -5,7 +5,7 @@ import { useState } from 'react';
 import type { CommentType } from '../../model/type';
 import { CommentItem } from '../item';
 
-import s from './commentThread.module.scss';
+import s from './comment-thread.module.scss';
 
 type Props = {
     comment: CommentType;

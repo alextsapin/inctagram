@@ -12,6 +12,7 @@ type Props = {
     isSaved: boolean;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const SavePostButton = ({ postId, isSaved }: Props): React.JSX.Element => {
     const { isSaved: isCurrentlySaved, isPending, toggleSave } = useSavePost(isSaved);
 

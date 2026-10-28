@@ -8,7 +8,7 @@ import { Button } from '@/shared/ui/button';
 
 import { useEditPost } from '../model/useEditPost';
 
-import s from './editPostForm.module.scss';
+import s from './edit-post-form.module.scss';
 
 const MAX_LENGTH = 500;
 

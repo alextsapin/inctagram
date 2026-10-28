@@ -1,10 +1,12 @@
+/* eslint-disable no-magic-numbers */
+
 'use client';
 
 import { useEffect } from 'react';
 
 import { useForm, type SubmitHandler } from 'react-hook-form';
 
-import s from './addCommentForm.module.scss';
+import s from './add-comment-form.module.scss';
 
 type Props = {
     postId: string;
@@ -15,10 +17,10 @@ type Props = {
 type FormValues = { text: string };
 
 export const AddCommentForm = ({
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     postId,
     onSuccess,
     replyToId,
-    onCancelReply,
 }: Props): React.JSX.Element => {
     const {
         register,
@@ -41,7 +43,7 @@ export const AddCommentForm = ({
         // TODO мутация postId и repleyToId
 
         await new Promise(resolve => {
-            setTimeout(resolve, 1000);
+            setTimeout(() => resolve(data), 1000);
         });
 
         resetField('text');

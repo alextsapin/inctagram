@@ -8,7 +8,7 @@ type Props = {
     size?: number;
 };
 
-export const Avatar = ({ src, alt, size = 24 }: Props): React.JSX.Element => (
+export const Avatar = ({ src, alt, size }: Props): React.JSX.Element => (
     <Image
         src={src}
         alt={alt}

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { MOCK_POSTS } from '@/entities/post';
 import { Post } from '@/entities/post/model/type';
 
-import s from './postGrid.module.scss';
+import s from './post-grid.module.scss';
 
 type Props = {
     posts?: Post[];

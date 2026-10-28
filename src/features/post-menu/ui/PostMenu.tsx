@@ -13,7 +13,7 @@ import {
     UnFollowIcon,
 } from '@/shared/ui/icons';
 
-import s from './postMenu.module.scss';
+import s from './post-menu.module.scss';
 
 type PostMenuProps = {
     postId: string;
@@ -25,6 +25,7 @@ type PostMenuProps = {
     onCopy?: () => void;
 };
 export const PostMenu = ({
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     postId,
     isOwnPost = false,
     isFollow = true,

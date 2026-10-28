@@ -9,7 +9,7 @@ import { Button } from '@/shared/ui/button';
 import { Modal } from '@/shared/ui/modal';
 import { PostEdit } from '@/widgets/post-editor';
 
-import s from './editPostPage.module.scss';
+import s from './edit-post-page.module.scss';
 
 type Props = {
     postId: string;

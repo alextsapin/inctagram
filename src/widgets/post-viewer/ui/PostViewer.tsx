@@ -15,7 +15,7 @@ import { CommentsSection } from '@/features/view-comments';
 import { Button } from '@/shared/ui/button';
 import { Modal } from '@/shared/ui/modal';
 
-import s from './postViewer.module.scss';
+import s from './post-viewer.module.scss';
 
 const DELETE_MODAL_WIDTH = 378;
 

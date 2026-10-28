@@ -1,1 +1,1 @@
-export { PostPage } from './ui/PostModal';
+export { PostPage } from './ui/PostPage';

@@ -3,7 +3,7 @@ import { Avatar } from '@/shared/ui/avatar';
 
 import { User } from '../..';
 
-import s from './postCaption.module.scss';
+import s from './post-caption.module.scss';
 
 type Props = {
     caption: string;
@@ -21,7 +21,9 @@ export const PostCaption = ({ caption, author, createdAt }: Props): React.JSX.El
                     {caption}
                 </p>
                 <div className={s.meta}>
-                    <time dateTime={createdAt}>{formatRelativeTime(createdAt)}</time>
+                    <time dateTime={createdAt} suppressHydrationWarning>
+                        {formatRelativeTime(createdAt)}
+                    </time>
                 </div>
             </div>
         </article>

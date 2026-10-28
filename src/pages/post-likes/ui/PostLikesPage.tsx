@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Modal } from '@/shared/ui/modal';
 import { PostLikesList } from '@/widgets/post-likers';
 
-import s from './postLikesPage.module.scss';
+import s from './post-likes-page.module.scss';
 
 type Props = {
     postId: string;

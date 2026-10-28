@@ -8,13 +8,10 @@ import { useLikePost } from '../model/useLikePost';
 type Props = {
     postId: string;
     isLiked: boolean;
-    initialCount?: number;
 };
 
-export const LikePostButton = ({
-    postId = '',
-    isLiked = false,
-}: Props): React.JSX.Element => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const LikePostButton = ({ postId, isLiked = false }: Props): React.JSX.Element => {
     // TODO мутация по id
     const { isLike, isPending, toggleLike } = useLikePost(isLiked);
 

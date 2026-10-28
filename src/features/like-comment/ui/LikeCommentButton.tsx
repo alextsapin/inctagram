@@ -10,6 +10,7 @@ type Props = {
     isLiked: boolean;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const LikeCommentButton = ({ commentId, isLiked }: Props): React.JSX.Element => {
     const { isLike, isPending, toggleLike } = useLikeComment(isLiked);
 

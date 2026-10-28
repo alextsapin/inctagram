@@ -13,6 +13,7 @@ export const useLikeComment = (initialIsLiked: boolean) => {
         setIsPending(true);
         try {
             await new Promise(resolve => {
+                // eslint-disable-next-line no-magic-numbers
                 setTimeout(resolve, 300);
             });
             setIsLiked(prev => !prev);

@@ -2,14 +2,15 @@
 
 import { Button } from '@/shared/ui/button';
 
-import s from './followButton.module.scss';
+import s from './follow-button.module.scss';
 
 type Props = {
     userId: string;
     isFollowing: boolean;
 };
 
-export const FollowButton = ({ userId, isFollowing }: Props) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const FollowButton = ({ userId, isFollowing }: Props): React.JSX.Element => {
     const handleToggle = (): void => {
         // Todo мутация по ID
     };
