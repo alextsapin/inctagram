@@ -5,7 +5,7 @@ import type { JSX } from 'react';
 import Link from 'next/link';
 
 import { useCurrentUser } from '@/entities/session';
-import { ProfilePage } from '@/pages/profile';
+import { ProfilePage } from '@/widgets/profile';
 
 import css from './my-profile.module.scss';
 

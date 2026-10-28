@@ -2,7 +2,7 @@ import type { JSX } from 'react';
 
 import Image from 'next/image';
 
-import type { Post } from '../model/types';
+import type { Post } from '@/entities/profile';
 
 import css from './posts-grid.module.scss';
 

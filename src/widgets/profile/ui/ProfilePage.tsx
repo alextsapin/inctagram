@@ -6,8 +6,8 @@ import { useState } from 'react';
 import { ProfileHeader } from '@/widgets/profile-header';
 import { ProfileLayout } from '@/widgets/profile-layout';
 
-import { profileApi } from '../api/profileApi';
-import type { Post } from '../model/types';
+import { profileApi } from '@/entities/profile';
+import type { Post } from '@/entities/profile';
 
 import { PostModal } from './PostModal';
 import { PostsGrid } from './PostsGrid';

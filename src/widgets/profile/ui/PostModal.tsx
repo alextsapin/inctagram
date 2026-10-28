@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import Image from 'next/image';
 
-import type { Post } from '../model/types';
+import type { Post } from '@/entities/profile';
 
 import css from './post-modal.module.scss';
 
