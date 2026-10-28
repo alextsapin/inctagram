@@ -3,8 +3,9 @@
 /* eslint-disable prettier/prettier */
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 
+import { useCurrentUser } from '@/entities/session';
 import { Language } from '@/features/change-language';
 import logo from '@/widgets/header/assets/logo.svg';
 import css from '@/widgets/header/ui/header.module.scss';
@@ -37,25 +38,43 @@ const NotificationsBell = (): React.JSX.Element => (
     </span>
 );
 
+// TODO: Перейти на SSR-авторизацию (Server Component) для устранения мигания,
+// когда появится реальный API.
 export const Header = (): React.JSX.Element => {
     const pathname = usePathname();
-    // На страницах своего профиля (без бейджа и paid) кнопки входа скрыты, как в макете.
-    const showAuthLinks =
-        pathname !== '/sign-up' &&
-        pathname !== '/sign-in' &&
-        pathname !== '/profile' &&
-        pathname !== '/profile/paid';
-    // На собственном профиле название сети (логотип) и выбор языка скрыты, как в макете.
-    const showLogo = pathname !== '/profile';
-    const showLanguage = pathname !== '/profile';
-    // Колокольчик уведомлений показываем на странице платного профиля, как в макете.
-    const showNotifications = pathname === '/profile/paid';
+    const searchParams = useSearchParams();
+    const { data: user, isError, isPending } = useCurrentUser();
+
+    // В dev-режиме параметр ?unauth=true эмулирует неавторизованного пользователя.
+    const isUnauthMock =
+        process.env.NODE_ENV === 'development' && searchParams?.get('unauth') === 'true';
+    // Пока статус авторизации не определён, не показываем ни кнопки входа,
+    // ни колокольчик, чтобы не было мигания при гидрации.
+    const isAuthPending = isPending && !isUnauthMock;
+    const isAuthed = !isUnauthMock && Boolean(user) && !isError;
+
+    // На страницах входа кнопки входа не показываем.
+    const isAuthPage = pathname === '/sign-up' || pathname === '/sign-in';
+    const showAuthLinks = !isAuthPage && !isAuthed && !isAuthPending;
+    // На собственном профиле (корневой маршрут /profile) название сети и выбор
+    // языка скрыты, как в макете.
+    const isProfileRoot = pathname === '/profile';
+    const showLogo = !isProfileRoot;
+    const showLanguage = !isProfileRoot;
+    // На всех страницах профиля, кроме корневого /profile (paid, settings,
+    // /profile/[username]), действия (колокольчик/кнопки + язык) размещены
+    // справа, как в макете.
+    const isProfileChild = Boolean(pathname?.startsWith('/profile')) && !isProfileRoot;
+    const showProfileActions = isProfileChild;
+    const showNotifications = isProfileChild && isAuthed;
 
     return (
         <header className={css.header}>
             <div
                 className={`container ${css.inner} ${
-                    showNotifications ? css['inner--notifications'] : ''
+                    showNotifications || showProfileActions
+                        ? css['inner--notifications']
+                        : ''
                 }`}
             >
                 {showLogo && (
@@ -64,22 +83,46 @@ export const Header = (): React.JSX.Element => {
                     </Link>
                 )}
 
-                {showNotifications ? (
+                {showProfileActions && showNotifications && (
                     <div className={css['header-actions']}>
                         <NotificationsBell />
                         <div className={css.language}>
                             <Language />
                         </div>
                     </div>
-                ) : (
-                    showLanguage && (
+                )}
+
+                {showProfileActions && !showNotifications && !isAuthPending && (
+                    <div className={css['header-actions']}>
                         <div className={css.language}>
                             <Language />
                         </div>
-                    )
+                        <div className={css.wrap}>
+                            <Link href="/sign-in/" className={css.link}>
+                                Sign in
+                            </Link>
+                            <Link href="/sign-up/" className={css.button}>
+                                Sign up
+                            </Link>
+                        </div>
+                    </div>
                 )}
 
-                {showAuthLinks && (
+                {showProfileActions && !showNotifications && isAuthPending && (
+                    <div className={css['header-actions']}>
+                        <div className={css.language}>
+                            <Language />
+                        </div>
+                    </div>
+                )}
+
+                {!showProfileActions && showLanguage && (
+                    <div className={css.language}>
+                        <Language />
+                    </div>
+                )}
+
+                {showAuthLinks && !showProfileActions && (
                     <div className={css.wrap}>
                         <Link href="/sign-in/" className={css.link}>
                             Sign in
