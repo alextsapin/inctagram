@@ -1,7 +1,7 @@
 'use client';
 
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import Link from 'next/link';
 import ReCAPTCHA from 'react-google-recaptcha';
@@ -12,8 +12,11 @@ import { Input } from '@/shared/ui/input';
 import { Modal } from '@/shared/ui/modal';
 
 import { getErrorText } from '../model/errors';
-import { RECAPTCHA_SITE_KEY } from '../model/recaptcha';
-import type { ForgotPasswordValues } from '../model/types';
+import {
+    RECAPTCHA_CHECKBOX_SITE_KEY,
+    RECAPTCHA_INVISIBLE_SITE_KEY,
+} from '../model/recaptcha';
+import type { ForgotPasswordValues, RecaptchaType } from '../model/types';
 import { useRecoverPassword } from '../model/useRecoverPassword';
 
 import css from './forgot-password-form.module.scss';
@@ -22,7 +25,7 @@ export const ForgotPasswordForm = (): React.JSX.Element => {
     const {
         register,
         handleSubmit,
-        formState: { errors, isValid },
+        formState: { errors, isValid, isSubmitting },
     } = useForm<ForgotPasswordValues>({
         mode: 'onTouched', // проверяем поле, когда пользователь из него ушёл
         defaultValues: { email: '' },
@@ -34,17 +37,59 @@ export const ForgotPasswordForm = (): React.JSX.Element => {
     const [sentEmail, setSentEmail] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const onSubmit = (values: ForgotPasswordValues): void => {
-        // Второй аргумент mutate: что сделать после успешного ответа сервера
-        mutate(values, {
-            onSuccess: () => {
-                setSentEmail(values.email);
-                setIsModalOpen(true);
-            },
-        });
-    };
+    // Токен от галочки «I'm not a robot». Пока галочка не отмечена — null
+    const [checkboxToken, setCheckboxToken] = useState<string | null>(null);
+
+    // Ссылки на виджеты reCAPTCHA, чтобы вызывать у них reset() и executeAsync()
+    const checkboxRef = useRef<ReCAPTCHA>(null);
+    const invisibleRef = useRef<ReCAPTCHA>(null);
 
     const isLinkSent = sentEmail !== '';
+
+    const sendLink = (
+        email: string,
+        recaptchaToken: string,
+        recaptchaType: RecaptchaType,
+    ): void => {
+        mutate(
+            { email, recaptchaToken, recaptchaType },
+            {
+                onSuccess: () => {
+                    setSentEmail(email);
+                    setIsModalOpen(true);
+                },
+                // После ответа, удачного или нет: токен одноразовый, второй раз бэкенд его не примет.
+                // Снимаем галочку, чтобы пользователь отметил её заново
+                onSettled: () => {
+                    checkboxRef.current?.reset();
+                    setCheckboxToken(null);
+                },
+            },
+        );
+    };
+
+    const onSubmit = async (values: ForgotPasswordValues): Promise<void> => {
+        // Первая отправка: токен уже есть, его дала галочка
+        if (!isLinkSent) {
+            if (checkboxToken) {
+                sendLink(values.email, checkboxToken, 'checkbox');
+            }
+
+            return;
+        }
+
+        // Send Link Again: галочки нет, токен просим у невидимой reCAPTCHA.
+        // reset() перед запросом нужен, чтобы получить новый токен, а не прошлый
+        invisibleRef.current?.reset();
+        const token = await invisibleRef.current?.executeAsync();
+
+        if (token) {
+            sendLink(values.email, token, 'invisible');
+        }
+    };
+
+    // Без галочки первую ссылку отправить нельзя. Для Send Link Again галочка не нужна
+    const isRecaptchaMissing = !isLinkSent && !checkboxToken;
 
     return (
         <>
@@ -88,7 +133,11 @@ export const ForgotPasswordForm = (): React.JSX.Element => {
 
                 {error && <span className={css.error}>{getErrorText(error)}</span>}
 
-                <Button type="submit" fullWidth disabled={!isValid || isPending}>
+                <Button
+                    type="submit"
+                    fullWidth
+                    disabled={!isValid || isPending || isSubmitting || isRecaptchaMissing}
+                >
                     {isLinkSent ? 'Send Link Again' : 'Send Link'}
                 </Button>
 
@@ -96,14 +145,29 @@ export const ForgotPasswordForm = (): React.JSX.Element => {
                     Back to Sign In
                 </Link>
 
-                {/* Виджет Google «I'm not a robot». После отправки ссылки его нет, как в макете.
-                    Токен и отправка на бэкенд — задача BLD-87 */}
+                {/* Виджет Google «I'm not a robot» для первой отправки.
+                    После отправки ссылки его нет, как в макете */}
                 {!isLinkSent && (
                     <ReCAPTCHA
-                        sitekey={RECAPTCHA_SITE_KEY}
+                        ref={checkboxRef}
+                        sitekey={RECAPTCHA_CHECKBOX_SITE_KEY}
                         theme="dark"
                         hl="en" // язык виджета, как у интерфейса; иначе Google возьмёт язык браузера
                         className={css.captcha}
+                        onChange={setCheckboxToken} // отметили галочку: пришёл токен
+                        onExpired={() => setCheckboxToken(null)} // токен живёт 2 минуты
+                    />
+                )}
+
+                {/* Невидимая reCAPTCHA для Send Link Again. На экране только значок Google
+                    в правом нижнем углу: Google требует его показывать */}
+                {isLinkSent && (
+                    <ReCAPTCHA
+                        ref={invisibleRef}
+                        sitekey={RECAPTCHA_INVISIBLE_SITE_KEY}
+                        size="invisible"
+                        theme="dark"
+                        hl="en"
                     />
                 )}
             </form>
