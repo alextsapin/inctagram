@@ -69,7 +69,7 @@ export const Header = (): React.JSX.Element => {
             <div
                 className={`container ${css.inner} ${
                     showNotifications || showProfileActions
-                        ? css['inner--notifications']
+                        ? css['inner-notifications']
                         : ''
                 }`}
             >

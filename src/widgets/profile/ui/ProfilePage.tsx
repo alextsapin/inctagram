@@ -3,11 +3,10 @@
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 
-import { ProfileHeader } from '@/widgets/profile-header';
-import { ProfileLayout } from '@/widgets/profile-layout';
-
 import { profileApi } from '@/entities/profile';
 import type { Post } from '@/entities/profile';
+import { ProfileHeader } from '@/widgets/profile-header';
+import { ProfileLayout } from '@/widgets/profile-layout';
 
 import { PostModal } from './PostModal';
 import { PostsGrid } from './PostsGrid';

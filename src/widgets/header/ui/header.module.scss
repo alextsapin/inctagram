@@ -7,6 +7,7 @@
     top: 0;
     z-index: 20;
     padding: 12px 0;
+
     /* Минимальная высота по макету (Header fill×60). Нужна, чтобы шапка
        не схлопывалась на странице профиля, где логотип скрыт. */
     min-height: 60px;
@@ -28,7 +29,7 @@
 }
 
 /* На странице платного профиля действия (колокольчик + язык) размещаем справа. */
-.inner--notifications {
+.inner-notifications {
     justify-content: space-between;
 }
 
