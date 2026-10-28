@@ -15,6 +15,7 @@ import { Modal } from '@/shared/ui/modal';
 import { getSignUpErrorText } from '../model/getSignUpErrorText';
 import type { SignUpValues } from '../model/types';
 import { useSignUp } from '../model/useSignUp';
+import { validatePassword } from '../model/validatePassword';
 
 import css from './form.module.scss';
 
@@ -123,6 +124,8 @@ export const SignUpForm = (): React.JSX.Element => {
                                 value: 20,
                                 message: 'Maximum number of characters 20',
                             },
+                            validate: validatePassword,
+                            deps: ['passwordConfirmation'],
                         })}
                     />
                     {errors.password && (
