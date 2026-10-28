@@ -1,0 +1,25 @@
+/* Отступы и размеры как у экрана Link expired */
+.root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 35px;
+    text-align: center;
+}
+
+.title {
+    margin: 0;
+}
+
+.text {
+    max-width: 300px;
+    margin: 0;
+}
+
+/* На узком экране картинка уменьшается под ширину */
+.image {
+    max-width: 100%;
+    height: auto;
+    margin-top: 20px;
+}

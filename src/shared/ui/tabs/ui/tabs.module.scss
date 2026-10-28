@@ -1,0 +1,70 @@
+/* Если табы не помещаются по ширине (узкий экран), их можно прокрутить вбок */
+.tabs {
+    display: flex;
+    overflow-x: auto;
+}
+
+/* Невыбранный таб: серый текст и серая полоса снизу */
+.tab {
+    flex-shrink: 0; /* таб не сжимается уже своего текста */
+    min-width: 85px; /* ширина таба в макете Statistics */
+    height: 36px;
+    padding: 0 16px;
+    border: none;
+    border-bottom: 2px solid #4c4c4c;
+    background-color: transparent;
+    color: #4c4c4c;
+    font-family: inherit; /* у кнопки свой шрифт, а нам нужен шрифт страницы */
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    white-space: nowrap; /* текст таба всегда в одну строку */
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        background-color: rgb(35 78 153 / 15%);
+    }
+
+    /* В макете это состояние Active: таб в момент нажатия */
+    &:active:not(:disabled) {
+        background-color: rgb(115 165 255 / 15%);
+    }
+
+    /* Рамка фокуса внутри таба, как в макете. Браузер показывает её
+     только при работе с клавиатуры, после клика мышью её нет */
+    &:focus-visible {
+        border-radius: 2px;
+        outline: 2px solid #2f68cc;
+        outline-offset: -2px;
+    }
+
+    &:disabled {
+        border-bottom-color: #333;
+        color: #333;
+        cursor: not-allowed;
+    }
+}
+
+/* Выбранный таб: синий текст и синяя полоса */
+.selected {
+    border-bottom-color: #397df6;
+    color: #397df6;
+
+    &:disabled {
+        border-bottom-color: #234e99;
+        color: #234e99;
+    }
+}
+
+/* Проп fullWidth: табы растягиваются на всю ширину и делят её поровну */
+.full-width {
+    width: 100%;
+
+    .tab {
+        flex: 1;
+
+        /* Из-за min-width: 85px выше таб в режиме flex: 1 может стать уже своего текста,
+       и длинные подписи налезут друг на друга. auto возвращает правило «не уже текста» */
+        min-width: auto;
+    }
+}
