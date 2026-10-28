@@ -15,5 +15,3 @@ export const MOCK_ME: Me = {
     email: 'ivan@example.com',
     isVerified: false,
 };
-
-
