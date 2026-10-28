@@ -3,7 +3,7 @@
 /* eslint-disable prettier/prettier */
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 import { useCurrentUser } from '@/entities/session';
 import { Language } from '@/features/change-language';
@@ -42,16 +42,12 @@ const NotificationsBell = (): React.JSX.Element => (
 // когда появится реальный API.
 export const Header = (): React.JSX.Element => {
     const pathname = usePathname();
-    const searchParams = useSearchParams();
     const { data: user, isError, isPending } = useCurrentUser();
 
-    // В dev-режиме параметр ?unauth=true эмулирует неавторизованного пользователя.
-    const isUnauthMock =
-        process.env.NODE_ENV === 'development' && searchParams?.get('unauth') === 'true';
     // Пока статус авторизации не определён, не показываем ни кнопки входа,
     // ни колокольчик, чтобы не было мигания при гидрации.
-    const isAuthPending = isPending && !isUnauthMock;
-    const isAuthed = !isUnauthMock && Boolean(user) && !isError;
+    const isAuthPending = isPending;
+    const isAuthed = Boolean(user) && !isError;
 
     // На страницах входа кнопки входа не показываем.
     const isAuthPage = pathname === '/sign-up' || pathname === '/sign-in';

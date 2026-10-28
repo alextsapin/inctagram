@@ -2,8 +2,6 @@
 
 import { useState } from 'react';
 
-import { useRouter, useSearchParams } from 'next/navigation';
-
 import { useCurrentUser } from '@/entities/session';
 // TODO: Раскомментировать после merge PR.
 // import { ProfilePhoto } from '@/features/change-profile-photo';
@@ -19,14 +17,7 @@ const SETTINGS_TABS = [
     'My payments',
 ] as const;
 
-// Сопоставление вкладки с параметром URL (part) и обратно.
-const TAB_TO_PART: Record<string, string> = {
-    'General information': 'info',
-    Devices: 'devices',
-    'Account Management': 'account',
-    'My payments': 'payments',
-};
-
+// Сопоставление параметра URL (part) с вкладкой.
 const PART_TO_TAB: Record<string, string> = {
     info: 'General information',
     devices: 'Devices',
@@ -34,19 +25,19 @@ const PART_TO_TAB: Record<string, string> = {
     payments: 'My payments',
 };
 
-export const ProfileSettings = (): React.JSX.Element => {
-    const router = useRouter();
-    const searchParams = useSearchParams();
+type ProfileSettingsProps = {
+    part?: string;
+};
+
+export const ProfileSettings = ({ part }: ProfileSettingsProps): React.JSX.Element => {
     const { data: user } = useCurrentUser();
 
-    const part = searchParams?.get('part');
     const [activeTab, setActiveTab] = useState<string>(
         (part && PART_TO_TAB[part]) || SETTINGS_TABS[0],
     );
 
     const handleTabClick = (tab: string): void => {
         setActiveTab(tab);
-        router.replace(`/profile/settings?part=${TAB_TO_PART[tab]}`);
     };
 
     return (
