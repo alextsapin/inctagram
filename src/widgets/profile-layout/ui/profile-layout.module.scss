@@ -1,5 +1,13 @@
 @use '@/shared/styles/vars' as *;
 
+.layout {
+    display: flex;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
+}
+
 .main {
     display: flex;
     flex-direction: column;
