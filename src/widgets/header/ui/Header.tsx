@@ -11,18 +11,30 @@ import css from '@/widgets/header/ui/header.module.scss';
 
 export const Header = (): React.JSX.Element => {
     const pathname = usePathname();
-    const showAuthLinks = pathname !== '/sign-up' && pathname !== '/sign-in';
+    // На страницах своего профиля (без бейджа и paid) кнопки входа скрыты, как в макете.
+    const showAuthLinks =
+        pathname !== '/sign-up' &&
+        pathname !== '/sign-in' &&
+        pathname !== '/profile' &&
+        pathname !== '/profile/paid';
+    // На собственном профиле название сети (логотип) и выбор языка скрыты, как в макете.
+    const showLogo = pathname !== '/profile';
+    const showLanguage = pathname !== '/profile';
 
     return (
         <header className={css.header}>
             <div className={`container ${css.inner}`}>
-                <Link href="/" className={css.logo}>
-                    <Image src={logo} width={124} height={25} priority alt="logo" />
-                </Link>
+                {showLogo && (
+                    <Link href="/" className={css.logo}>
+                        <Image src={logo} width={124} height={25} priority alt="logo" />
+                    </Link>
+                )}
 
-                <div className={css.language}>
-                    <Language />
-                </div>
+                {showLanguage && (
+                    <div className={css.language}>
+                        <Language />
+                    </div>
+                )}
 
                 {showAuthLinks && (
                     <div className={css.wrap}>
