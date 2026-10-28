@@ -38,8 +38,5 @@ pnpm-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# GitHub Copilot instructions (local only)
-/.github/
-
 .idea
 *.log
