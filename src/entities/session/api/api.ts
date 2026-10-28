@@ -1,13 +1,9 @@
 import type { Me } from '../model/types';
 
-import { MOCK_IS_AUTHENTICATED, MOCK_ME, USE_MOCKS } from './mock';
+import { MOCK_ME, USE_MOCKS } from './mock';
 
 export const getMe = async (): Promise<Me> => {
     if (USE_MOCKS) {
-        if (!MOCK_IS_AUTHENTICATED) {
-            throw new Error('Not authenticated');
-        }
-
         return MOCK_ME;
     }
 

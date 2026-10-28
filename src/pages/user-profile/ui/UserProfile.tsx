@@ -2,6 +2,8 @@
 
 import type { JSX } from 'react';
 
+import { useSearchParams } from 'next/navigation';
+
 import { useCurrentUser } from '@/entities/session';
 import { ProfilePage } from '@/pages/profile';
 import { Button } from '@/shared/ui/button';
@@ -11,8 +13,15 @@ type UserProfileProps = {
 };
 
 export const UserProfile = ({ username }: UserProfileProps): JSX.Element => {
+    const searchParams = useSearchParams();
     const { data: user, isError } = useCurrentUser();
-    const isAuthed = Boolean(user) && !isError;
+
+    // TODO: Удалить после подключения реального API.
+    // В dev-режиме параметр ?unauth=true эмулирует неавторизованного пользователя.
+    const isUnauthMock =
+        process.env.NODE_ENV === 'development' && searchParams?.get('unauth') === 'true';
+
+    const isAuthed = !isUnauthMock && Boolean(user) && !isError;
 
     const handleFollow = (): void => {
         // TODO: заменить на реальный вызов API (endpoint: POST /api/profile/{username}/follow)
