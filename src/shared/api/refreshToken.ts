@@ -8,7 +8,7 @@ type RefreshResponse = {
 
 // Запрос refresh, который идёт прямо сейчас, или null, если сейчас ничего не идёт.
 // Сам запрос вернёт новый токен (string) или null, если сессию восстановить нельзя.
-// Пока он не закончился, остальные ждут его, а не отправляют свой:
+// Пока он не закончился, остальные запросы этой вкладки ждут его, а не отправляют свой:
 // бэкенд завершает всю сессию, если тот же refresh-токен прислать дважды
 let refreshPromise: Promise<string | null> | null = null;
 
@@ -32,10 +32,19 @@ const requestNewToken = async (): Promise<string | null> => {
     }
 };
 
+// Замок браузера (navigator.locks) общий для всех вкладок сайта. Пока одна вкладка
+// держит замок 'refresh-token', другие ждут. Так две вкладки не отправят refresh
+// с одной и той же cookie: вторая дождётся первой и отправит уже новую cookie
+const requestNewTokenWithLock = async (): Promise<string | null> => {
+    const token = await navigator.locks.request('refresh-token', requestNewToken);
+
+    return token;
+};
+
 // Получить новый access-токен. Вернёт null, если сессию восстановить нельзя
 export const refreshAccessToken = (): Promise<string | null> => {
     if (!refreshPromise) {
-        refreshPromise = requestNewToken().finally(() => {
+        refreshPromise = requestNewTokenWithLock().finally(() => {
             refreshPromise = null;
         });
     }
