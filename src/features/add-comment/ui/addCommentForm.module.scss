@@ -1,0 +1,43 @@
+.form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 24px;
+    width: 100%;
+}
+
+.input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--color-light-100, white);
+    font-size: 14px;
+    line-height: 1.5;
+
+    &::placeholder {
+        color: var(--color-light-900, #8e8e8e);
+    }
+
+    &:disabled {
+        opacity: 0.5;
+    }
+}
+
+.submit-btn {
+    background: transparent;
+    border: none;
+    color: var(--color-accent-500, #0095f6);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    transition: opacity 0.2s ease;
+    flex-shrink: 0;
+
+    &:disabled {
+        color: var(--color-accent-500, #0095f6);
+        opacity: 0.3;
+        cursor: default;
+    }
+}

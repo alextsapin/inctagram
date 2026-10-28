@@ -1,0 +1,53 @@
+// src/features/edit-post/ui/EditPostForm.module.scss
+.form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.body {
+    flex: 1;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    color: var(--color-light-900, #8d9094);
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.textarea {
+    width: 100%;
+    min-height: 120px;
+    background: var(--color-dark-500, #171717);
+    border: 1px solid #4c4c4c;
+    border-radius: 4px;
+    color: var(--color-light-100, white);
+    padding: 12px;
+    font-family: inherit;
+    resize: none;
+    outline: none;
+
+    &:focus {
+        border-color: var(--color-accent-300, #4c8dff);
+    }
+}
+
+.counter {
+    text-align: right;
+    color: var(--color-light-900, #8d9094);
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 24px;
+}
+
+.submit-btn {
+    min-width: 150px;
+}
