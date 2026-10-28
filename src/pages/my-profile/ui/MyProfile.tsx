@@ -38,6 +38,7 @@ export const MyProfile = ({ isVerified }: MyProfileProps = {}): JSX.Element => {
             username={user.username}
             avatarUrl="/profile/avatar.png"
             isVerified={isVerified ?? user.isVerified}
+            withSidebar
             actions={
                 <Link href="/profile/settings" className={css['settings-link']}>
                     Profile Settings

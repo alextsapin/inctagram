@@ -17,6 +17,7 @@ type ProfilePageProps = {
     username: string;
     avatarUrl?: string;
     isVerified?: boolean;
+    withSidebar?: boolean;
     actions?: ReactNode;
 };
 
@@ -24,6 +25,7 @@ export const ProfilePage = ({
     username,
     avatarUrl,
     isVerified,
+    withSidebar = false,
     actions,
 }: ProfilePageProps): React.JSX.Element => {
     const [activePost, setActivePost] = useState<Post | null>(null);
@@ -49,7 +51,7 @@ export const ProfilePage = ({
     };
 
     return (
-        <ProfileLayout>
+        <ProfileLayout withSidebar={withSidebar}>
             <ProfileHeader
                 username={profile.username}
                 avatarUrl={avatar}
