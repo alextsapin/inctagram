@@ -27,10 +27,60 @@
     gap: 24px;
 }
 
+/* На странице платного профиля действия (колокольчик + язык) размещаем справа. */
+.inner--notifications {
+    justify-content: space-between;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-left: auto;
+}
+
+.bell {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: #fff;
+
+    &:hover {
+        color: #397df6;
+    }
+}
+
+.bell-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 13px;
+    height: 13px;
+    padding: 0 3px;
+    border-radius: 50%;
+    background-color: $error;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1;
+}
+
 .language {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+}
+
+/* Внутри .header-actions (справа) позиционирование языка не должно быть абсолютным. */
+.header-actions .language {
+    position: static;
+    transform: none;
 }
 
 .wrap {
