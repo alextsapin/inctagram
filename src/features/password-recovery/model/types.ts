@@ -1,11 +1,11 @@
+import type { RecaptchaType } from '@/shared/config';
+
+export type { RecaptchaType };
+
 // Форма Forgot Password: email, на который придёт ссылка
 export type ForgotPasswordValues = {
     email: string;
 };
-
-// Тип reCAPTCHA: с галочкой (первая отправка) или невидимая (Send Link Again).
-// По нему бэкенд понимает, каким секретным ключом проверять токен
-export type RecaptchaType = 'checkbox' | 'invisible';
 
 // Что отправляем на бэкенд: email из формы, токен и тип reCAPTCHA
 export type RecoverPasswordRequest = {

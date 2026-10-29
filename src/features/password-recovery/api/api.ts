@@ -1,4 +1,5 @@
 import { instance } from '@/shared/api';
+import { getRecaptchaHeaders } from '@/shared/config';
 
 import type { NewPasswordRequest, RecoverPasswordRequest } from '../model/types';
 
@@ -13,11 +14,7 @@ export const recoverPassword = async ({
         '/api/v1/auth/password-recovery',
         { email },
         {
-            // Токен и тип reCAPTCHA бэкенд ждёт в заголовках, а не в теле запроса
-            headers: {
-                'X-Recaptcha-Token': recaptchaToken,
-                'X-Recaptcha-Type': recaptchaType,
-            },
+            headers: getRecaptchaHeaders(recaptchaToken, recaptchaType),
         },
     );
 };

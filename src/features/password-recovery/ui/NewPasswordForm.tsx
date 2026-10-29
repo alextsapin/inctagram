@@ -3,13 +3,13 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { useForm } from 'react-hook-form';
 
+import { validatePassword } from '@/shared/lib';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 
 import { getErrorText, isLinkExpiredError } from '../model/errors';
 import type { NewPasswordValues } from '../model/types';
 import { useCreateNewPassword } from '../model/useCreateNewPassword';
-import { isPasswordValid, PASSWORD_ERROR } from '../model/validatePassword';
 
 import css from './new-password-form.module.scss';
 
@@ -74,7 +74,7 @@ export const NewPasswordForm = ({
                             value: 20,
                             message: 'Maximum number of characters 20',
                         },
-                        validate: value => isPasswordValid(value) || PASSWORD_ERROR,
+                        validate: validatePassword,
                         // Пароль поменяли — заново проверяем поле подтверждения
                         deps: 'passwordConfirmation',
                     })}
