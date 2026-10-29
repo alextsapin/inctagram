@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 import css from './sidebar.module.scss';
 
@@ -146,12 +149,25 @@ const bottomItems: NavItem[] = [
 ];
 
 export const Sidebar = (): React.JSX.Element => {
+    const pathname = usePathname();
+
+    const isActive = (href: string): boolean =>
+        pathname === href || Boolean(pathname?.startsWith(`${href}/`));
+
     return (
         <nav className={css.sidebar}>
             <ul className={css.list}>
                 {navItems.map(item => (
                     <li key={item.label}>
-                        <Link href={item.href} className={css.item}>
+                        <Link
+                            href={item.href}
+                            className={
+                                isActive(item.href)
+                                    ? `${css.item} ${css['item-active']}`
+                                    : css.item
+                            }
+                            aria-current={isActive(item.href) ? 'page' : undefined}
+                        >
                             {item.icon}
                             <span>{item.label}</span>
                         </Link>
@@ -163,7 +179,15 @@ export const Sidebar = (): React.JSX.Element => {
                 <ul className={css.list}>
                     {bottomItems.map(item => (
                         <li key={item.label}>
-                            <Link href={item.href} className={css.item}>
+                            <Link
+                                href={item.href}
+                                className={
+                                    isActive(item.href)
+                                        ? `${css.item} ${css['item-active']}`
+                                        : css.item
+                                }
+                                aria-current={isActive(item.href) ? 'page' : undefined}
+                            >
                                 {item.icon}
                                 <span>{item.label}</span>
                             </Link>
