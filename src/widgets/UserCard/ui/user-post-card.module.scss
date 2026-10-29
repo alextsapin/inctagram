@@ -1,7 +1,7 @@
 $card-width: 234px;
 $post-height: 240px;
 $avatar-size: 36px;
-$accent: rgb(190, 27, 117);
+$accent: rgb(190 27 117);
 
 .link {
   display: block;
@@ -61,7 +61,8 @@ $accent: rgb(190, 27, 117);
 
 .published-at {
   @include text(400, 12px, 16px);
-  color: rgba(255, 255, 255, 0.6);
+
+  color: rgb(255 255 255 / 60%);
 }
 
 .author-name {

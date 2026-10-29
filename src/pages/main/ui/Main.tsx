@@ -1,8 +1,9 @@
-import style from './main.module.scss';
 import { RegisteredUsers } from '@/widgets/registered-users';
 import { UserCard } from '@/widgets/UserCard';
 import nature from '@/widgets/UserCard/assets/nature.jpg';
 import tanya from '@/widgets/UserCard/assets/tanya.jpg';
+
+import style from './main.module.scss';
 
 const posts = [
     {
@@ -39,7 +40,7 @@ const posts = [
     },
 ];
 
-export const Main = () => {
+export const Main = (): React.JSX.Element => {
     return (
         <main className={style.main}>
             <RegisteredUsers />

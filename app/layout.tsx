@@ -4,7 +4,6 @@ import { Inter } from 'next/font/google';
 import { QueryProvider } from '@/app/providers';
 import { Header } from '@/widgets/header';
 
-
 import './globals.scss';
 
 const inter = Inter({

@@ -1,6 +1,7 @@
-import styles from './user-post-card.module.scss';
-import Link from 'next/link';
 import Image, { type StaticImageData } from 'next/image';
+import Link from 'next/link';
+
+import styles from './user-post-card.module.scss';
 
 type UserCardProps = {
     username?: string;
@@ -16,7 +17,7 @@ export const UserCard = ({
     postText,
     postImage,
     authorAvatar,
-}: UserCardProps) => {
+}: UserCardProps): React.JSX.Element => {
     return (
         <Link href="/" className={styles.link}>
             <article className={styles.card}>
