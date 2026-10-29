@@ -2,7 +2,8 @@
 // цифры, латинские буквы и все знаки препинания. Пробела и кириллицы там нет
 const VISIBLE_CHARACTERS = /^[!-~]+$/;
 
-// Бэкенд (Swagger, NewPasswordDto) не принимает ` и |, хотя они входят в диапазон
+// Бэкенд (Swagger: RegistrationDto и NewPasswordDto) не принимает ` и |,
+// хотя они входят в диапазон [!-~]
 const FORBIDDEN_CHARACTERS = /[`|]/;
 
 // Текст для пользователя, как в Swagger
@@ -17,3 +18,6 @@ export const isPasswordValid = (password: string): boolean =>
     /[0-9]/.test(password) &&
     /[a-z]/.test(password) &&
     /[A-Z]/.test(password);
+
+export const validatePassword = (value: string): true | string =>
+    isPasswordValid(value) || PASSWORD_ERROR;

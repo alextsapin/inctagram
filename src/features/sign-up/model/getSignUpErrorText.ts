@@ -5,6 +5,8 @@ const FORBIDDEN = 403;
 const CONFLICT = 409;
 const TOO_MANY_REQUESTS = 429;
 
+export const RECAPTCHA_ERROR = 'reCAPTCHA verification failed. Please try again.';
+
 export const getSignUpErrorText = (error: Error): string => {
     const status = isAxiosError(error) ? error.response?.status : undefined;
 
@@ -13,7 +15,7 @@ export const getSignUpErrorText = (error: Error): string => {
             return 'Invalid registration data. Please check your fields.';
 
         case FORBIDDEN:
-            return 'Verification failed. Please try again.';
+            return RECAPTCHA_ERROR;
 
         case CONFLICT:
             return 'This username or email is already registered.';

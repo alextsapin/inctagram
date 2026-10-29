@@ -6,6 +6,10 @@ export type SignUpValues = {
     termsAccepted: boolean;
 };
 
+export type SignUpRequest = SignUpValues & {
+    recaptchaToken: string;
+};
+
 export type RegistrationResponse = {
-    email: string;
+    email?: string;
 };

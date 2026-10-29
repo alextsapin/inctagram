@@ -2,20 +2,22 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import Link from 'next/link';
+import ReCAPTCHA from 'react-google-recaptcha';
 import { useForm } from 'react-hook-form';
 
+import { RECAPTCHA_INVISIBLE_SITE_KEY } from '@/shared/config';
+import { validatePassword } from '@/shared/lib';
 import { Button } from '@/shared/ui/button';
 import { Checkbox } from '@/shared/ui/checkbox';
 import { Input } from '@/shared/ui/input';
 import { Modal } from '@/shared/ui/modal';
 
-import { getSignUpErrorText } from '../model/getSignUpErrorText';
+import { getSignUpErrorText, RECAPTCHA_ERROR } from '../model/getSignUpErrorText';
 import type { SignUpValues } from '../model/types';
 import { useSignUp } from '../model/useSignUp';
-import { validatePassword } from '../model/validatePassword';
 
 import css from './form.module.scss';
 
@@ -24,23 +26,73 @@ export const SignUpForm = (): React.JSX.Element => {
         register,
         handleSubmit,
         getValues,
-        formState: { errors, isValid },
+        reset,
+        watch,
+        formState: { errors, isValid, isSubmitting },
     } = useForm<SignUpValues>({
-        mode: 'onChange',
+        mode: 'onTouched',
         defaultValues: {
+            username: '',
+            email: '',
+            password: '',
+            passwordConfirmation: '',
             termsAccepted: false,
         },
     });
 
-    const { mutate, isPending, error } = useSignUp();
+    const { mutateAsync, isPending, error, reset: resetMutation } = useSignUp();
+    const recaptchaRef = useRef<ReCAPTCHA>(null);
     const [registeredEmail, setRegisteredEmail] = useState<string | null>(null);
+    const [recaptchaError, setRecaptchaError] = useState<string | null>(null);
 
-    const onSubmit = (values: SignUpValues): void => {
-        mutate(values, {
-            onSuccess: ({ email }) => {
-                setRegisteredEmail(email);
-            },
-        });
+    const termsAccepted = watch('termsAccepted');
+    const isBusy = isPending || isSubmitting;
+    const formError = recaptchaError ?? (error ? getSignUpErrorText(error) : null);
+
+    const resetRecaptcha = (): void => {
+        recaptchaRef.current?.reset();
+    };
+
+    const handleCloseSuccessModal = (): void => {
+        setRegisteredEmail(null);
+        setRecaptchaError(null);
+        resetMutation();
+        reset();
+        resetRecaptcha();
+    };
+
+    const onSubmit = async (values: SignUpValues): Promise<void> => {
+        setRecaptchaError(null);
+        resetMutation();
+        resetRecaptcha();
+
+        let token: string | null | undefined;
+
+        try {
+            token = await recaptchaRef.current?.executeAsync();
+        } catch {
+            setRecaptchaError(RECAPTCHA_ERROR);
+            resetRecaptcha();
+
+            return;
+        }
+
+        if (!token) {
+            setRecaptchaError(RECAPTCHA_ERROR);
+            resetRecaptcha();
+
+            return;
+        }
+
+        try {
+            const data = await mutateAsync({ ...values, recaptchaToken: token });
+
+            setRegisteredEmail(data.email ?? values.email);
+        } catch {
+            // Ошибку API показывает getSignUpErrorText(error); данные формы сохраняем
+        } finally {
+            resetRecaptcha();
+        }
     };
 
     return (
@@ -184,27 +236,41 @@ export const SignUpForm = (): React.JSX.Element => {
                     <span className={css.error}>{errors.termsAccepted.message}</span>
                 )}
 
-                {error && (
+                {formError && (
                     <span className={css.error} role="alert">
-                        {getSignUpErrorText(error)}
+                        {formError}
                     </span>
                 )}
 
-                <Button type="submit" fullWidth disabled={!isValid || isPending}>
-                    {isPending ? 'Signing Up...' : 'Sign Up'}
+                <Button
+                    type="submit"
+                    fullWidth
+                    disabled={!isValid || !termsAccepted || isBusy}
+                >
+                    {isBusy ? 'Signing Up...' : 'Sign Up'}
                 </Button>
 
                 <div className={css.redirect}>
                     <span>Do you have an account?</span>
                     <Link href="/sign-in">Sign In</Link>
                 </div>
+
+                {/* Невидимая reCAPTCHA: галочки нет, на экране только значок Google
+                    в правом нижнем углу — Google требует его показывать */}
+                <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey={RECAPTCHA_INVISIBLE_SITE_KEY}
+                    size="invisible"
+                    theme="dark"
+                    hl="en"
+                />
             </form>
 
             <Modal
                 open={registeredEmail !== null}
-                onClose={() => setRegisteredEmail(null)}
+                onClose={handleCloseSuccessModal}
                 title="Email sent"
-                actions={<Button onClick={() => setRegisteredEmail(null)}>OK</Button>}
+                actions={<Button onClick={handleCloseSuccessModal}>OK</Button>}
             >
                 <p>We have sent a link to confirm your email to {registeredEmail}</p>
             </Modal>

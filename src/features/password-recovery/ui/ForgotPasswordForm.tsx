@@ -7,15 +7,15 @@ import Link from 'next/link';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useForm } from 'react-hook-form';
 
+import {
+    RECAPTCHA_CHECKBOX_SITE_KEY,
+    RECAPTCHA_INVISIBLE_SITE_KEY,
+} from '@/shared/config';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Modal } from '@/shared/ui/modal';
 
 import { getErrorText } from '../model/errors';
-import {
-    RECAPTCHA_CHECKBOX_SITE_KEY,
-    RECAPTCHA_INVISIBLE_SITE_KEY,
-} from '../model/recaptcha';
 import type { ForgotPasswordValues, RecaptchaType } from '../model/types';
 import { useRecoverPassword } from '../model/useRecoverPassword';
 
