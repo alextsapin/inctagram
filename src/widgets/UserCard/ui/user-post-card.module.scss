@@ -3,15 +3,6 @@ $post-height: 240px;
 $avatar-size: 36px;
 $accent: rgb(190, 27, 117);
 
-@mixin text($weight, $size, $line-height) {
-  margin: 0;
-  font-family: Inter, sans-serif;
-  font-weight: $weight;
-  font-size: $size;
-  line-height: $line-height;
-  letter-spacing: 0;
-}
-
 .link {
   display: block;
   max-width: $card-width;
@@ -26,13 +17,13 @@ $accent: rgb(190, 27, 117);
   gap: 12px;
 }
 
-.postImage,
-.authorAvatar {
+.post-image,
+.author-avatar {
   object-fit: cover;
   background-color: $accent;
 }
 
-.postImage {
+.post-image {
   display: block;
   width: 100%;
   max-width: $card-width;
@@ -47,7 +38,7 @@ $accent: rgb(190, 27, 117);
   gap: 12px;
 }
 
-.authorAvatar {
+.author-avatar {
   flex-shrink: 0;
   width: $avatar-size;
   height: $avatar-size;
@@ -64,15 +55,15 @@ $accent: rgb(190, 27, 117);
   letter-spacing: 0;
 }
 
-.authorName {
-  @include text(600, 16px, 24px);
+.post-text {
+  @include text(400, 14px, 24px);
 }
 
-.publishedAt {
+.published-at {
   @include text(400, 12px, 16px);
   color: rgba(255, 255, 255, 0.6);
 }
 
-.postText {
-  @include text(400, 14px, 24px);
+.author-name {
+  @include text(600, 16px, 24px);
 }

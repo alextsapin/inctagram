@@ -1,6 +1,3 @@
-'use client';
-
-
 import styles from './registered-users.module.scss';
 
 type RegisteredUsersProps = {
@@ -8,16 +5,14 @@ type RegisteredUsersProps = {
 };
 
 export const RegisteredUsers = ({ values = '009213' }: RegisteredUsersProps) => {
-  const digits= Array.from(String(values).split('').join(''))
+  const digits = values.split('');
 
   return (
-    <div className={styles.registeredUsers}>
-      <div className={styles.counterGroup}>
+    <div className={styles['registered-users']}>
+      <div className={styles['counter-group']}>
         <h2 className={styles.title}>Registered users:</h2>
         <div
-          className={styles.counter}
-          // role="group"
-          // aria-label={`Registered users: ${values}`}
+          className={styles.counter}        
         >
           {digits.map((digit, index) => (
             <span className={styles.item} key={index}>

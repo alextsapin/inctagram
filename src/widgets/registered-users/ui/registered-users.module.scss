@@ -1,6 +1,6 @@
 
 
-.registeredUsers{
+.registered-users{
   box-sizing: border-box;  
   width: 100%;
   max-width: 972px;  
@@ -10,11 +10,10 @@
   border: 1px solid #333333
 }
 
-.counterGroup {
+.counter-group {
 box-sizing: border-box;
 padding: 10px;
 flex-wrap: wrap;
-
    display: flex;
    justify-content: space-between;
    align-items: center;

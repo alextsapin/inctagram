@@ -41,13 +41,13 @@ const posts = [
 
 export const Main = () => {
     return (
-        <article className={style.main}>
+        <main className={style.main}>
             <RegisteredUsers />
             <div className={style.container}>
                 {posts.map(post => (
                     <UserCard key={post.id} {...post} />
                 ))}
             </div>
-        </article>
+        </main>
     );
 };
