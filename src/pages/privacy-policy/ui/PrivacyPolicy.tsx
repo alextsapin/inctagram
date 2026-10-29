@@ -1,7 +1,7 @@
+import { LegalPage } from '@/widgets/legal-page';
+
+import { PRIVACY_PARAGRAPHS } from '../model/paragraphs';
+
 export const PrivacyPolicy = (): React.JSX.Element => {
-    return (
-        <main className="container">
-            <h1>Privacy Policy</h1>
-        </main>
-    );
+    return <LegalPage title="Privacy Policy" paragraphs={PRIVACY_PARAGRAPHS} />;
 };
