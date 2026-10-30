@@ -3,6 +3,9 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+import { useCurrentUser } from '@/entities/session';
+import { LogoutButton } from '@/features/log-out';
+
 import css from './sidebar.module.scss';
 
 type NavItem = {
@@ -116,25 +119,6 @@ const StatisticsIcon = (): React.JSX.Element => (
     </svg>
 );
 
-const LogOutIcon = (): React.JSX.Element => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path
-            d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        />
-        <path
-            d="M16 17l5-5-5-5M21 12H9"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        />
-    </svg>
-);
-
 const navItems: NavItem[] = [
     { label: 'Feed', href: '/feed', icon: <FeedIcon /> },
     { label: 'Create', href: '/create', icon: <CreateIcon /> },
@@ -150,6 +134,7 @@ const bottomItems: NavItem[] = [
 
 export const Sidebar = (): React.JSX.Element => {
     const pathname = usePathname();
+    const { data: currentUser } = useCurrentUser();
 
     const isActive = (href: string): boolean =>
         pathname === href || Boolean(pathname?.startsWith(`${href}/`));
@@ -194,11 +179,8 @@ export const Sidebar = (): React.JSX.Element => {
                         </li>
                     ))}
                 </ul>
-                <Link href="/logout" className={css.item}>
-                    <LogOutIcon />
-                    <span>Log Out</span>
-                </Link>
             </div>
+            {currentUser && <LogoutButton userEmail={currentUser.email} />}
         </nav>
     );
 };

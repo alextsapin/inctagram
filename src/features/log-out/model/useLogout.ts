@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
-import { setAccessToken } from '@/shared/api/accessToken';
+import { setAccessToken } from '@/shared/api/';
 
 import { logoutApi } from '../api/api';
 

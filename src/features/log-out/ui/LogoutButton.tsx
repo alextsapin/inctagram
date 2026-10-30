@@ -17,7 +17,13 @@ type Props = {
 };
 export const LogoutButton = ({ userEmail }: Props): React.JSX.Element => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { mutate: logout, isPending } = useLogout();
+    const { mutate: logout, isPending, error, reset } = useLogout();
+    // Достаю ошибку и reset. Reset для того чтобы очистить мутацию, так как после ошибки она харнится в кэше
+
+    const handleClose = (): void => {
+        setIsModalOpen(false);
+        reset();
+    };
 
     return (
         <>
@@ -32,7 +38,7 @@ export const LogoutButton = ({ userEmail }: Props): React.JSX.Element => {
 
             <Modal
                 open={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                onClose={handleClose}
                 title="Log Out"
                 width={LOGOUT_MODAL_WIDTH}
                 actions={
@@ -44,19 +50,17 @@ export const LogoutButton = ({ userEmail }: Props): React.JSX.Element => {
                         >
                             Yes
                         </Button>
-                        <Button
-                            onClick={() => setIsModalOpen(false)}
-                            disabled={isPending}
-                        >
+                        <Button onClick={handleClose} disabled={isPending}>
                             No
                         </Button>
                     </>
                 }
             >
                 <p>
-                    Do you really want to log out of your account &ldquo;
+                    Do you really want to log out of your account &quot;
                     <strong>{userEmail}</strong>&quot;?
                 </p>
+                {error && <p className={s.error}>{error.message}</p>}
             </Modal>
         </>
     );
