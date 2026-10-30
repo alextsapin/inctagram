@@ -116,6 +116,8 @@ pipeline {
                     set -eu
                     export PATH="$WORKSPACE/.ci-tools/node/bin:$PATH"
                     export COREPACK_HOME="$WORKSPACE/.ci-tools/corepack-cache"
+                    # Generate Next.js types before TypeScript checking.
+                    corepack pnpm exec next typegen
                     corepack pnpm exec tsc --noEmit
                 '''
             }
