@@ -1,0 +1,63 @@
+$radius: 8px;
+
+@mixin variant($color, $bg, $border) {
+    color: $color;
+    background-color: $bg;
+    border-color: $border;
+}
+
+.alert {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+    max-width: 200px;
+    max-height: 100px;
+    padding: 24px 16px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid;
+    border-radius: $radius;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+
+    &.success {
+        @include variant(green, #f0fdf4, #86efac);
+    }
+    &.error {
+        @include variant(red, #fef2f2, #fca5a5);
+    }
+    &.waiting {
+        @include variant(#c4662c, #fffbeb, #fcd34d);
+    }
+    &.info {
+        @include variant(#1e40af, #eff6ff, #93c5fd);
+    }
+}
+
+.close-button {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    padding: 2px 6px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover {
+        background-color: rgb(0 0 0 / 8%);
+    }
+
+    &:focus-visible {
+        outline: 2px solid currentcolor;
+        outline-offset: 2px;
+    }
+}
