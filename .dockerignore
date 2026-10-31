@@ -1,0 +1,27 @@
+# Dependencies
+node_modules
+
+# Next.js build artifacts
+.next
+out
+
+# Environment variables
+.env
+.env.*
+
+# Git
+.git
+
+# IDE
+.vscode
+.idea
+
+# Logs and temporary files
+*.log
+*.zip
+coverage
+.DS_Store
+
+# Local secrets
+*.pem
+*.key
