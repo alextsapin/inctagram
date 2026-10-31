@@ -1,7 +1,8 @@
 import { RegisteredUsers } from '@/widgets/registered-users';
-import { UserCard } from '@/widgets/UserCard';
-import nature from '@/widgets/UserCard/assets/nature.jpg';
-import tanya from '@/widgets/UserCard/assets/tanya.jpg';
+import { UserCard } from '@/widgets/user-post-card';
+
+import nature from '../assets/nature.jpg';
+import tanya from '../assets/tanya.jpg';
 
 import style from './main.module.scss';
 
