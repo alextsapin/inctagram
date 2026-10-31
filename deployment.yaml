@@ -1,0 +1,51 @@
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: DEPLOYMENT_NAME
+  namespace: NAMESPACE
+  labels:
+    project: PROJECT
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      project: PROJECT
+
+  template:
+    metadata:
+      labels:
+        project: PROJECT
+
+    spec:
+      containers:
+        - name: PROJECT
+          image: REGISTRY_HOSTNAME/PROJECT:TAG_VERSION
+          imagePullPolicy: Always
+
+          ports:
+            - containerPort: PORT_CONTAINER
+              protocol: TCP
+
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3000"
+            - name: HOSTNAME
+              value: "0.0.0.0"
+
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10

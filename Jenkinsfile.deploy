@@ -1,0 +1,170 @@
+
+pipeline {
+    agent any
+
+    options {
+        skipDefaultCheckout(true)
+        disableConcurrentBuilds()
+        timestamps()
+    }
+
+    parameters {
+        booleanParam(
+            name: 'CONFIRM_PRODUCTION',
+            defaultValue: false,
+            description: 'Разрешить production-деплой после ручного подтверждения'
+        )
+        string(
+            name: 'NEXT_PUBLIC_RECAPTCHA_SITE_KEY_CHECKBOX',
+            defaultValue: '',
+            description: 'Публичный reCAPTCHA site key (checkbox)'
+        )
+        string(
+            name: 'NEXT_PUBLIC_RECAPTCHA_SITE_KEY_INVISIBLE',
+            defaultValue: '',
+            description: 'Публичный reCAPTCHA site key (invisible)'
+        )
+    }
+
+    environment {
+        IMAGE_REPO = 'lilpone4ka/inctagram-blackdragons-frontend'
+        REGISTRY_HOSTNAME = 'lilpone4ka'
+        PROJECT = 'inctagram-blackdragons-frontend'
+        NAMESPACE = 'blackdragonmedia-info'
+        DEPLOYMENT_NAME = 'inctagram-blackdragons-frontend-deployment'
+        NEXT_PUBLIC_API_URL = ''
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Verify production source') {
+            steps {
+                script {
+                    if (!params.CONFIRM_PRODUCTION) {
+                        error('Production deployment was not confirmed.')
+                    }
+
+                    if (env.CHANGE_ID?.trim()) {
+                        error('Deployment from a Pull Request is forbidden.')
+                    }
+
+                    def mainSha = sh(
+                        script: 'git ls-remote origin refs/heads/main | cut -f1',
+                        returnStdout: true
+                    ).trim()
+
+                    def checkoutSha = sh(
+                        script: 'git rev-parse HEAD',
+                        returnStdout: true
+                    ).trim()
+
+                    if (!mainSha || checkoutSha != mainSha) {
+                        error('Production deployment requires the current main commit.')
+                    }
+
+                    if (!params.NEXT_PUBLIC_RECAPTCHA_SITE_KEY_CHECKBOX?.trim() ||
+                        !params.NEXT_PUBLIC_RECAPTCHA_SITE_KEY_INVISIBLE?.trim()) {
+                        error('Production reCAPTCHA site keys are required.')
+                    }
+
+                    env.IMAGE_TAG = checkoutSha.take(12)
+                }
+            }
+        }
+
+        stage('Manual approval') {
+            steps {
+                timeout(time: 30, unit: 'MINUTES') {
+                    input(
+                        message: 'Deploy Inctagram to production Kubernetes?',
+                        ok: 'Deploy'
+                    )
+                }
+            }
+        }
+
+        stage('Build Docker image') {
+            steps {
+                sh '''
+                    set -eu
+
+                    docker build \
+                      --build-arg "NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL" \
+                      --build-arg "NEXT_PUBLIC_RECAPTCHA_SITE_KEY_CHECKBOX=$NEXT_PUBLIC_RECAPTCHA_SITE_KEY_CHECKBOX" \
+                      --build-arg "NEXT_PUBLIC_RECAPTCHA_SITE_KEY_INVISIBLE=$NEXT_PUBLIC_RECAPTCHA_SITE_KEY_INVISIBLE" \
+                      -t "$IMAGE_REPO:$IMAGE_TAG" .
+                '''
+            }
+        }
+
+        stage('Push Docker image') {
+            steps {
+                script {
+                    docker.withRegistry(
+                        'https://index.docker.io/v1/',
+                        'blackdragonmedia-info'
+                    ) {
+                        sh 'docker push "$IMAGE_REPO:$IMAGE_TAG"'
+                    }
+                }
+            }
+        }
+
+        stage('Prepare Kubernetes manifest') {
+            steps {
+                sh '''
+                    set -eu
+
+                    test -f deployment.yaml
+
+                    sed \
+                      -e "s|REGISTRY_HOSTNAME|$REGISTRY_HOSTNAME|g" \
+                      -e "s|PROJECT|$PROJECT|g" \
+                      -e "s|TAG_VERSION|$IMAGE_TAG|g" \
+                      -e "s|DEPLOYMENT_NAME|$DEPLOYMENT_NAME|g" \
+                      -e "s|PORT_CONTAINER|3000|g" \
+                      -e "s|NAMESPACE|$NAMESPACE|g" \
+                      deployment.yaml > deployment.rendered.yaml
+                '''
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                withKubeConfig([
+                    credentialsId: 'prod-kubernetes',
+                    namespace: 'blackdragonmedia-info',
+                    restrictKubeConfigAccess: true
+                ]) {
+                    sh '''
+                        set -eu
+
+                        kubectl apply \
+                          -n "$NAMESPACE" \
+                          -f deployment.rendered.yaml
+
+                        kubectl rollout status \
+                          "deployment/$DEPLOYMENT_NAME" \
+                          -n "$NAMESPACE" \
+                          --timeout=180s
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Inctagram production deployment completed.'
+        }
+
+        failure {
+            echo 'Production deployment failed. Check Jenkins logs.'
+        }
+    }
+}
