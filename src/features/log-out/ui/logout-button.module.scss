@@ -1,0 +1,33 @@
+.logout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: transparent;
+    border: none;
+    margin: 0;
+    padding: 0 24px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+
+    &:hover {
+        color: #397df6;
+        text-decoration: underline;
+    }
+
+    &:focus-visible {
+        outline: 2px solid #fff;
+        outline-offset: 2px;
+    }
+}
+
+.error {
+    color: #ff4d4f;
+    font-size: 14px;
+    margin-top: 12px;
+    font-weight: 500;
+}
