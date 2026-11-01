@@ -5,7 +5,19 @@ import confirmEmailImage from '../assets/confirm-email.png';
 
 import css from './confirm-email.module.scss';
 
-export const ConfirmEmail = (): React.JSX.Element => {
+type ConfirmEmailProps = {
+    code: string;
+};
+
+export const ConfirmEmail = ({ code }: ConfirmEmailProps): React.JSX.Element => {
+    if (!code) {
+        return (
+            <main className="container">
+                <p className={css.alert}>Confirmation link is invalid or expired.</p>
+            </main>
+        );
+    }
+
     return (
         <main className="container">
             <div className={css.root}>
