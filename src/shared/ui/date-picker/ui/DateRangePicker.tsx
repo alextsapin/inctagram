@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 
 import { DayPicker, type DateRange } from '@daypicker/react';
 
-import { useCloseOnOutsideClick } from '@/shared/lib';
+import { useCloseOnOutsideClick } from '@/shared/hooks';
 
 import { formatDate } from '../lib/formatDate';
 

@@ -10,12 +10,12 @@ import {
     Post,
     PostCaption,
     PostHeader,
+    PostMenu,
     PostMeta,
 } from '@/entities/post';
 import { AddCommentForm } from '@/features/add-comment';
 import { LikeCommentButton } from '@/features/like-comment';
 import { LikePostButton } from '@/features/like-post';
-import { PostMenu } from '@/entities/post/ui/post-menu';
 import { SavePostButton } from '@/features/save-post';
 import { SharePostButton } from '@/features/share-post';
 import { CommentsSection } from '@/features/view-comments';
