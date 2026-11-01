@@ -1,0 +1,29 @@
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    width: 100%;
+
+    @media (min-width: 768px) {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.item {
+    position: relative;
+    display: block;
+    aspect-ratio: 234 / 228;
+    background-color: #1a1a1a;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+
+    /* Заполняем квадрат без искажения пропорций */
+    object-fit: cover;
+    display: block;
+}
+
