@@ -23,15 +23,34 @@ const TOO_MANY_REQUESTS = 429;
 const getErrorMessage = (error: Error | null): string => {
     const status = isAxiosError(error) ? error.response?.status : undefined;
 
-    if (status === BAD_REQUEST) {
-        return 'Confirmation link is invalid or expired.';
-    }
-
     if (status === TOO_MANY_REQUESTS) {
         return 'Too many attempts. Please try again later.';
     }
 
     return 'Email confirmation failed. Please try again later.';
+};
+
+const ExpiredConfirmation = (): React.JSX.Element => {
+    return (
+        <main className="container">
+            <div className={css.root}>
+                <h1 className={css.title}>Email verification link expired</h1>
+
+                <p className={css.text}>
+                    Looks like the verification link has expired. Not to worry, we can
+                    send the link again
+                </p>
+
+                <ResendVerificationForm />
+
+                <Image
+                    className={css.image}
+                    src={expiredImage}
+                    alt="Email verification link expired"
+                />
+            </div>
+        </main>
+    );
 };
 
 export const ConfirmEmail = ({ code }: ConfirmEmailProps): React.JSX.Element => {
@@ -48,25 +67,11 @@ export const ConfirmEmail = ({ code }: ConfirmEmailProps): React.JSX.Element => 
         mutate(code);
     }, [code, mutate]);
 
-    if (!code) {
-        return (
-            <div className={css.root}>
-                <h1 className={css.title}>Email verification link expired</h1>
+    const isInvalidCode =
+        isError && isAxiosError(error) && error.response?.status === BAD_REQUEST;
 
-                <p className={css.text}>
-                    Looks like the verification link has expired. Not to worry, we can
-                    send the link again
-                </p>
-
-                <ResendVerificationForm />
-
-                <Image
-                    className={css.image}
-                    src={expiredImage}
-                    alt="Email confirmation expired"
-                />
-            </div>
-        );
+    if (!code || isInvalidCode) {
+        return <ExpiredConfirmation />;
     }
 
     if (!isSuccess) {
