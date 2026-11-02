@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { MOCK_POSTS } from '@/entities/post';
+import { MOCK_FEED_POSTS } from '@/entities/post';
 import { useCurrentUser } from '@/entities/session';
 import { DeletePostModal } from '@/features/delete-post';
 import { PostFeed } from '@/widgets/post-feed';
@@ -13,7 +13,7 @@ import { ProfileLayout } from '@/widgets/profile-layout';
 import s from './feed-page.module.scss';
 
 export const FeedPage = (): React.JSX.Element => {
-    const posts = MOCK_POSTS;
+    const posts = MOCK_FEED_POSTS;
     const [postIdToDelete, setPostIdToDelete] = useState<string | null>(null);
     const router = useRouter();
     const { data: currentUser } = useCurrentUser();

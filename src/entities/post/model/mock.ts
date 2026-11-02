@@ -42,7 +42,8 @@ export const mockLikedByEmpty: User[] = []; // 0 юзеров (тест пуст
 // ==========================================
 // 3. ПОСТЫ
 // ==========================================
-export const MOCK_POSTS: Post[] = [
+// Посты ленты
+const FEED_POSTS: Post[] = [
     {
         id: 'post-1',
         author: mockAuthor,
@@ -89,13 +90,38 @@ export const MOCK_POSTS: Post[] = [
         likedBy: mockLikedByEmpty, // Нет лайков
         createdAt: '2023-10-18T08:00:00.000Z',
     },
+];
 
-    // Посты 4–8: картинки из public/profile, которые раньше были в сетке профиля
+// Посты профиля: картинки public/profile/post-1...8 в том порядке,
+// в каком они были в сетке профиля
+const PROFILE_POSTS: Post[] = [
     {
-        id: 'post-4',
+        id: 'profile-post-1',
+        author: mockAuthor,
+        images: [
+            {
+                id: 'profile-img-1',
+                url: '/profile/post-1.png',
+                alt: 'Man in a red beanie',
+            },
+        ],
+        caption: 'New profile photo 🧢',
+        likesCount: 98,
+        commentsCount: 0,
+        isLiked: true,
+        isSaved: false,
+        likedBy: mockLikedByMany,
+        createdAt: '2023-10-17T09:00:00.000Z',
+    },
+    {
+        id: 'profile-post-2',
         author: mockUser4,
         images: [
-            { id: 'img-7', url: '/profile/post-2.png', alt: 'Hiking in the mountains' },
+            {
+                id: 'profile-img-2',
+                url: '/profile/post-2.png',
+                alt: 'Hiking in the mountains',
+            },
         ],
         caption: 'Fresh air and a great view 🏞️',
         likesCount: 87,
@@ -103,38 +129,78 @@ export const MOCK_POSTS: Post[] = [
         isLiked: false,
         isSaved: false,
         likedBy: mockLikedByFew,
-        createdAt: '2023-10-17T09:00:00.000Z',
+        createdAt: '2023-10-16T12:00:00.000Z',
     },
     {
-        id: 'post-5',
+        id: 'profile-post-3',
         author: mockAuthor,
-        images: [{ id: 'img-8', url: '/profile/post-3.png', alt: 'Team at the office' }],
+        images: [
+            {
+                id: 'profile-img-3',
+                url: '/profile/post-3.png',
+                alt: 'Team at the office',
+            },
+        ],
         caption: 'First day at the new office 💼',
         likesCount: 152,
         commentsCount: 0,
         isLiked: true,
         isSaved: false,
         likedBy: mockLikedByMany,
-        createdAt: '2023-10-16T12:00:00.000Z',
+        createdAt: '2023-10-15T16:30:00.000Z',
     },
     {
-        id: 'post-6',
+        id: 'profile-post-4',
+        author: mockUser3,
+        images: [
+            {
+                id: 'profile-img-4',
+                url: '/profile/post-4.png',
+                alt: 'Coffee and photos on the table',
+            },
+        ],
+        caption: 'Coffee and memories ☕',
+        likesCount: 45,
+        commentsCount: 0,
+        isLiked: false,
+        isSaved: true,
+        likedBy: mockLikedByFew,
+        createdAt: '2023-10-14T08:20:00.000Z',
+    },
+    {
+        id: 'profile-post-5',
         author: mockUser2,
-        images: [{ id: 'img-9', url: '/profile/post-5.png', alt: 'Team meeting' }],
+        images: [
+            { id: 'profile-img-5', url: '/profile/post-5.png', alt: 'Team meeting' },
+        ],
         caption: 'Brainstorming with the team 💡',
         likesCount: 34,
         commentsCount: 0,
         isLiked: false,
         isSaved: true,
         likedBy: mockLikedByFew,
-        createdAt: '2023-10-15T16:30:00.000Z',
+        createdAt: '2023-10-13T11:10:00.000Z',
     },
     {
-        id: 'post-7',
+        id: 'profile-post-6',
+        author: mockUser4,
+        images: [
+            { id: 'profile-img-6', url: '/profile/post-6.png', alt: 'Healthy breakfast' },
+        ],
+        caption: 'Healthy breakfast to start the day 🍓',
+        likesCount: 0,
+        commentsCount: 0,
+        isLiked: false,
+        isSaved: false,
+        likedBy: mockLikedByEmpty,
+        createdAt: '2023-10-12T07:45:00.000Z',
+    },
+    {
+        id: 'profile-post-7',
         author: mockUser3,
         images: [
             {
-                id: 'img-10',
+                id: 'profile-img-7',
                 url: '/profile/post-7.png',
                 alt: 'Photographer with a camera',
             },
@@ -145,13 +211,17 @@ export const MOCK_POSTS: Post[] = [
         isLiked: false,
         isSaved: false,
         likedBy: mockLikedByEmpty,
-        createdAt: '2023-10-14T18:45:00.000Z',
+        createdAt: '2023-10-11T18:45:00.000Z',
     },
     {
-        id: 'post-8',
+        id: 'profile-post-8',
         author: mockAuthor,
         images: [
-            { id: 'img-11', url: '/profile/post-8.png', alt: 'Travel map and photos' },
+            {
+                id: 'profile-img-8',
+                url: '/profile/post-8.png',
+                alt: 'Travel map and photos',
+            },
         ],
         caption: 'Planning the next trip 🗺️',
         likesCount: 61,
@@ -159,9 +229,16 @@ export const MOCK_POSTS: Post[] = [
         isLiked: false,
         isSaved: false,
         likedBy: mockLikedByMany,
-        createdAt: '2023-10-13T10:15:00.000Z',
+        createdAt: '2023-10-10T10:15:00.000Z',
     },
 ];
+
+// Лента и профиль показывают каждый свой список
+export const MOCK_FEED_POSTS: Post[] = FEED_POSTS;
+export const MOCK_PROFILE_POSTS: Post[] = PROFILE_POSTS;
+
+// Все посты вместе: по этому списку модалка, редактирование и лайки ищут пост по id
+export const MOCK_POSTS: Post[] = [...FEED_POSTS, ...PROFILE_POSTS];
 
 // ==========================================
 // 4. КОММЕНТАРИИ (Дерево)
