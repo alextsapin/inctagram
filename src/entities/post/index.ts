@@ -1,5 +1,10 @@
 export { PostCaption } from './ui/caption/postCaption';
-export { MOCK_COMMENTS, MOCK_POSTS } from './model/mock';
+export {
+    MOCK_COMMENTS,
+    MOCK_FEED_POSTS,
+    MOCK_POSTS,
+    MOCK_PROFILE_POSTS,
+} from './model/mock';
 export { PostMenu } from './ui/post-menu';
 export { Carousel } from './ui/carousel';
 export { PostHeader } from './ui/header';
