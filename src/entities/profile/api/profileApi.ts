@@ -1,5 +1,5 @@
-import { MOCK_OTHER_PROFILE, MOCK_POSTS, MOCK_PROFILE } from '../mocks/profile.mock';
-import type { Post, Profile } from '../model/types';
+import { MOCK_OTHER_PROFILE, MOCK_PROFILE } from '../mocks/profile.mock';
+import type { Profile } from '../model/types';
 
 // Заглушки API. На бэкенде пока нет эндпоинтов профиля и постов,
 // поэтому методы всегда возвращают mock-данные, даже без NEXT_PUBLIC_USE_MOCKS.
@@ -18,10 +18,5 @@ export const profileApi = {
     // username берём из адреса, чтобы на странице было настоящее имя
     getUserProfile(username: string): Profile {
         return { ...MOCK_OTHER_PROFILE, username };
-    },
-
-    // TODO: заменить на GET /api/profile/{username}/posts
-    getPosts(): Post[] {
-        return MOCK_POSTS;
     },
 };

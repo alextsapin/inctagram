@@ -266,7 +266,7 @@ select/
 -   `lib/findOptionByText.ts`, `lib/isSearchKey.ts`, `lib/isSameLetterRepeated.ts` — маленькие функции без React. Каждая отвечает на один вопрос, их легко читать и проверять отдельно.
 -   `ui/Select.tsx` — только JSX и классы. Чтобы поменять вид, не нужно разбираться в клавиатуре, и наоборот.
 -   `ui/ArrowIcon.tsx` — стрелка из Figma (`arrow-ios-Down-outline`) с `currentColor`. В открытом списке её поворачивает CSS.
--   Закрытие по клику мимо и по Escape делает общий хук `useCloseOnOutsideClick` из `@/shared/lib`, им же пользуется `DatePicker`. Escape хук ловит на перехвате (capture), раньше модалки, поэтому в `Modal` он закрывает только список.
+-   Закрытие по клику мимо и по Escape делает общий хук `useCloseOnOutsideClick` из `@/shared/hooks`, им же пользуется `DatePicker`. Escape хук ловит на перехвате (capture), раньше модалки, поэтому в `Modal` он закрывает только список.
 
 ## Использование в Next.js
 

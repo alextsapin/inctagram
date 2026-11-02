@@ -1,0 +1,64 @@
+.container {
+    width: 100%;
+    height: auto;
+}
+
+.carousel-wrapper {
+    display: block;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 484 / 500;
+    cursor: pointer;
+
+    & > div {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    margin: 12px 0;
+}
+
+.actions-panel {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 12px;
+}
+
+.caption {
+    margin: 0 0 12px;
+}
+
+.forma {
+    padding: 18px 0;
+    border-bottom: 1px solid var(--color-dark-300, #f7fbff);
+}
+
+.meta-wrapper {
+    margin-bottom: 24px;
+}
+
+.view-comments {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-bottom: 12px;
+    color: var(--color-light-900, #8e8e8e);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: color 0.2s ease;
+
+    &:hover {
+        color: var(--color-light-100, #fff);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--color-accent-500, #0095f6);
+        outline-offset: 2px;
+        border-radius: 2px;
+    }
+}
