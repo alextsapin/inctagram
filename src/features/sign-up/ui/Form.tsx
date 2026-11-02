@@ -9,7 +9,7 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import { useForm } from 'react-hook-form';
 
 import { RECAPTCHA_INVISIBLE_SITE_KEY } from '@/shared/config';
-import { validatePassword } from '@/shared/lib';
+import { executeRecaptcha, validatePassword } from '@/shared/lib';
 import { Button } from '@/shared/ui/button';
 import { Checkbox } from '@/shared/ui/checkbox';
 import { Input } from '@/shared/ui/input';
@@ -64,22 +64,12 @@ export const SignUpForm = (): React.JSX.Element => {
     const onSubmit = async (values: SignUpValues): Promise<void> => {
         setRecaptchaError(null);
         resetMutation();
-        resetRecaptcha();
 
-        let token: string | null | undefined;
-
-        try {
-            token = await recaptchaRef.current?.executeAsync();
-        } catch {
-            setRecaptchaError(RECAPTCHA_ERROR);
-            resetRecaptcha();
-
-            return;
-        }
+        // null, если Google не дал токен или окно проверки закрыли
+        const token = await executeRecaptcha(recaptchaRef.current);
 
         if (!token) {
             setRecaptchaError(RECAPTCHA_ERROR);
-            resetRecaptcha();
 
             return;
         }
