@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { MOCK_POSTS } from '@/entities/post';
 import { DeletePostModal } from '@/features/delete-post';
 import { PostFeed } from '@/widgets/post-feed';
+import { ProfileLayout } from '@/widgets/profile-layout';
 
 import s from './feed-page.module.scss';
 
@@ -23,22 +24,24 @@ export const FeedPage = (): React.JSX.Element => {
     };
 
     return (
-        <main className={s['feed-container']}>
-            {posts.map(p => (
-                <PostFeed
-                    post={p}
-                    key={p.id}
-                    onDeleteClick={() => setPostIdToDelete(p.id)}
-                    onEditClick={() => router.push(`/post/${p.id}/edit`)}
-                    onLikesClick={() => router.push(`/post/${p.id}/likes`)}
-                />
-            ))}
+        <ProfileLayout withSidebar>
+            <main className={s['feed-container']}>
+                {posts.map(p => (
+                    <PostFeed
+                        post={p}
+                        key={p.id}
+                        onDeleteClick={() => setPostIdToDelete(p.id)}
+                        onEditClick={() => router.push(`/post/${p.id}/edit`)}
+                        onLikesClick={() => router.push(`/post/${p.id}/likes`)}
+                    />
+                ))}
 
-            <DeletePostModal
-                isOpen={!!postIdToDelete}
-                onClose={() => setPostIdToDelete(null)}
-                onConfirm={handleDeleteConfirm}
-            />
-        </main>
+                <DeletePostModal
+                    isOpen={!!postIdToDelete}
+                    onClose={() => setPostIdToDelete(null)}
+                    onConfirm={handleDeleteConfirm}
+                />
+            </main>
+        </ProfileLayout>
     );
 };

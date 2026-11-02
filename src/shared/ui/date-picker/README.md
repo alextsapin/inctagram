@@ -87,7 +87,7 @@ import { type DateRange } from '@daypicker/react';
 -   клавиша Escape;
 -   повторный клик по иконке (`DatePicker`) или по полю (`DateRangePicker`).
 
-Внутри `Modal` Escape при открытом календаре закрывает **только календарь**, второй Escape закрывает окно. Закрытие делает общий хук `useCloseOnOutsideClick` из `@/shared/lib`: он ловит Escape раньше модалки и останавливает его.
+Внутри `Modal` Escape при открытом календаре закрывает **только календарь**, второй Escape закрывает окно. Закрытие делает общий хук `useCloseOnOutsideClick` из `@/shared/hooks`: он ловит Escape раньше модалки и останавливает его.
 
 ## Практические примеры
 

@@ -4,7 +4,7 @@ import { use } from 'react';
 
 import { EditPostPage } from '@/pages/post-edit';
 
-export const EditModalPage = ({
+const EditModalPage = ({
     params,
 }: {
     params: Promise<{ postId: string }>;
@@ -13,4 +13,5 @@ export const EditModalPage = ({
 
     return <EditPostPage postId={postId} isModal />;
 };
+
 export default EditModalPage;

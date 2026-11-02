@@ -1,16 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { MOCK_POSTS } from '@/entities/post';
 import { Post } from '@/entities/post/model/type';
 
 import s from './post-grid.module.scss';
 
 type Props = {
-    posts?: Post[];
+    posts: Post[];
 };
-
-export const PostGrid = ({ posts = MOCK_POSTS }: Props): React.JSX.Element => {
+export const PostGrid = ({ posts }: Props): React.JSX.Element => {
     if (posts.length === 0) {
         return <div className={s.empty}>Постов пока нет</div>;
     }

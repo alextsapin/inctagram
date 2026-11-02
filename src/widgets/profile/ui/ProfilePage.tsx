@@ -1,15 +1,12 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { useState } from 'react';
 
+import { MOCK_POSTS, PostGrid } from '@/entities/post';
 import { profileApi } from '@/entities/profile';
-import type { Post } from '@/entities/profile';
 import { ProfileHeader } from '@/widgets/profile-header';
 import { ProfileLayout } from '@/widgets/profile-layout';
 
-import { PostModal } from './PostModal';
-import { PostsGrid } from './PostsGrid';
 import css from './profile-page.module.scss';
 
 type ProfilePageProps = {
@@ -27,27 +24,15 @@ export const ProfilePage = ({
     withSidebar = false,
     actions,
 }: ProfilePageProps): React.JSX.Element => {
-    const [activePost, setActivePost] = useState<Post | null>(null);
-    const [isPostOpen, setIsPostOpen] = useState(false);
-
     const profile = profileApi.getUserProfile(username);
-    const posts = profileApi.getPosts();
+
+    const posts = MOCK_POSTS;
 
     const formatNumber = (value: number): string =>
         value.toLocaleString('en-US').replace(/,/g, ' ');
 
     const verified = isVerified ?? profile.isVerified;
     const avatar = avatarUrl ?? profile.avatarUrl;
-
-    const handlePostClick = (post: Post): void => {
-        setActivePost(post);
-        setIsPostOpen(true);
-    };
-
-    const handleClose = (): void => {
-        setIsPostOpen(false);
-        setActivePost(null);
-    };
 
     return (
         <ProfileLayout withSidebar={withSidebar}>
@@ -81,9 +66,7 @@ export const ProfilePage = ({
                 description={profile.aboutMe}
             />
 
-            <PostsGrid posts={posts} onPostClick={handlePostClick} />
-
-            <PostModal open={isPostOpen} post={activePost} onClose={handleClose} />
+            <PostGrid posts={posts} />
         </ProfileLayout>
     );
 };

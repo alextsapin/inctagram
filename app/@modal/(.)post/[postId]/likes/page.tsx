@@ -4,7 +4,7 @@ import { use } from 'react';
 
 import { PostLikesPage } from '@/pages/post-likes';
 
-export const LikesModalPage = ({
+const LikesModalPage = ({
     params,
 }: {
     params: Promise<{ postId: string }>;
@@ -13,4 +13,5 @@ export const LikesModalPage = ({
 
     return <PostLikesPage postId={postId} isModal />;
 };
+
 export default LikesModalPage;
