@@ -53,9 +53,9 @@ export const Header = (): React.JSX.Element => {
     const isAuthPage =
         pathname === '/sign-up' ||
         pathname === '/sign-in' ||
-        pathname === '/confirm-email';
+        pathname === '/auth/registration-confirmation';
 
-    const isConfirmEmailPage = pathname === '/confirm-email';
+    const isConfirmEmailPage = pathname === '/auth/registration-confirmation';
     const showAuthLinks = !isAuthPage && !isAuthed && !isAuthPending;
     // На собственном профиле (корневой маршрут /profile) название сети и выбор
     // языка скрыты, как в макете.
