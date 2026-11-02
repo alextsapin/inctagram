@@ -21,18 +21,22 @@ export const UserCard = ({
     return (
         <Link href="/" className={styles.link}>
             <article className={styles.card}>
-                <Image className={styles.postImage} src={postImage} alt="Фото поста" />
+                <Image
+                    className={styles['post-image']}
+                    src={postImage}
+                    alt="Post photo"
+                />
                 <div className={styles.author}>
                     <Image
-                        className={styles.authorAvatar}
+                        className={styles['author-avatar']}
                         src={authorAvatar}
-                        alt={`Аватар ${username}`}
+                        alt={`${username} avatar`}
                     />
-                    <h3 className={styles.authorName}>{username}</h3>
+                    <h3 className={styles['author-name']}>{username}</h3>
                 </div>
                 <div>
-                    <p className={styles.publishedAt}>{publishedAt}</p>
-                    <p className={styles.postText}>{postText}</p>
+                    <p className={styles['published-at']}>{publishedAt}</p>
+                    <p className={styles['post-text']}>{postText}</p>
                 </div>
             </article>
         </Link>
