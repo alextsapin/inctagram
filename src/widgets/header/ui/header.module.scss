@@ -78,6 +78,12 @@
     transform: translateX(-50%);
 }
 
+.inner-confirm-email .language {
+    right: 0;
+    left: auto;
+    transform: none;
+}
+
 /* Внутри .header-actions (справа) позиционирование языка не должно быть абсолютным. */
 .header-actions .language {
     position: static;

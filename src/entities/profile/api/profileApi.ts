@@ -1,29 +1,22 @@
 import { MOCK_OTHER_PROFILE, MOCK_PROFILE } from '../mocks/profile.mock';
 import type { Profile } from '../model/types';
 
-// Заглушки API. Когда появятся реальные endpoints, замени тела функций
-// на fetch-вызовы к API и удали USE_MOCKS / mock-данные в одном месте.
+// Заглушки API. На бэкенде пока нет эндпоинтов профиля и постов,
+// поэтому методы всегда возвращают mock-данные, даже без NEXT_PUBLIC_USE_MOCKS.
+// Вход и данные текущего пользователя (getMe) при этом настоящие.
+// Когда появятся реальные endpoints, замени тела функций на запросы к API.
 // Сейчас методы синхронные (моки), при переходе на реальный API их нужно
 // сделать async и вызывать через TanStack Query.
-
-const USE_MOCKS = process.env.NEXT_PUBLIC_USE_MOCKS === 'true';
 
 export const profileApi = {
     // TODO: заменить на GET /api/profile
     getProfile(): Profile {
-        if (USE_MOCKS) {
-            return MOCK_PROFILE;
-        }
-
-        throw new Error('Profile API is not implemented yet');
+        return MOCK_PROFILE;
     },
 
     // TODO: заменить на GET /api/profile/{username}
+    // username берём из адреса, чтобы на странице было настоящее имя
     getUserProfile(username: string): Profile {
-        if (USE_MOCKS) {
-            return { ...MOCK_OTHER_PROFILE, username };
-        }
-
-        throw new Error('User profile API is not implemented yet');
+        return { ...MOCK_OTHER_PROFILE, username };
     },
 };
