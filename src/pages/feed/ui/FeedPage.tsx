@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { MOCK_POSTS } from '@/entities/post';
+import { useCurrentUser } from '@/entities/session';
 import { DeletePostModal } from '@/features/delete-post';
 import { PostFeed } from '@/widgets/post-feed';
 import { ProfileLayout } from '@/widgets/profile-layout';
@@ -15,6 +16,8 @@ export const FeedPage = (): React.JSX.Element => {
     const posts = MOCK_POSTS;
     const [postIdToDelete, setPostIdToDelete] = useState<string | null>(null);
     const router = useRouter();
+    const { data: currentUser } = useCurrentUser();
+
     const handleDeleteConfirm = (): void => {
         if (!postIdToDelete) return;
 
@@ -24,8 +27,8 @@ export const FeedPage = (): React.JSX.Element => {
     };
 
     return (
-        <ProfileLayout withSidebar>
-            <main className={s['feed-container']}>
+        <ProfileLayout withSidebar={!!currentUser}>
+            <section className={s['feed-container']}>
                 {posts.map(p => (
                     <PostFeed
                         post={p}
@@ -41,7 +44,7 @@ export const FeedPage = (): React.JSX.Element => {
                     onClose={() => setPostIdToDelete(null)}
                     onConfirm={handleDeleteConfirm}
                 />
-            </main>
+            </section>
         </ProfileLayout>
     );
 };
