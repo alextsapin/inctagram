@@ -1,11 +1,11 @@
 .grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 234px));
     gap: 12px;
     width: 100%;
 
     @media (min-width: 768px) {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 234px));
     }
 }
 
@@ -26,4 +26,3 @@
     object-fit: cover;
     display: block;
 }
-
