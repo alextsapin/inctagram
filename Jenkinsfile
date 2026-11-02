@@ -1,6 +1,6 @@
-// Inctagram frontend CI for pull requests.
-// Builds and checks the app only: no Docker push and no Kubernetes deployment.
-// Node.js is downloaded into the job workspace; Jenkins admin rights are not needed.
+// Inctagram CI/CD for the platform pull-request Jenkins job.
+// The Jenkins webhook runs this pipeline after the `run build production` comment.
+// Keep CI checks and then build, publish and deploy the Docker image.
 
 pipeline {
     agent any
@@ -16,6 +16,19 @@ pipeline {
         NEXT_TELEMETRY_DISABLED = '1'
         COREPACK_ENABLE_DOWNLOAD_PROMPT = '0'
         NODE_VERSION = '22.23.4'
+
+        IMAGE_REPO = 'lilpone4ka/inctagram-blackdragons-frontend'
+        DOCKER_REGISTRY = 'https://index.docker.io/v1/'
+        REGISTRY_HOSTNAME = 'lilpone4ka'
+        PROJECT = 'inctagram-blackdragons-frontend'
+        NAMESPACE = 'blackdragonmedia-info'
+        DEPLOYMENT_NAME = 'inctagram-blackdragons-frontend-deployment'
+
+        // These are public client-side settings baked into the Next.js bundle.
+        // Set production reCAPTCHA site keys before deploying real signup traffic.
+        NEXT_PUBLIC_API_URL = ''
+        NEXT_PUBLIC_RECAPTCHA_SITE_KEY_CHECKBOX = '6Lc71AQuAAAAAOhGyRH0oimyeRTY2ZGsqm20kRJA'
+        NEXT_PUBLIC_RECAPTCHA_SITE_KEY_INVISIBLE = '6LfF0wQuAAAAAPKRG6ec8X-B4m0JOsjngS4o6gyK'
     }
 
     stages {
@@ -144,14 +157,79 @@ pipeline {
                 '''
             }
         }
+
+        stage('Build Docker image') {
+            steps {
+                script {
+                    def commitSha = sh(
+                        script: 'git rev-parse --short=12 HEAD',
+                        returnStdout: true
+                    ).trim()
+                    env.IMAGE_TAG = "${env.BUILD_NUMBER}-${commitSha}"
+                }
+                sh '''
+                    set -eu
+                    docker build \
+                        --build-arg "NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL" \
+                        --build-arg "NEXT_PUBLIC_RECAPTCHA_SITE_KEY_CHECKBOX=$NEXT_PUBLIC_RECAPTCHA_SITE_KEY_CHECKBOX" \
+                        --build-arg "NEXT_PUBLIC_RECAPTCHA_SITE_KEY_INVISIBLE=$NEXT_PUBLIC_RECAPTCHA_SITE_KEY_INVISIBLE" \
+                        -t "$IMAGE_REPO:$IMAGE_TAG" .
+                '''
+            }
+        }
+
+        stage('Push Docker image') {
+            steps {
+                script {
+                    docker.withRegistry(env.DOCKER_REGISTRY, 'blackdragonmedia-info') {
+                        sh 'docker push "$IMAGE_REPO:$IMAGE_TAG"'
+                    }
+                }
+            }
+        }
+
+        stage('Prepare Kubernetes manifest') {
+            steps {
+                sh '''
+                    set -eu
+                    test -f deployment.yaml
+                    sed \
+                        -e "s|REGISTRY_HOSTNAME|$REGISTRY_HOSTNAME|g" \
+                        -e "s|PROJECT|$PROJECT|g" \
+                        -e "s|TAG_VERSION|$IMAGE_TAG|g" \
+                        -e "s|DEPLOYMENT_NAME|$DEPLOYMENT_NAME|g" \
+                        -e "s|PORT_CONTAINER|3000|g" \
+                        -e "s|NAMESPACE|$NAMESPACE|g" \
+                        deployment.yaml > deployment.rendered.yaml
+                    cat deployment.rendered.yaml
+                '''
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                withKubeConfig([credentialsId: 'prod-kubernetes']) {
+                    sh '''
+                        set -eu
+                        kubectl apply -n "$NAMESPACE" -f deployment.rendered.yaml
+                        kubectl rollout status \
+                            "deployment/$DEPLOYMENT_NAME" \
+                            -n "$NAMESPACE" \
+                            --timeout=180s
+                        kubectl get pods -n "$NAMESPACE" \
+                            -l "project=$PROJECT"
+                    '''
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo 'Inctagram CI passed. Docker/Kubernetes deployment was not performed.'
+            echo 'Inctagram CI passed; Docker image pushed and Kubernetes deployment completed.'
         }
         failure {
-            echo 'Inctagram CI failed. See the failed stage in Console Output.'
+            echo 'Inctagram CI/CD failed. See Console Output for the failed stage.'
         }
     }
 }

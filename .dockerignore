@@ -25,3 +25,6 @@ coverage
 # Local secrets
 *.pem
 *.key
+
+# Jenkins workspace toolchain
+.ci-tools
