@@ -11,11 +11,12 @@ import {
     RECAPTCHA_CHECKBOX_SITE_KEY,
     RECAPTCHA_INVISIBLE_SITE_KEY,
 } from '@/shared/config';
+import { executeRecaptcha } from '@/shared/lib';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Modal } from '@/shared/ui/modal';
 
-import { getErrorText } from '../model/errors';
+import { getErrorText, RECAPTCHA_ERROR } from '../model/errors';
 import type { ForgotPasswordValues, RecaptchaType } from '../model/types';
 import { useRecoverPassword } from '../model/useRecoverPassword';
 
@@ -43,6 +44,9 @@ export const ForgotPasswordForm = (): React.JSX.Element => {
     // Ссылки на виджеты reCAPTCHA, чтобы вызывать у них reset() и executeAsync()
     const checkboxRef = useRef<ReCAPTCHA>(null);
     const invisibleRef = useRef<ReCAPTCHA>(null);
+
+    // Ошибка невидимой reCAPTCHA: запрос до бэкенда не дошёл, поэтому error у мутации пустой
+    const [recaptchaError, setRecaptchaError] = useState<string | null>(null);
 
     const isLinkSent = sentEmail !== '';
 
@@ -79,13 +83,17 @@ export const ForgotPasswordForm = (): React.JSX.Element => {
         }
 
         // Send Link Again: галочки нет, токен просим у невидимой reCAPTCHA.
-        // reset() перед запросом нужен, чтобы получить новый токен, а не прошлый
-        invisibleRef.current?.reset();
-        const token = await invisibleRef.current?.executeAsync();
+        // null, если Google не дал токен или окно проверки закрыли
+        setRecaptchaError(null);
+        const token = await executeRecaptcha(invisibleRef.current);
 
-        if (token) {
-            sendLink(values.email, token, 'invisible');
+        if (!token) {
+            setRecaptchaError(RECAPTCHA_ERROR);
+
+            return;
         }
+
+        sendLink(values.email, token, 'invisible');
     };
 
     // Без галочки первую ссылку отправить нельзя. Для Send Link Again галочка не нужна
@@ -131,7 +139,10 @@ export const ForgotPasswordForm = (): React.JSX.Element => {
                     </p>
                 )}
 
-                {error && <span className={css.error}>{getErrorText(error)}</span>}
+                {recaptchaError && <span className={css.error}>{recaptchaError}</span>}
+                {!recaptchaError && error && (
+                    <span className={css.error}>{getErrorText(error)}</span>
+                )}
 
                 <Button
                     type="submit"
