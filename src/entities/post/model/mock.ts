@@ -89,6 +89,78 @@ export const MOCK_POSTS: Post[] = [
         likedBy: mockLikedByEmpty, // Нет лайков
         createdAt: '2023-10-18T08:00:00.000Z',
     },
+
+    // Посты 4–8: картинки из public/profile, которые раньше были в сетке профиля
+    {
+        id: 'post-4',
+        author: mockUser4,
+        images: [
+            { id: 'img-7', url: '/profile/post-2.png', alt: 'Hiking in the mountains' },
+        ],
+        caption: 'Fresh air and a great view 🏞️',
+        likesCount: 87,
+        commentsCount: 0,
+        isLiked: false,
+        isSaved: false,
+        likedBy: mockLikedByFew,
+        createdAt: '2023-10-17T09:00:00.000Z',
+    },
+    {
+        id: 'post-5',
+        author: mockAuthor,
+        images: [{ id: 'img-8', url: '/profile/post-3.png', alt: 'Team at the office' }],
+        caption: 'First day at the new office 💼',
+        likesCount: 152,
+        commentsCount: 0,
+        isLiked: true,
+        isSaved: false,
+        likedBy: mockLikedByMany,
+        createdAt: '2023-10-16T12:00:00.000Z',
+    },
+    {
+        id: 'post-6',
+        author: mockUser2,
+        images: [{ id: 'img-9', url: '/profile/post-5.png', alt: 'Team meeting' }],
+        caption: 'Brainstorming with the team 💡',
+        likesCount: 34,
+        commentsCount: 0,
+        isLiked: false,
+        isSaved: true,
+        likedBy: mockLikedByFew,
+        createdAt: '2023-10-15T16:30:00.000Z',
+    },
+    {
+        id: 'post-7',
+        author: mockUser3,
+        images: [
+            {
+                id: 'img-10',
+                url: '/profile/post-7.png',
+                alt: 'Photographer with a camera',
+            },
+        ],
+        caption: 'Behind the lens 📷',
+        likesCount: 0,
+        commentsCount: 0,
+        isLiked: false,
+        isSaved: false,
+        likedBy: mockLikedByEmpty,
+        createdAt: '2023-10-14T18:45:00.000Z',
+    },
+    {
+        id: 'post-8',
+        author: mockAuthor,
+        images: [
+            { id: 'img-11', url: '/profile/post-8.png', alt: 'Travel map and photos' },
+        ],
+        caption: 'Planning the next trip 🗺️',
+        likesCount: 61,
+        commentsCount: 0,
+        isLiked: false,
+        isSaved: false,
+        likedBy: mockLikedByMany,
+        createdAt: '2023-10-13T10:15:00.000Z',
+    },
 ];
 
 // ==========================================
