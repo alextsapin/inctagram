@@ -170,7 +170,7 @@ pipeline {
                 sh '''
                     set -eu
                     docker build \
-                        --build-arg "NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL" \
+                        --build-arg "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-}" \
                         --build-arg "NEXT_PUBLIC_RECAPTCHA_SITE_KEY_CHECKBOX=$NEXT_PUBLIC_RECAPTCHA_SITE_KEY_CHECKBOX" \
                         --build-arg "NEXT_PUBLIC_RECAPTCHA_SITE_KEY_INVISIBLE=$NEXT_PUBLIC_RECAPTCHA_SITE_KEY_INVISIBLE" \
                         -t "$IMAGE_REPO:$IMAGE_TAG" .
