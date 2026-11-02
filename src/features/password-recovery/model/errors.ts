@@ -16,11 +16,15 @@ const getStatus = (error: Error): number | undefined =>
 export const isLinkExpiredError = (error: Error): boolean =>
     getStatus(error) === BAD_REQUEST;
 
+// Проверка reCAPTCHA не прошла: бэкенд не принял токен (403)
+// или невидимая reCAPTCHA не дала токен (окно проверки закрыли)
+export const RECAPTCHA_ERROR = 'reCAPTCHA verification failed. Please try again';
+
 // Текст ошибки под формой для остальных случаев
 export const getErrorText = (error: Error): string => {
     // 403 на password-recovery: бэкенд не принял токен reCAPTCHA
     if (getStatus(error) === FORBIDDEN) {
-        return 'reCAPTCHA verification failed. Please try again';
+        return RECAPTCHA_ERROR;
     }
 
     // 503 на password-recovery: Google reCAPTCHA не ответил бэкенду
