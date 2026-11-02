@@ -4,6 +4,7 @@ Allow: /
 # Authentication
 Disallow: /sign-in
 Disallow: /sign-up
+Disallow: /confirm-email
 Disallow: /forgot-password
 Disallow: /password-recovery
 Disallow: /new-password

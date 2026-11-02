@@ -50,7 +50,12 @@ export const Header = (): React.JSX.Element => {
     const isAuthed = Boolean(user) && !isError;
 
     // На страницах входа кнопки входа не показываем.
-    const isAuthPage = pathname === '/sign-up' || pathname === '/sign-in';
+    const isAuthPage =
+        pathname === '/sign-up' ||
+        pathname === '/sign-in' ||
+        pathname === '/confirm-email';
+
+    const isConfirmEmailPage = pathname === '/confirm-email';
     const showAuthLinks = !isAuthPage && !isAuthed && !isAuthPending;
     // На собственном профиле (корневой маршрут /profile) название сети и выбор
     // языка скрыты, как в макете.
@@ -71,7 +76,7 @@ export const Header = (): React.JSX.Element => {
                     showNotifications || showProfileActions
                         ? css['inner-notifications']
                         : ''
-                }`}
+                } ${isConfirmEmailPage ? css['inner-confirm-email'] : ''}`}
             >
                 {showLogo && (
                     <Link href="/" className={css.logo}>

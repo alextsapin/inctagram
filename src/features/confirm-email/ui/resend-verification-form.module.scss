@@ -1,0 +1,23 @@
+@use '@/shared/styles/vars' as *;
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    max-width: 300px;
+    text-align: left;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 14px;
+    color: #8d9094;
+}
+
+.error {
+    color: $error;
+    font-size: 12px;
+}
