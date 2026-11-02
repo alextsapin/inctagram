@@ -1,3 +1,7 @@
+'use client';
+
+import { useCurrentUser } from '@/entities/session';
+import { ProfileLayout } from '@/widgets/profile-layout';
 import { RegisteredUsers } from '@/widgets/registered-users';
 import { UserCard } from '@/widgets/user-post-card';
 
@@ -42,14 +46,30 @@ const posts = [
 ];
 
 export const Main = (): React.JSX.Element => {
-    return (
-        <main className={style.main}>
+    const { data: user, isError } = useCurrentUser();
+    const isAuthed = Boolean(user) && !isError;
+
+    const content = (
+        <>
             <RegisteredUsers />
             <div className={style.container}>
                 {posts.map(post => (
                     <UserCard key={post.id} {...post} />
                 ))}
             </div>
-        </main>
+        </>
+    );
+
+    // Гость: главная без сайдбара
+    if (!isAuthed) {
+        return <main className={style.main}>{content}</main>;
+    }
+
+    // Вошедший пользователь: сайдбар слева, как в макете и в ленте.
+    // <main> рисует ProfileLayout, поэтому здесь div
+    return (
+        <ProfileLayout withSidebar>
+            <div className={style.main}>{content}</div>
+        </ProfileLayout>
     );
 };
