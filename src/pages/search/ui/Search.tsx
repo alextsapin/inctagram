@@ -1,7 +1,5 @@
+import { UnderConstruction } from '@/widgets/under-construction';
+
 export const Search = (): React.JSX.Element => {
-    return (
-        <main className="container">
-            <h1>Search</h1>
-        </main>
-    );
+    return <UnderConstruction title="Search" />;
 };
