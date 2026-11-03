@@ -1,5 +1,12 @@
 @use '@/shared/styles/vars' as *;
 
+/* Блок профиля не шире макета (972px) и по центру свободного места */
+.content {
+    width: 100%;
+    max-width: 972px;
+    margin-inline: auto;
+}
+
 .stat {
     display: flex;
     flex-direction: column;
