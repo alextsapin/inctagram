@@ -1,7 +1,5 @@
+import { UnderConstruction } from '@/widgets/under-construction';
+
 export const Statistics = (): React.JSX.Element => {
-    return (
-        <main className="container">
-            <h1>Statistics</h1>
-        </main>
-    );
+    return <UnderConstruction title="Statistics" />;
 };
