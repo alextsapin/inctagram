@@ -1,4 +1,4 @@
-$radius: 8px;
+$radius: 2px;
 
 @mixin variant($color, $bg, $border) {
     color: $color;
@@ -14,28 +14,24 @@ $radius: 8px;
     box-sizing: border-box;
     max-width: 200px;
     max-height: 100px;
-    padding: 24px 16px 16px;
+    padding: 12px 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     border: 1px solid;
     border-radius: $radius;
     text-align: center;
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 600;
-
+    color:white;
+    line-height: 24px
+}
     &.success {
-        @include variant(green, #f0fdf4, #86efac);
+        @include variant(#14CC70, #0A6638, #86efac);
     }
     &.error {
-        @include variant(red, #fef2f2, #fca5a5);
-    }
-    &.waiting {
-        @include variant(#c4662c, #fffbeb, #fcd34d);
-    }
-    &.info {
-        @include variant(#1e40af, #eff6ff, #93c5fd);
-    }
+        @include variant(#CC1439, #660A1D, #fca5a5);
+    }   
 }
 
 .close-button {
@@ -44,11 +40,11 @@ $radius: 8px;
     right: 6px;
     padding: 2px 6px;
     border: 0;
-    border-radius: 4px;
+    border-radius: 2px;
     background: transparent;
     color: inherit;
     font: inherit;
-    font-size: 18px;
+    font-size: 24px;
     line-height: 1;
     cursor: pointer;
 
@@ -61,3 +57,4 @@ $radius: 8px;
         outline-offset: 2px;
     }
 }
+
