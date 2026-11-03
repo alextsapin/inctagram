@@ -6,7 +6,7 @@ type NewPasswordPageProps = {
     searchParams: Promise<{ code?: string }>;
 };
 
-// Сюда ведёт ссылка из письма: /new-password?code=...
+// Сюда ведёт ссылка из письма: /auth/new-password?code=...
 // Код читаем из адреса здесь, на сервере, и передаём странице обычным пропом
 const NewPasswordPage = async ({
     searchParams,
