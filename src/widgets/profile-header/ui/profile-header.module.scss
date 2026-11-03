@@ -1,8 +1,12 @@
 @use '@/shared/styles/vars' as *;
 
+/* Ширина и отступы как в макете: блок не шире сетки постов (972px),
+   от аватара до текста 38px, до сетки постов 48px */
 .info {
     display: flex;
-    gap: 30px;
+    gap: 38px;
+    max-width: 972px;
+    margin-bottom: 48px;
 
     @media (max-width: 900px) {
         flex-direction: column;
@@ -22,7 +26,7 @@
 .content {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
     min-width: 0;
     width: 100%;
 }
@@ -40,8 +44,11 @@
     }
 }
 
+/* margin-top: 0 убирает общий отступ h1 (35px) из globals.scss,
+   он нужен страницам авторизации, а здесь сдвигает имя вниз */
 .name {
     display: inline-flex;
+    margin-top: 0;
     align-items: center;
     gap: 8px;
     font-size: 20px;
@@ -61,7 +68,12 @@
 
 .stats {
     display: flex;
-    gap: 36px;
+    gap: 94px;
+
+    /* На телефоне большой отступ не помещается, оставляем 36px */
+    @media (max-width: 600px) {
+        gap: 36px;
+    }
 }
 
 .description {
