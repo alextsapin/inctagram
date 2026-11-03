@@ -26,8 +26,10 @@ export const PostGrid = ({ posts }: Props): React.JSX.Element => {
                                 alt=""
                                 fill
                                 className={s.image}
-                                // Ширина плитки по колонкам сетки: 2 до 768px, 3 до 1160px, иначе 4
-                                sizes="(max-width: 768px) 50vw, (max-width: 1160px) 33vw, 25vw"
+                                // Ширина плитки: на телефоне половина экрана, иначе не больше 234px
+                                sizes="(max-width: 768px) 50vw, 234px"
+                                // Грузим сразу, а не при прокрутке: постов в профиле немного
+                                loading="eager"
                             />
                         )}
                     </Link>

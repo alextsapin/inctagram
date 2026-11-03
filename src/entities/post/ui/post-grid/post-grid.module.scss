@@ -1,13 +1,15 @@
-/* Сетка постов в профиле: 4 колонки на всю ширину, на узких экранах 3 и 2 */
+/* Сетка постов в профиле: 4 колонки, 3 до 1160px, 2 до 768px.
+   Плитка не шире 234px, как в макете: на широком экране не растёт, на узком сжимается */
 .grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 234px));
     gap: 12px;
 
     @media (max-width: 1160px) {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 234px));
     }
 
+    /* На телефоне 2 колонки на всю ширину */
     @media (max-width: 768px) {
         grid-template-columns: repeat(2, 1fr);
     }
