@@ -36,37 +36,41 @@ export const ProfilePage = ({
 
     return (
         <ProfileLayout withSidebar={withSidebar}>
-            <ProfileHeader
-                username={profile.username}
-                avatarUrl={avatar}
-                isVerified={verified}
-                actions={actions}
-                stats={
-                    <>
-                        <div className={css.stat}>
-                            <span className={css['stat-value']}>
-                                {formatNumber(profile.stats.following)}
-                            </span>
-                            <span className={css['stat-label']}>Following</span>
-                        </div>
-                        <div className={css.stat}>
-                            <span className={css['stat-value']}>
-                                {formatNumber(profile.stats.followers)}
-                            </span>
-                            <span className={css['stat-label']}>Followers</span>
-                        </div>
-                        <div className={css.stat}>
-                            <span className={css['stat-value']}>
-                                {formatNumber(profile.stats.publications)}
-                            </span>
-                            <span className={css['stat-label']}>Publications</span>
-                        </div>
-                    </>
-                }
-                description={profile.aboutMe}
-            />
+            {/* Шапка и посты в одной обёртке: блок не шире макета и стоит по центру,
+                и рядом с сайдбаром, и на всю ширину страницы у гостя */}
+            <div className={css.content}>
+                <ProfileHeader
+                    username={profile.username}
+                    avatarUrl={avatar}
+                    isVerified={verified}
+                    actions={actions}
+                    stats={
+                        <>
+                            <div className={css.stat}>
+                                <span className={css['stat-value']}>
+                                    {formatNumber(profile.stats.following)}
+                                </span>
+                                <span className={css['stat-label']}>Following</span>
+                            </div>
+                            <div className={css.stat}>
+                                <span className={css['stat-value']}>
+                                    {formatNumber(profile.stats.followers)}
+                                </span>
+                                <span className={css['stat-label']}>Followers</span>
+                            </div>
+                            <div className={css.stat}>
+                                <span className={css['stat-value']}>
+                                    {formatNumber(profile.stats.publications)}
+                                </span>
+                                <span className={css['stat-label']}>Publications</span>
+                            </div>
+                        </>
+                    }
+                    description={profile.aboutMe}
+                />
 
-            <PostGrid posts={posts} />
+                <PostGrid posts={posts} />
+            </div>
         </ProfileLayout>
     );
 };
