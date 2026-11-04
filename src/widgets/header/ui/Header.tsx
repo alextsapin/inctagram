@@ -10,6 +10,7 @@ import { Language } from '@/features/change-language';
 import logo from '@/widgets/header/assets/logo.svg';
 import css from '@/widgets/header/ui/header.module.scss';
 
+
 // Иконка колокольчика уведомлений из макета Pixso (Outline bell 24×24).
 const BellIcon = (): React.JSX.Element => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
