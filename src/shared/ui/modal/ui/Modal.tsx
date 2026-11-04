@@ -2,7 +2,8 @@
 
 import { useEffect, useId, useRef } from 'react';
 
-import { CloseIcon } from './CloseIcon';
+import { CloseIcon } from '../../icons/CloseIcon';
+
 import css from './modal.module.scss';
 
 const DEFAULT_WIDTH = 378;
