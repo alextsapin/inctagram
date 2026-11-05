@@ -420,6 +420,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 ```text
 📁 src/shared/
 ├── 📁 ui/
+│   ├── 📁 alert/
 │   ├── 📁 button/
 │   ├── 📁 input/
 │   ├── 📁 textarea/
@@ -443,7 +444,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 └── 📁 types/
 ```
 
-**Общие UI-компоненты, уже подготовленные в проекте:** `Button`, `Checkbox`, `DatePicker` и `DateRangePicker`, `Input`, `Modal`, `Select`, `Tabs`, `Textarea`. Их подробное описание и примеры использования вынесены в [собственные README](#документация-общих-компонентов). Остальные названия в дереве — элементы целевой схемы и не означают, что компоненты уже реализованы.
+**Общие UI-компоненты, уже подготовленные в проекте:** `Alert`, `Button`, `Checkbox`, `DatePicker` и `DateRangePicker`, `Input`, `Modal`, `Select`, `Tabs`, `Textarea`. Их подробное описание и примеры использования вынесены в [собственные README](#документация-общих-компонентов). Остальные названия в дереве — элементы целевой схемы и не означают, что компоненты уже реализованы.
 
 ### Примеры готовых слайсов
 
@@ -521,6 +522,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 
 | Компонент                       | Расположение                 | Подробная документация                                   |
 | ------------------------------- | ---------------------------- | -------------------------------------------------------- |
+| **Alert**                       | `src/shared/ui/alert/`       | [README Alert](src/shared/ui/alert/README.md)            |
 | **Button**                      | `src/shared/ui/button/`      | [README Button](src/shared/ui/button/README.md)          |
 | **Checkbox**                    | `src/shared/ui/checkbox/`    | [README Checkbox](src/shared/ui/checkbox/README.md)      |
 | **DatePicker, DateRangePicker** | `src/shared/ui/date-picker/` | [README DatePicker](src/shared/ui/date-picker/README.md) |

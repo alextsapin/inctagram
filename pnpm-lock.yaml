@@ -175,6 +175,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.104.1
         version: 5.104.5(@types/react@19.3.0)(react@19.2.8)
+      Inctagram:
+        specifier: 'link:'
+        version: 'link:'
       axios:
         specifier: ^1.20.0
         version: 1.20.0(debug@4.4.3(supports-color@10.2.2))(supports-color@10.2.2)
