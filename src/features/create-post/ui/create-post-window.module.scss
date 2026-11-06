@@ -1,0 +1,21 @@
+.back {
+    display: flex;
+    padding: 0;
+    border: none;
+    background: none;
+    color: #fff;
+    cursor: pointer;
+}
+
+.next {
+    padding: 0;
+}
+
+.stub {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+}
