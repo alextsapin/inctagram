@@ -1,0 +1,31 @@
+/* Сетка постов в профиле: 4 колонки, 3 до 1160px, 2 до 768px.
+   Плитка не шире 234px, как в макете: на широком экране не растёт, на узком сжимается */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 234px));
+    gap: 12px;
+
+    @media (max-width: 1160px) {
+        grid-template-columns: repeat(3, minmax(0, 234px));
+    }
+
+    /* На телефоне 2 колонки на всю ширину */
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.item {
+    position: relative;
+    display: block;
+    aspect-ratio: 234 / 228;
+    border-radius: 2px;
+    overflow: hidden;
+    background-color: #d9d9d9;
+    cursor: pointer;
+}
+
+.image {
+    /* Заполняем плитку без искажения пропорций */
+    object-fit: cover;
+}

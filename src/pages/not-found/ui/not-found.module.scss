@@ -1,0 +1,57 @@
+/* Отступ сверху как у страниц с сайдбаром (там его даёт ProfileLayout) */
+.guest {
+    padding-top: 35px;
+}
+
+/* Всё по центру в одну колонку */
+.root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+}
+
+/* У общего h1 отступ сверху 35px, здесь его уже дают .guest или ProfileLayout */
+.title {
+    margin-top: 0;
+}
+
+/* Картинка сжимается на узком экране, но не больше 400px */
+.image {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+}
+
+/* Ссылка в виде синей кнопки, как Sign In на странице подтверждения почты */
+.link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 0 24px;
+    border-radius: 2px;
+    background-color: #397df6;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+        background-color: #73a5ff;
+        text-decoration: none;
+    }
+
+    &:active {
+        background-color: #2f68cc;
+        color: #edf3fa;
+    }
+
+    &:focus-visible {
+        outline: 2px solid #2f68cc;
+        outline-offset: 2px;
+    }
+}

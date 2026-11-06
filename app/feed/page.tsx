@@ -1,3 +1,3 @@
-import { Feed } from '@/pages/feed';
+import { FeedPage } from '@/pages/feed';
 
-export default Feed;
+export default FeedPage;

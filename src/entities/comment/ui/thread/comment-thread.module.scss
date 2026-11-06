@@ -1,0 +1,51 @@
+.thread {
+    display: flex;
+    flex-direction: column;
+}
+
+.toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    background: none;
+    border: none;
+    color: var(--color-light-900, #8e8e8e);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    margin-left: 44px;
+    padding: 0;
+    align-self: flex-start;
+    transition: color 0.3s ease;
+
+    &:hover,
+    &:focus-visible {
+        color: var(--color-light-700, #4c4c4c);
+
+        .line {
+            background-color: var(--color-light-700, #4c4c4c);
+        }
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--color-accent-500, #fff);
+        outline-offset: 4px;
+        border-radius: 4px;
+    }
+}
+
+.line {
+    display: block;
+    width: 24px;
+    height: 1px;
+    background-color: var(--color-light-900, #8e8e8e);
+}
+
+.replies {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+    margin-left: 55px;
+}

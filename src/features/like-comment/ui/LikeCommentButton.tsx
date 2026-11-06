@@ -1,0 +1,29 @@
+'use client';
+
+import { IconButton } from '@/shared/ui/icon-button';
+import { HeartFilledIcon, HeartIcon } from '@/shared/ui/icons';
+
+import { useLikeComment } from '../model/useLikeComment';
+
+type Props = {
+    commentId: string;
+    isLiked: boolean;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const LikeCommentButton = ({ commentId, isLiked }: Props): React.JSX.Element => {
+    const { isLike, isPending, toggleLike } = useLikeComment(isLiked);
+
+    // TODO мутация по id
+    return (
+        <IconButton
+            size={15}
+            label={isLike ? 'Unlike comment' : 'Like comment'}
+            disabled={isPending}
+            onClick={toggleLike}
+            isActive={isLike}
+        >
+            {isLike ? <HeartFilledIcon color="red" /> : <HeartIcon />}
+        </IconButton>
+    );
+};

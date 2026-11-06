@@ -1,0 +1,44 @@
+@use '@/shared/styles/vars' as *;
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Блок ошибки, размеры и цвета из README Modal (раздел 6) */
+.error {
+    width: 100%;
+    margin-bottom: 24px;
+    padding: 6px 24px 5px;
+    border: 1px solid $error;
+    border-radius: 2px;
+    background-color: #660a1d;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: center;
+}
+
+.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 222px;
+    height: 228px;
+    margin-bottom: 60px;
+    border-radius: 2px;
+    background-color: #171717;
+}
+
+/* По макету от фото до кнопки Save 36px. 18px уже даёт блок кнопок в Modal, добавляем ещё 18 */
+.crop {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 18px;
+}
+
+/* Сам input не показываем: вместо него кнопка «Select from Computer» */
+.input {
+    display: none;
+}

@@ -1,0 +1,18 @@
+/* Область с фото. Внутри неё библиотека сама растягивает свой блок на всю площадь */
+.cropper {
+    position: relative;
+    width: 100%;
+    max-width: 332px;
+    aspect-ratio: 332 / 340;
+    overflow: hidden;
+    border-radius: 2px;
+    background-color: #171717;
+}
+
+/* Круг и затемнение вокруг него, цвета из макета.
+   Два класса в селекторе, потому что react-easy-crop добавляет свои стили
+   в <head> после наших, и с одним классом они бы перебили наши */
+.cropper .crop-area {
+    border: none;
+    color: rgb(23 23 23 / 87%);
+}

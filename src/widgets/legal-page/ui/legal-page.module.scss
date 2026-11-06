@@ -1,0 +1,28 @@
+/* Ссылка «Back to Sign Up»: стрелка и текст в одну строку, как в макете.
+   flex, а не inline-flex: у строчной ссылки браузер добавляет снизу лишнее место под строку.
+   fit-content — чтобы ссылка была шириной по содержимому, а не на всю страницу */
+.back {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+    font-size: 14px;
+    line-height: 24px;
+    color: white;
+}
+
+/* Общий h1 уже 20px, жирный и по центру. Меняем только отступ сверху:
+   у общего h1 он 35px, а в макете между ссылкой и заголовком 23px */
+.title {
+    margin-top: 23px;
+}
+
+/* Текст по центру, шириной не больше, чем в макете */
+.text {
+    max-width: 958px;
+    margin: 20px auto 40px;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: center;
+}

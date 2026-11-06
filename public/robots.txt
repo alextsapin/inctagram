@@ -4,9 +4,10 @@ Allow: /
 # Authentication
 Disallow: /sign-in
 Disallow: /sign-up
+Disallow: /auth/registration-confirmation
 Disallow: /forgot-password
 Disallow: /password-recovery
-Disallow: /new-password
+Disallow: /auth/new-password
 
 # Private pages
 Disallow: /feed

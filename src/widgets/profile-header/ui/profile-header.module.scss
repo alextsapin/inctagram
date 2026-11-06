@@ -1,0 +1,83 @@
+@use '@/shared/styles/vars' as *;
+
+/* Ширина и отступы как в макете: блок не шире сетки постов (972px),
+   от аватара до текста 38px, до сетки постов 48px */
+.info {
+    display: flex;
+    gap: 38px;
+    max-width: 972px;
+    margin-bottom: 48px;
+
+    @media (max-width: 900px) {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.avatar {
+    flex-shrink: 0;
+    width: clamp(96px, 18vw, 204px);
+    height: clamp(96px, 18vw, 204px);
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #d9d9d9;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+    width: 100%;
+}
+
+.name-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+
+    @media (max-width: 600px) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+}
+
+/* margin-top: 0 убирает общий отступ h1 (35px) из globals.scss,
+   он нужен страницам авторизации, а здесь сдвигает имя вниз */
+.name {
+    display: inline-flex;
+    margin-top: 0;
+    align-items: center;
+    gap: 8px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 36px;
+}
+
+.badge {
+    flex-shrink: 0;
+    color: #397df6;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+}
+
+.stats {
+    display: flex;
+    gap: 94px;
+
+    /* На телефоне большой отступ не помещается, оставляем 36px */
+    @media (max-width: 600px) {
+        gap: 36px;
+    }
+}
+
+.description {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+}

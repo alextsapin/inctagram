@@ -1,0 +1,21 @@
+@use '@/shared/styles/vars' as *;
+
+.layout {
+    display: flex;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 35px 24px 49px;
+    min-width: 0;
+
+    @media (max-width: 768px) {
+        padding: 24px 12px 40px;
+    }
+}
