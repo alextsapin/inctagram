@@ -1,3 +1,11 @@
+export {
+    createPost,
+    deletePost,
+    getPost,
+    getUserPosts,
+    postQueryKeys,
+    updatePost,
+} from './api';
 export { PostCaption } from './ui/caption/postCaption';
 export {
     MOCK_COMMENTS,
