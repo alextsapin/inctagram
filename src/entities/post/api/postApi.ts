@@ -65,10 +65,7 @@ export const createPost = async (formData: FormData): Promise<Post> => {
     return structuredClone(createMockPost(post));
 };
 
-export const updatePost = async (
-    id: string,
-    description: string,
-): Promise<Post> => {
+export const updatePost = async (id: string, description: string): Promise<Post> => {
     const updated = updateMockPost(id, description);
 
     if (!updated) {
