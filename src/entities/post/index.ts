@@ -4,6 +4,14 @@ export {
     MOCK_FEED_POSTS,
     MOCK_POSTS,
     MOCK_PROFILE_POSTS,
+    MOCK_REGISTERED_USERS_COUNT,
+    MOCK_SIGNED_IN_AUTHOR,
+    getMockPost,
+    getMockUserPosts,
+    getMockLatestPosts,
+    createMockPost,
+    updateMockPost,
+    deleteMockPost,
 } from './model/mock';
 export { PostMenu } from './ui/post-menu';
 export { Carousel } from './ui/carousel';
