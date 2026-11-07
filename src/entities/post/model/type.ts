@@ -8,6 +8,9 @@ export type User = {
 export type PostImage = {
     id: string;
     url: string;
+    // Optional until the backend confirms its preview/full-size image fields.
+    previewUrl?: string;
+    fullUrl?: string;
     alt?: string;
 };
 
