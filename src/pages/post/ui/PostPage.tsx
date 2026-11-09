@@ -2,8 +2,10 @@
 
 import { useRouter } from 'next/navigation';
 
+import { usePost } from '@/entities/post';
+import { Alert } from '@/shared/ui/alert';
 import { Modal } from '@/shared/ui/modal';
-import { PostViewer } from '@/widgets/post-viewer';
+import { PostViewer, PostViewerSkeleton } from '@/widgets/post-viewer';
 
 import s from './post-page.module.scss';
 
@@ -11,9 +13,11 @@ type Props = {
     postId: string;
     isModal?: boolean;
 };
+const POST_MODAL_WIDTH = 975;
 
 export const PostPage = ({ postId, isModal }: Props): React.JSX.Element => {
     const router = useRouter();
+    const { data: post, isLoading, isError, error } = usePost(postId);
 
     const handleClose = (): void => {
         // В модалке закрываем назад, на странице — редирект в ленту
@@ -22,6 +26,29 @@ export const PostPage = ({ postId, isModal }: Props): React.JSX.Element => {
         }
         router.push('/feed');
     };
+
+    if (isLoading) {
+        return isModal ? (
+            <Modal open onClose={handleClose} width={POST_MODAL_WIDTH} closeOutside>
+                <PostViewerSkeleton />
+            </Modal>
+        ) : (
+            <main className={s.page}>
+                <PostViewerSkeleton />
+            </main>
+        );
+    }
+
+    if (isError || !post) {
+        return (
+            <Alert
+                open
+                onClose={handleClose}
+                type="error"
+                message={error?.message || 'Не удалось загрузить пост'}
+            />
+        );
+    }
 
     const handleEdit = (): void => {
         router.push(`/post/${postId}/edit`);
@@ -39,9 +66,10 @@ export const PostPage = ({ postId, isModal }: Props): React.JSX.Element => {
     const handleLikesClick = (): void => {
         router.push(`/post/${postId}/likes`);
     };
+
     const viewer = (
         <PostViewer
-            postId={postId}
+            post={post}
             onEdit={handleEdit}
             onDeleted={handleDeleted}
             onLikesClick={handleLikesClick}
@@ -49,7 +77,7 @@ export const PostPage = ({ postId, isModal }: Props): React.JSX.Element => {
     );
 
     return isModal ? (
-        <Modal open onClose={handleClose} width={975} closeOutside>
+        <Modal open onClose={handleClose} width={POST_MODAL_WIDTH} closeOutside>
             {viewer}
         </Modal>
     ) : (
