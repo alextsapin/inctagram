@@ -25,3 +25,16 @@ export type CreatePostState = {
     photos: CreatePostPhoto[];
     description: string;
 };
+
+// Фото в черновике: файл хранится как есть (Blob), фильтр отдельной строкой
+export type DraftPhoto = {
+    id: string;
+    file: Blob; // фото без фильтра: File после выбора или Blob после обрезки
+    filter: string | null; // название фильтра cc-gram, null = без фильтра
+};
+
+// Черновик поста: один на пользователя, ключ в IndexedDB — userId
+export type PostDraft = {
+    photos: DraftPhoto[];
+    description: string;
+};
