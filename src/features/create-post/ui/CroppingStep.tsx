@@ -66,6 +66,8 @@ export const CroppingStep = ({
                     crop={photo.cropSettings.crop}
                     zoom={photo.cropSettings.zoom}
                     aspect={aspectRatio}
+                    // Фото целиком: иначе в Original и 16:9 рамка захватывает только середину
+                    objectFit="contain"
                     onCropChange={crop => onCropSettingsChange({ crop })}
                     onZoomChange={zoom => onCropSettingsChange({ zoom })}
                     onCropComplete={area => onCropSettingsChange({ area })}

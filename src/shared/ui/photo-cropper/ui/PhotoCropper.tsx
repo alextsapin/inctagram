@@ -17,6 +17,9 @@ type PhotoCropperProps = {
     onCropComplete: (area: Area) => void;
     aspect?: number; // пропорции рамки: 1 — квадрат, 4 / 5 — вертикальный прямоугольник
     cropShape?: 'rect' | 'round'; // форма рамки: прямоугольник или круг, как у аватара
+    // Как фото встаёт в область: 'cover' растягивает его на всю область,
+    // 'contain' показывает целиком, и тогда при зуме 1 в рамку попадает максимум фото
+    objectFit?: 'cover' | 'contain';
     className?: string; // размеры области с фото задаёт родитель
 };
 
@@ -31,6 +34,7 @@ export const PhotoCropper = ({
     onCropComplete,
     aspect = 1,
     cropShape = 'rect',
+    objectFit = 'cover',
     className,
 }: PhotoCropperProps): React.JSX.Element => {
     const cropperClass = [css.cropper, className].filter(Boolean).join(' ');
@@ -43,8 +47,7 @@ export const PhotoCropper = ({
                 zoom={zoom}
                 aspect={aspect}
                 cropShape={cropShape}
-                // Фото заполняет всю область, как в макете
-                objectFit="cover"
+                objectFit={objectFit}
                 showGrid={false}
                 onCropChange={onCropChange}
                 onZoomChange={onZoomChange}

@@ -28,6 +28,7 @@ import { PhotoCropper } from '@/shared/ui/photo-cropper';
 | `onCropComplete` | `(area: Area) => void`   | —            | Пользователь отпустил фото: выбранная область в пикселях. Обязательный      |
 | `aspect`         | `number`                 | `1`          | Пропорции рамки: `1` квадрат, `4 / 5` вертикальная, `16 / 9` горизонтальная |
 | `cropShape`      | `'rect' \| 'round'`      | `'rect'`     | Форма рамки: прямоугольник или круг                                         |
+| `objectFit`      | `'cover' \| 'contain'`   | `'cover'`    | Как фото встаёт в область: растянуто на всю область или целиком             |
 | `className`      | `string`                 | —            | Класс с размерами области: их задаёт родитель                               |
 
 Типы `Point` и `Area` берём из библиотеки: `import type { Area, Point } from 'react-easy-crop';`.
@@ -97,9 +98,12 @@ export const AvatarCropper = ({ photoUrl, type }: { photoUrl: string; type: stri
     onZoomChange={setZoom}
     onCropComplete={setArea}
     aspect={4 / 5}
+    objectFit="contain"
     className={css.cropper}
 />
 ```
+
+`objectFit="contain"` нужен, когда пропорции рамки бывают любыми. С `cover` фото растягивается по области, а не по рамке, и широкая рамка на широком фото захватывает только середину. С `contain` при зуме 1 в рамку попадает максимум фото.
 
 Если фото несколько, у каждого свои `crop`, `zoom` и область: храним их в состоянии родителя отдельно для каждого фото.
 
