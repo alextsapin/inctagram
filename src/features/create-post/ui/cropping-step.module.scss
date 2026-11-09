@@ -40,6 +40,10 @@
         outline: 2px solid #397df6;
         outline-offset: 2px;
     }
+
+    &[aria-expanded='true'] {
+        color: #397df6;
+    }
 }
 
 /* Кнопка открытого меню синяя */

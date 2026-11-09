@@ -12,6 +12,7 @@ import {
     ZoomIcon,
 } from '@/shared/ui/icons';
 import { PhotoCropper } from '@/shared/ui/photo-cropper';
+import { Popover } from '@/shared/ui/popover';
 
 import type { CreatePostPhoto, CropAspect, CropSettings } from '../model/types';
 
@@ -20,8 +21,8 @@ import css from './cropping-step.module.scss';
 import { PhotoGallery } from './PhotoGallery';
 import { ZoomSlider } from './ZoomSlider';
 
-// Какое меню сейчас открыто над кнопками: пропорции, ползунок, галерея или никакое
-type OpenMenu = 'aspect' | 'zoom' | 'gallery' | null;
+// Какое из временных меню сейчас открыто над кнопками: ползунок, галерея или никакое
+type OpenMenu = 'zoom' | 'gallery' | null;
 
 type CroppingStepProps = {
     photos: CreatePostPhoto[]; // все фото поста
@@ -49,10 +50,8 @@ export const CroppingStep = ({
     onRemovePhoto,
 }: CroppingStepProps): React.JSX.Element => {
     const [openMenu, setOpenMenu] = useState<OpenMenu>(null);
-    const aspectRef = useRef<HTMLDivElement>(null);
     const zoomRef = useRef<HTMLDivElement>(null);
     const galleryRef = useRef<HTMLDivElement>(null);
-
     const photo = photos[currentIndex];
     const photoUrl = useObjectUrl(photo.originalFile);
     const isFirst = currentIndex === 0;
@@ -71,7 +70,6 @@ export const CroppingStep = ({
 
     // TODO: заменить открытие меню на Popover из задачи BLD-113, когда он появится.
     // Сейчас это временная заглушка: openMenu и закрытие по клику мимо или Escape
-    useCloseOnOutsideClick(aspectRef, openMenu === 'aspect', closeMenu);
     useCloseOnOutsideClick(zoomRef, openMenu === 'zoom', closeMenu);
     useCloseOnOutsideClick(galleryRef, openMenu === 'gallery', closeMenu);
 
@@ -135,23 +133,14 @@ export const CroppingStep = ({
             )}
 
             <div className={css.controls}>
-                <div ref={aspectRef} className={css.control}>
-                    {/* TODO: заменить на Popover из задачи BLD-113 */}
-                    {openMenu === 'aspect' && (
-                        <div className={css.menu}>
-                            <AspectMenu value={aspect} onChange={onAspectChange} />
-                        </div>
-                    )}
-
-                    <button
-                        type="button"
-                        className={getButtonClass('aspect')}
-                        aria-label="Aspect ratio"
-                        aria-expanded={openMenu === 'aspect'}
-                        onClick={() => toggleMenu('aspect')}
+                <div className={css.control}>
+                    <Popover
+                        trigger={<ExpandIcon />}
+                        triggerLabel="Aspect ratio"
+                        triggerClassName={css.button}
                     >
-                        <ExpandIcon />
-                    </button>
+                        <AspectMenu value={aspect} onChange={onAspectChange} />
+                    </Popover>
                 </div>
 
                 <div ref={zoomRef} className={css.control}>
