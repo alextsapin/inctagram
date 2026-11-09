@@ -1,8 +1,10 @@
 import {
     createMockPost,
+    deleteMockPost,
     getMockPost,
     getMockUserPosts,
     MOCK_SIGNED_IN_AUTHOR,
+    updateMockPost,
 } from '../model/mock';
 import type { Post, PostImage } from '../model/type';
 
@@ -49,8 +51,10 @@ const getImages = (formData: FormData): File[] => {
         throw new Error('Invalid file');
     }
 
-    if (files.some(file => !file.type.startsWith('image/'))) {
-        throw new Error('Only images are allowed');
+    const allowedTypes = ['image/jpeg', 'image/png'];
+
+    if (files.some(file => !allowedTypes.includes(file.type))) {
+        throw new Error('Only JPEG and PNG images are allowed');
     }
 
     return files;
@@ -85,4 +89,32 @@ export const createPost = async (formData: FormData): Promise<Post> => {
     };
 
     return createMockPost(post);
+};
+
+// Обновим пост
+export const updatePost = async (id: string, description: string): Promise<Post> => {
+    const post = updateMockPost(id, description.trim());
+
+    if (!post) {
+        throw new Error(`Post with id ${id} not found`);
+    }
+
+    return post;
+};
+
+// Удаление поста
+export const deletePost = async (id: string): Promise<void> => {
+    const post = getMockPost(id);
+
+    if (!post) {
+        throw new Error(`Post with id ${id} not found`);
+    }
+
+    deleteMockPost(id);
+
+    post.images.forEach(image => {
+        if (image.url.startsWith('blob:')) {
+            URL.revokeObjectURL(image.url);
+        }
+    });
 };
