@@ -1,0 +1,159 @@
+name: Clean up inactive branches
+
+on:
+  schedule:
+    # Daily at 03:23 UTC (not at the top of the hour).
+    - cron: '23 3 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Preview candidates without deleting branches'
+        type: boolean
+        default: true
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: clean-up-inactive-branches
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    name: Delete branches without commits for 30 days
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Find and remove inactive branches
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_API_URL: ${{ github.api_url }}
+          GH_REPOSITORY: ${{ github.repository }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run == true }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+          from datetime import datetime, timedelta, timezone
+
+          DAYS_INACTIVE = 30
+          NEVER_DELETE = {"main", "develop"}
+          repo = os.environ["GH_REPOSITORY"]
+          api_url = os.environ["GH_API_URL"].rstrip("/")
+          token = os.environ["GH_TOKEN"]
+          dry_run = os.environ.get("DRY_RUN", "").lower() == "true"
+          now = datetime.now(timezone.utc)
+          cutoff = now - timedelta(days=DAYS_INACTIVE)
+
+          headers = {
+              "Authorization": f"Bearer {token}",
+              "Accept": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+          }
+
+          def github(path, method="GET"):
+              req = urllib.request.Request(
+                  f"{api_url}/repos/{repo}/{path}",
+                  headers=headers,
+                  method=method,
+              )
+              with urllib.request.urlopen(req, timeout=30) as response:
+                  data = response.read()
+                  return json.loads(data) if data else None
+
+          branches = []
+          page = 1
+          while True:
+              batch = github(f"branches?per_page=100&page={page}")
+              branches.extend(batch)
+              if len(batch) < 100:
+                  break
+              page += 1
+
+          deleted = []
+          candidates = []
+          kept = []
+          failures = []
+          for branch in branches:
+              name = branch["name"]
+              if name in NEVER_DELETE:
+                  kept.append(f"{name}: permanent branch")
+                  continue
+
+              # GitHub may protect additional branches with rulesets.
+              # Such branches cannot be deleted with the default workflow token.
+              if branch.get("protected"):
+                  kept.append(f"{name}: protected by GitHub")
+                  continue
+
+              sha = branch["commit"]["sha"]
+              commit = github(f"commits/{sha}")
+              timestamp = (
+                  commit["commit"]["committer"].get("date")
+                  or commit["commit"]["author"]["date"]
+              )
+              committed_at = datetime.fromisoformat(
+                  timestamp.replace("Z", "+00:00")
+              )
+              if committed_at > cutoff:
+                  kept.append(f"{name}: last commit {committed_at.isoformat()}")
+                  continue
+
+              candidates.append(f"{name} (last commit: {committed_at.date()})")
+              if dry_run:
+                  print(f"[DRY RUN] Would delete {name}")
+                  continue
+
+              encoded = urllib.parse.quote(name, safe="/")
+              try:
+                  # Check that the tip has not changed since listing the branch.
+                  current = github(f"git/ref/heads/{encoded}")
+                  if current["object"]["sha"] != sha:
+                      kept.append(f"{name}: updated during cleanup")
+                      continue
+                  github(f"git/refs/heads/{encoded}", method="DELETE")
+                  deleted.append(name)
+                  print(f"[DELETED] {name}")
+              except urllib.error.HTTPError as error:
+                  if error.code == 404:
+                      kept.append(f"{name}: already removed")
+                  else:
+                      failures.append(f"{name}: HTTP {error.code}")
+                      print(f"::error::Failed to delete {name}: HTTP {error.code}")
+
+          summary = [
+              "## Inactive branch cleanup",
+              f"- Inactivity threshold: **{DAYS_INACTIVE} days since the HEAD commit**",
+              f"- Mode: **{'dry run' if dry_run else 'delete'}**",
+              f"- Branches checked: **{len(branches)}**",
+              f"- Candidates: **{len(candidates)}**",
+              f"- Deleted: **{len(deleted)}**",
+              "",
+              "### Candidates",
+              *([f"- {item}" for item in candidates] or ["- None"]),
+              "",
+              "### Deleted",
+              *([f"- {item}" for item in deleted] or ["- None"]),
+              "",
+              "### Skipped",
+              *([f"- {item}" for item in kept] or ["- None"]),
+              "",
+              "### Errors",
+              *([f"- {item}" for item in failures] or ["- None"]),
+          ]
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as file:
+              file.write("\n".join(summary) + "\n")
+
+          print(
+              f"Mode={'dry-run' if dry_run else 'delete'}; "
+              f"checked={len(branches)}, candidates={len(candidates)}, "
+              f"deleted={len(deleted)}, errors={len(failures)}"
+          )
+          if failures:
+              sys.exit(1)
+          PY
