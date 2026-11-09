@@ -1,6 +1,12 @@
 import { useState } from 'react';
 
-import type { CreatePostPhoto, CreatePostState, CreatePostStep } from './types';
+import type {
+    CreatePostPhoto,
+    CreatePostState,
+    CreatePostStep,
+    DraftPhoto,
+    PostDraft,
+} from './types';
 
 const INITIAL_STATE: CreatePostState = {
     step: 'add-photo',
@@ -12,7 +18,15 @@ type UseCreatePost = {
     state: CreatePostState;
     goToStep: (step: CreatePostStep) => void;
     selectPhoto: (file: File) => void;
+    openDraft: (draft: PostDraft) => void;
 };
+
+// В черновике фото лежит как Blob, а пост хранит исходное фото как File.
+// Обычно из IndexedDB возвращается тот же File, но на всякий случай оборачиваем Blob в File
+const toFile = (draftPhoto: DraftPhoto): File =>
+    draftPhoto.file instanceof File
+        ? draftPhoto.file
+        : new File([draftPhoto.file], 'draft-photo', { type: draftPhoto.file.type });
 
 // Хранит общее состояние окна создания поста
 export const useCreatePost = (): UseCreatePost => {
@@ -39,5 +53,20 @@ export const useCreatePost = (): UseCreatePost => {
         setState(prev => ({ ...prev, photos: [photo], step: 'cropping' }));
     };
 
-    return { state, goToStep, selectPhoto };
+    // Open Draft: берём фото, фильтры и описание из черновика и открываем шаг Cropping.
+    // Обрезку черновик не хранит (задача 9), поэтому пользователь делает её заново
+    const openDraft = (draft: PostDraft): void => {
+        const photos: CreatePostPhoto[] = draft.photos.map(draftPhoto => ({
+            id: draftPhoto.id,
+            originalFile: toFile(draftPhoto),
+            croppedFile: null,
+            cropSettings: null,
+            filter: draftPhoto.filter,
+            filteredFile: null,
+        }));
+
+        setState({ step: 'cropping', photos, description: draft.description });
+    };
+
+    return { state, goToStep, selectPhoto, openDraft };
 };

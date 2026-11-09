@@ -24,10 +24,16 @@ const POST_PHOTO_RULES: PhotoRules = {
 type AddPhotoStepProps = {
     // Получает файл, который уже прошёл проверку
     onSelect: (file: File) => void;
+    // Открывает сохранённый черновик. Передаётся, только если черновик есть:
+    // без него кнопки Open Draft на экране нет
+    onOpenDraft?: () => void;
 };
 
-// Первый шаг окна создания поста: выбор фото с компьютера
-export const AddPhotoStep = ({ onSelect }: AddPhotoStepProps): React.JSX.Element => {
+// Первый шаг окна создания поста: выбор фото с компьютера или открытие черновика
+export const AddPhotoStep = ({
+    onSelect,
+    onOpenDraft,
+}: AddPhotoStepProps): React.JSX.Element => {
     const inputRef = useRef<HTMLInputElement>(null);
     const [error, setError] = useState<string | null>(null);
 
@@ -70,11 +76,11 @@ export const AddPhotoStep = ({ onSelect }: AddPhotoStepProps): React.JSX.Element
                     Select from Computer
                 </Button>
 
-                {/* TODO: включить Open Draft, когда появится getDraft из задачи BLD-126.
-                    Показывать, только если черновик есть. По клику открыть шаг Cropping с фото из черновика */}
-                <Button variant="outlined" fullWidth disabled>
-                    Open Draft
-                </Button>
+                {onOpenDraft && (
+                    <Button variant="outlined" fullWidth onClick={onOpenDraft}>
+                        Open Draft
+                    </Button>
+                )}
             </div>
 
             <input
