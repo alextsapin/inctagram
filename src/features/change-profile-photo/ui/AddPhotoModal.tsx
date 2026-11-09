@@ -56,6 +56,13 @@ export const AddPhotoModal = ({
             URL.revokeObjectURL(photo.url);
         }
 
+        // Окно после закрытия остаётся на странице вместе с полем выбора файла,
+        // и поле помнит последний файл. Если его не очистить, после повторного открытия
+        // тот же файл выбрать не получится: браузер не сообщит о выборе, раз файл не изменился
+        if (inputRef.current) {
+            inputRef.current.value = '';
+        }
+
         setPhoto(null);
         setError(null);
         setCroppedArea(null);

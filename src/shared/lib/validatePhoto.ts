@@ -9,7 +9,7 @@ export const ALLOWED_PHOTO_TYPES = ['image/png', 'image/jpeg'];
 export type PhotoRules = {
     maxSizeMb: number;
     formatError: string; // текст, если файл не PNG и не JPEG
-    sizeError: string; // текст, если файл больше лимита
+    sizeError: string; // текст, если файл не меньше лимита
 };
 
 // Проверяет выбранный файл. Возвращает текст ошибки или null, если файл подходит.
@@ -20,7 +20,8 @@ export const validatePhoto = (file: File, rules: PhotoRules): string | null => {
         return rules.formatError;
     }
 
-    if (file.size > rules.maxSizeMb * MEGABYTE) {
+    // Файл должен быть строго меньше лимита, как в текстах ошибок: «less than 20 Mb»
+    if (file.size >= rules.maxSizeMb * MEGABYTE) {
         return rules.sizeError;
     }
 

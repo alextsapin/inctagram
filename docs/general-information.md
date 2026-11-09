@@ -103,7 +103,7 @@ Privacy Policy на `/privacy-policy`, как в макете.
 | Проверка          | Текст ошибки                                                 |
 | ----------------- | ------------------------------------------------------------ |
 | только PNG и JPEG | Error! The format of the uploaded photo must be PNG and JPEG |
-| не больше 10 MB   | Error! Photo size must be less than 10 MB!                   |
+| меньше 10 MB      | Error! Photo size must be less than 10 MB!                   |
 
 ### Как устроено
 
