@@ -5,18 +5,26 @@ import { useRef, useState } from 'react';
 import Image from 'next/image';
 import type { Area } from 'react-easy-crop';
 
+import imageOutline from '@/shared/assets/image-outline.svg';
+import { ALLOWED_PHOTO_TYPES, type PhotoRules, validatePhoto } from '@/shared/lib';
 import { Button } from '@/shared/ui/button';
 import { Modal } from '@/shared/ui/modal';
 
-import imageOutline from '../assets/image-outline.svg';
 import { getCroppedImage } from '../lib/getCroppedImage';
-import { ALLOWED_PHOTO_TYPES, validatePhoto } from '../lib/validatePhoto';
 
 import css from './add-photo-modal.module.scss';
 import { PhotoCropper } from './PhotoCropper';
 
 const ADD_PHOTO_MODAL_WIDTH = 492;
 const ICON_SIZE = 48;
+const AVATAR_MAX_SIZE_MB = 10;
+
+// Правила для аватара: у каждой ошибки свой текст из макета
+const AVATAR_PHOTO_RULES: PhotoRules = {
+    maxSizeMb: AVATAR_MAX_SIZE_MB,
+    formatError: 'The format of the uploaded photo must be PNG and JPEG',
+    sizeError: `Photo size must be less than ${AVATAR_MAX_SIZE_MB} MB!`,
+};
 
 type SelectedPhoto = {
     url: string; // временная ссылка на файл из URL.createObjectURL
@@ -48,6 +56,13 @@ export const AddPhotoModal = ({
             URL.revokeObjectURL(photo.url);
         }
 
+        // Окно после закрытия остаётся на странице вместе с полем выбора файла,
+        // и поле помнит последний файл. Если его не очистить, после повторного открытия
+        // тот же файл выбрать не получится: браузер не сообщит о выборе, раз файл не изменился
+        if (inputRef.current) {
+            inputRef.current.value = '';
+        }
+
         setPhoto(null);
         setError(null);
         setCroppedArea(null);
@@ -64,7 +79,7 @@ export const AddPhotoModal = ({
 
         if (!file) return;
 
-        const validationError = validatePhoto(file);
+        const validationError = validatePhoto(file, AVATAR_PHOTO_RULES);
 
         if (validationError) {
             setError(validationError);
