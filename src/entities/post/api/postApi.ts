@@ -8,7 +8,7 @@ import {
 } from '../model/mock';
 import type { Post, PostImage } from '../model/type';
 
-// Получить конкретную публикацию
+// Get a post by ID or throw an error if it is not found
 export const getPost = async (id: string): Promise<Post> => {
     const post = getMockPost(id);
 
@@ -19,12 +19,12 @@ export const getPost = async (id: string): Promise<Post> => {
     return post;
 };
 
-// Получить все публикации пользователя
+// Get a user's posts sorted from newest to oldest
 export const getUserPosts = async (username: string): Promise<Post[]> => {
     return getMockUserPosts(username);
 };
 
-// Получить описание поста
+// Extract and normalize the description from FormData
 const getDescription = (formData: FormData): string => {
     const value = formData.get('description');
 
@@ -39,7 +39,7 @@ const getDescription = (formData: FormData): string => {
     return value.trim();
 };
 
-// Получить изображения
+// Extract and validate JPEG and PNG files from FormData
 const getImages = (formData: FormData): File[] => {
     const files = formData.getAll('files');
 
@@ -60,7 +60,7 @@ const getImages = (formData: FormData): File[] => {
     return files;
 };
 
-// Фото поста
+// Convert files into post images with temporary blob URLs
 const createPostImages = (files: File[]): PostImage[] => {
     return files.map(file => ({
         id: crypto.randomUUID(),
@@ -69,7 +69,7 @@ const createPostImages = (files: File[]): PostImage[] => {
     }));
 };
 
-// Собираем постт целиком
+// Create a post and add it to the mock store
 export const createPost = async (formData: FormData): Promise<Post> => {
     const description = getDescription(formData);
     const files = getImages(formData);
@@ -91,7 +91,7 @@ export const createPost = async (formData: FormData): Promise<Post> => {
     return createMockPost(post);
 };
 
-// Обновим пост
+// Update a post's description or throw an error if the post is not found
 export const updatePost = async (id: string, description: string): Promise<Post> => {
     const post = updateMockPost(id, description.trim());
 
@@ -102,7 +102,7 @@ export const updatePost = async (id: string, description: string): Promise<Post>
     return post;
 };
 
-// Удаление поста
+// Delete a post and release the blob URLs created for its images
 export const deletePost = async (id: string): Promise<void> => {
     const post = getMockPost(id);
 
