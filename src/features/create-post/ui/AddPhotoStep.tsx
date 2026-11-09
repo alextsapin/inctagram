@@ -22,8 +22,8 @@ const POST_PHOTO_RULES: PhotoRules = {
 };
 
 type AddPhotoStepProps = {
-    // Получает файл, который уже прошёл проверку
-    onSelect: (file: File) => void;
+    // Получает файл, который уже прошёл проверку. Выбрасывает ошибку, если файл не открылся
+    onSelect: (file: File) => Promise<void>;
     // Открывает сохранённый черновик. Передаётся, только если черновик есть:
     // без него кнопки Open Draft на экране нет
     onOpenDraft?: () => void;
@@ -42,7 +42,9 @@ export const AddPhotoStep = ({
         inputRef.current?.click();
     };
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const handleFileChange = async (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ): Promise<void> => {
         const file = event.target.files?.[0];
 
         if (!file) return;
@@ -56,7 +58,13 @@ export const AddPhotoStep = ({
             return;
         }
 
-        onSelect(file);
+        // Формат подходит, но файл может оказаться повреждённым и не открыться.
+        // Тогда показываем ту же ошибку: для пользователя это тоже неподходящий файл
+        try {
+            await onSelect(file);
+        } catch {
+            setError(POST_PHOTO_ERROR);
+        }
     };
 
     return (

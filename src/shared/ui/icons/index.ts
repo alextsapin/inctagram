@@ -13,3 +13,7 @@ export { ArrowLeftIcon } from './ArrowLeftIcon';
 export { ArrowRightIcon } from './ArrowRightIcon';
 export { SearchIcon } from './SearchIcon';
 export { CommentIcon } from './CommentIcon';
+export { ExpandIcon } from './ExpandIcon';
+export { ImageIcon } from './ImageIcon';
+export { ZoomFilledIcon } from './ZoomFilledIcon';
+export { ZoomIcon } from './ZoomIcon';

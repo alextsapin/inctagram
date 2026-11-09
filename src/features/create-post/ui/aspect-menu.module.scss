@@ -1,0 +1,79 @@
+/* Размеры, отступы и цвета из макета: блок 156×152, строки по 24px через 12px */
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 156px;
+    margin: 0;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    border-radius: 2px;
+    background-color: rgb(23 23 23 / 80%);
+    list-style: none;
+}
+
+/* Неактивный пункт серый, обычный шрифт */
+.option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: none;
+    color: #8d9094;
+    font: inherit;
+    font-size: 16px;
+    line-height: 24px;
+    cursor: pointer;
+
+    &:hover {
+        color: #fff;
+    }
+
+    &:focus-visible {
+        outline: 2px solid #397df6;
+        outline-offset: 2px;
+    }
+}
+
+/* Выбранный пункт белый и полужирный */
+.active {
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Место под значок справа: 24×24, значок по центру */
+.icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+/* Рамки-подсказки. Цвет берут от текста пункта: серые или белые.
+   flex-shrink: 0 — иначе рамка 16:9 шириной 26px сжалась бы до места под значок в 24px */
+.square,
+.portrait,
+.landscape {
+    flex-shrink: 0;
+    box-sizing: border-box;
+    border: 2px solid currentcolor;
+    border-radius: 3px;
+}
+
+.square {
+    width: 18px;
+    height: 18px;
+}
+
+.portrait {
+    width: 18px;
+    height: 26px;
+}
+
+.landscape {
+    width: 26px;
+    height: 20px;
+}
