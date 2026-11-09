@@ -7,6 +7,7 @@ import { Modal } from '@/shared/ui/modal';
 import { STEP_SETTINGS } from '../model/stepSettings';
 import { useCreatePost } from '../model/useCreatePost';
 
+import { AddPhotoStep } from './AddPhotoStep';
 import css from './create-post-window.module.scss';
 
 type CreatePostWindowProps = {
@@ -16,7 +17,7 @@ type CreatePostWindowProps = {
 export const CreatePostWindow = ({
     onClose,
 }: CreatePostWindowProps): React.JSX.Element => {
-    const { state, goToStep } = useCreatePost();
+    const { state, goToStep, selectPhoto } = useCreatePost();
     const { title, width, back, next } = STEP_SETTINGS[state.step];
 
     // На первом шаге стрелки и Next в шапке нет: там крестик, как в макете
@@ -52,11 +53,14 @@ export const CreatePostWindow = ({
             headerLeft={headerLeft}
             headerRight={back && headerRight}
         >
-            {/* Заглушка: настоящие экраны делаются в задачах 4, 5, 6 и 7 */}
-            <div className={css.stub}>
-                <p>{title}</p>
-                {!back && next && <Button onClick={() => goToStep(next)}>Next</Button>}
-            </div>
+            {state.step === 'add-photo' ? (
+                <AddPhotoStep onSelect={selectPhoto} />
+            ) : (
+                // Заглушка: остальные экраны делаются в задачах 5, 6 и 7
+                <div className={css.stub}>
+                    <p>{title}</p>
+                </div>
+            )}
         </Modal>
     );
 };
