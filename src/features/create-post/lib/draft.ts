@@ -45,6 +45,10 @@ export const saveDraft = async (userId: string, draft: PostDraft): Promise<void>
             db.close();
             reject(tx.error);
         };
+        tx.onabort = () => {
+            db.close();
+            reject(tx.error ?? new Error('IndexedDB transaction aborted'));
+        };
     });
 };
 
@@ -65,6 +69,10 @@ export const getDraft = async (userId: string): Promise<PostDraft | null> => {
             db.close();
             reject(request.error);
         };
+        tx.onabort = () => {
+            db.close();
+            reject(tx.error ?? new Error('IndexedDB transaction aborted'));
+        };
     });
 };
 
@@ -84,6 +92,10 @@ export const deleteDraft = async (userId: string): Promise<void> => {
         tx.onerror = () => {
             db.close();
             reject(tx.error);
+        };
+        tx.onabort = () => {
+            db.close();
+            reject(tx.error ?? new Error('IndexedDB transaction aborted'));
         };
     });
 };
