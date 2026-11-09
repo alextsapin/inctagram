@@ -6,18 +6,29 @@ import { Modal } from '@/shared/ui/modal';
 
 import { STEP_SETTINGS } from '../model/stepSettings';
 import { useCreatePost } from '../model/useCreatePost';
+import { useSavedDraft } from '../model/useSavedDraft';
 
+import { AddPhotoStep } from './AddPhotoStep';
 import css from './create-post-window.module.scss';
 
 type CreatePostWindowProps = {
+    userId: string; // черновик хранится отдельно для каждого пользователя
     onClose: () => void;
 };
 
 export const CreatePostWindow = ({
+    userId,
     onClose,
 }: CreatePostWindowProps): React.JSX.Element => {
-    const { state, goToStep } = useCreatePost();
+    const { state, goToStep, selectPhoto, openDraft } = useCreatePost();
     const { title, width, back, next } = STEP_SETTINGS[state.step];
+    const savedDraft = useSavedDraft(userId);
+
+    // Кнопка Open Draft нужна, только если в черновике есть фото
+    const handleOpenDraft =
+        savedDraft && savedDraft.photos.length > 0
+            ? () => openDraft(savedDraft)
+            : undefined;
 
     // На первом шаге стрелки и Next в шапке нет: там крестик, как в макете
     const headerLeft = back && (
@@ -52,11 +63,14 @@ export const CreatePostWindow = ({
             headerLeft={headerLeft}
             headerRight={back && headerRight}
         >
-            {/* Заглушка: настоящие экраны делаются в задачах 4, 5, 6 и 7 */}
-            <div className={css.stub}>
-                <p>{title}</p>
-                {!back && next && <Button onClick={() => goToStep(next)}>Next</Button>}
-            </div>
+            {state.step === 'add-photo' ? (
+                <AddPhotoStep onSelect={selectPhoto} onOpenDraft={handleOpenDraft} />
+            ) : (
+                // Заглушка: остальные экраны делаются в задачах 5, 6 и 7
+                <div className={css.stub}>
+                    <p>{title}</p>
+                </div>
+            )}
         </Modal>
     );
 };

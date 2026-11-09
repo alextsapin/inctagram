@@ -17,6 +17,15 @@ import type { Post, User } from './type';
 // ==========================================
 // 1. ПОЛЬЗОВАТЕЛИ (База)
 // ==========================================
+// Совпадает с MOCK_ME при включённых моках авторизации.
+// Храним автора независимо от MOCK_ME: гостевой сценарий меняет MOCK_ME на null.
+export const MOCK_SIGNED_IN_AUTHOR: User = {
+    id: '00000000-0000-0000-0000-000000000000',
+    username: 'ivan_petrov',
+    avatarUrl: el1.src,
+    isFollowing: false,
+};
+
 export const MOCK_USERS: User[] = [
     { id: 'user-1', username: 'artem_dev', avatarUrl: el1.src, isFollowing: false },
     { id: 'user-2', username: 'ivan_ivanov', avatarUrl: el2.src, isFollowing: true },
@@ -24,6 +33,7 @@ export const MOCK_USERS: User[] = [
     { id: 'user-4', username: 'olga_k', avatarUrl: el1.src, isFollowing: true },
     { id: 'user-5', username: 'dmitry_ui', avatarUrl: el2.src, isFollowing: false },
     { id: 'user-6', username: 'elena_design', avatarUrl: el3.src, isFollowing: false },
+    MOCK_SIGNED_IN_AUTHOR,
 ];
 
 // Шорткаты для удобства
@@ -233,12 +243,104 @@ const PROFILE_POSTS: Post[] = [
     },
 ];
 
-// Лента и профиль показывают каждый свой список
+// Дополнительные посты одного автора для проверки подгрузки по 8 элементов.
+// Даты фиксированные, чтобы мок оставался детерминированным при SSR.
+const EXTRA_PROFILE_POSTS: Post[] = Array.from({ length: 17 }, (_, index): Post => {
+    const imageNumber = (index % 8) + 1;
+    const postNumber = String(index + 1).padStart(2, '0');
+
+    return {
+        id: `mock-own-post-${postNumber}`,
+        author: MOCK_SIGNED_IN_AUTHOR,
+        images: [
+            {
+                id: `mock-own-image-${postNumber}`,
+                url: `/profile/post-${imageNumber}.png`,
+                alt: `Profile photo ${imageNumber}`,
+            },
+        ],
+        caption:
+            index === 0
+                ? 'A long caption for testing Show more. '.repeat(12).trim()
+                : `My publication ${index + 1}. Testing profile pagination and posts.`,
+        likesCount: index * 3,
+        commentsCount: index % 4,
+        isLiked: false,
+        isSaved: false,
+        likedBy: mockLikedByEmpty,
+        createdAt: new Date(Date.UTC(2026, 10, 6, 12 - index)).toISOString(),
+    };
+});
+
+// Значение счётчика главной — отдельный мок, а не длина короткого списка MOCK_USERS.
+export const MOCK_REGISTERED_USERS_COUNT = 9213;
+
+// Существующие экспорты сохраняем: старые экраны продолжат работать.
 export const MOCK_FEED_POSTS: Post[] = FEED_POSTS;
 export const MOCK_PROFILE_POSTS: Post[] = PROFILE_POSTS;
 
-// Все посты вместе: по этому списку модалка, редактирование и лайки ищут пост по id
-export const MOCK_POSTS: Post[] = [...FEED_POSTS, ...PROFILE_POSTS];
+// Единый изменяемый список для будущего API постов (задача №1).
+const newestFirst = (first: Post, second: Post): number =>
+    Date.parse(second.createdAt) - Date.parse(first.createdAt);
+
+export const MOCK_POSTS: Post[] = [
+    ...EXTRA_PROFILE_POSTS,
+    ...FEED_POSTS,
+    ...PROFILE_POSTS,
+].sort(newestFirst);
+
+export const getMockPost = (id: string): Post | undefined =>
+    MOCK_POSTS.find(post => post.id === id);
+
+export const getMockUserPosts = (username: string): Post[] =>
+    MOCK_POSTS.filter(post => post.author.username === username).sort(newestFirst);
+
+export const getMockLatestPosts = (limit = 4): Post[] =>
+    [...MOCK_POSTS].sort(newestFirst).slice(0, limit);
+
+// Эти операции работают с памятью, не с БД. После полной перезагрузки
+// клиентского приложения исходные данные моков восстановятся.
+export const createMockPost = (post: Post): Post => {
+    if (getMockPost(post.id)) {
+        throw new Error(`Mock post with id ${post.id} already exists`);
+    }
+
+    MOCK_POSTS.unshift(post);
+    MOCK_PROFILE_POSTS.unshift(post);
+    MOCK_FEED_POSTS.unshift(post);
+
+    return post;
+};
+
+export const updateMockPost = (id: string, caption: string): Post | undefined => {
+    const post = getMockPost(id);
+
+    if (post) {
+        post.caption = caption;
+    }
+
+    return post;
+};
+
+export const deleteMockPost = (id: string): boolean => {
+    const index = MOCK_POSTS.findIndex(post => post.id === id);
+
+    if (index === -1) {
+        return false;
+    }
+
+    MOCK_POSTS.splice(index, 1);
+
+    [MOCK_FEED_POSTS, MOCK_PROFILE_POSTS].forEach(list => {
+        const listIndex = list.findIndex(post => post.id === id);
+
+        if (listIndex !== -1) {
+            list.splice(listIndex, 1);
+        }
+    });
+
+    return true;
+};
 
 // ==========================================
 // 4. КОММЕНТАРИИ (Дерево)

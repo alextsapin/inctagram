@@ -4,10 +4,10 @@ import { useState } from 'react';
 
 import Image from 'next/image';
 
+import imageOutline from '@/shared/assets/image-outline.svg';
 import { Button } from '@/shared/ui/button';
 
 import closeOutline from '../assets/close-outline.svg';
-import imageOutline from '../assets/image-outline.svg';
 
 import { AddPhotoModal } from './AddPhotoModal';
 import { DeletePhotoModal } from './DeletePhotoModal';

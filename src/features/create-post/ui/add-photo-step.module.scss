@@ -1,0 +1,47 @@
+@use '@/shared/styles/vars' as *;
+
+/* По макету от шапки до заглушки 72px, а под кнопками 48px.
+   Modal уже даёт 30px сверху и 36px снизу, здесь добавляем недостающее */
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 42px 0 12px;
+}
+
+/* Блок ошибки, размеры и цвета из README Modal (раздел 6), как в окне аватара */
+.error {
+    width: 100%;
+    margin-bottom: 24px;
+    padding: 6px 24px 5px;
+    border: 1px solid $error;
+    border-radius: 2px;
+    background-color: #660a1d;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: center;
+}
+
+.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 222px;
+    height: 228px;
+    margin-bottom: 60px;
+    border-radius: 2px;
+    background-color: #171717;
+}
+
+/* Ширина кнопок и расстояние между ними по макету */
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 219px;
+}
+
+/* Сам input не показываем: вместо него кнопка «Select from Computer» */
+.input {
+    display: none;
+}
