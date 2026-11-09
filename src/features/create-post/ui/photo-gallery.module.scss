@@ -1,0 +1,94 @@
+/* Панель галереи: миниатюры в ряд и плюс справа. Отступы и цвета из макета */
+.gallery {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 468px; /* не шире окна: 492px минус по 12px с боков */
+    padding: 12px;
+    border-radius: 2px;
+    background-color: rgb(23 23 23 / 80%);
+}
+
+/* Если миниатюры не помещаются, ряд прокручивается вбок */
+.list {
+    display: flex;
+    gap: 12px;
+    min-width: 0;
+    overflow-x: auto;
+}
+
+/* Обёртка миниатюры: от неё отсчитывается крестик в углу */
+.item {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.thumbnail {
+    display: block;
+    width: 80px;
+    height: 82px;
+    padding: 0;
+    border: none;
+    background-color: #171717;
+    cursor: pointer;
+
+    &:focus-visible {
+        outline: 2px solid #397df6;
+        outline-offset: -2px;
+    }
+}
+
+/* Фото заполняет миниатюру целиком, лишнее обрезается */
+.image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Крестик в 2px от верхнего и правого края миниатюры */
+.remove {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 12px;
+    height: 12px;
+    padding: 0;
+    border: none;
+    border-radius: 2px;
+    background-color: rgb(23 23 23 / 80%);
+    color: #fff;
+    cursor: pointer;
+
+    &:focus-visible {
+        outline: 2px solid #397df6;
+    }
+}
+
+.add {
+    display: flex;
+    flex-shrink: 0;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: #fff;
+    cursor: pointer;
+
+    &:focus-visible {
+        outline: 2px solid #397df6;
+    }
+
+    /* Фото уже 10: плюс серый и не нажимается */
+    &:disabled {
+        color: #8d9094;
+        cursor: not-allowed;
+    }
+}
+
+.input {
+    display: none;
+}

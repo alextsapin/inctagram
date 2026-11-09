@@ -1,0 +1,50 @@
+/* Блок 124×36 из макета, дорожка 100px по центру */
+.slider {
+    display: flex;
+    align-items: center;
+    width: 124px;
+    height: 36px;
+    padding: 0 12px;
+    box-sizing: border-box;
+    border-radius: 2px;
+    background-color: rgb(23 23 23 / 80%);
+}
+
+/* Дорожка: белая, а синяя часть слева — это картинка-градиент.
+   Её ширину (background-size) задаёт ZoomSlider по текущему приближению */
+.range {
+    width: 100px;
+    height: 2px;
+    margin: 0;
+    border-radius: 1px;
+    background: linear-gradient(#397df6, #397df6) no-repeat;
+    background-color: #fff;
+    appearance: none;
+    cursor: pointer;
+
+    &:focus-visible {
+        outline: 2px solid #397df6;
+        outline-offset: 6px;
+    }
+
+    /* Кружок: синее кольцо с белой серединой. Chrome, Safari и Edge */
+    &::-webkit-slider-thumb {
+        width: 12px;
+        height: 12px;
+        box-sizing: border-box;
+        border: 3px solid #397df6;
+        border-radius: 50%;
+        background-color: #fff;
+        appearance: none;
+    }
+
+    /* То же для Firefox: там у кружка своё название */
+    &::-moz-range-thumb {
+        width: 12px;
+        height: 12px;
+        box-sizing: border-box;
+        border: 3px solid #397df6;
+        border-radius: 50%;
+        background-color: #fff;
+    }
+}

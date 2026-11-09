@@ -3,21 +3,26 @@
 import { useRef, useState } from 'react';
 
 import Image from 'next/image';
-import type { Area } from 'react-easy-crop';
+import type { Area, Point } from 'react-easy-crop';
 
 import imageOutline from '@/shared/assets/image-outline.svg';
-import { ALLOWED_PHOTO_TYPES, type PhotoRules, validatePhoto } from '@/shared/lib';
+import {
+    ALLOWED_PHOTO_TYPES,
+    getCroppedImage,
+    type PhotoRules,
+    validatePhoto,
+} from '@/shared/lib';
 import { Button } from '@/shared/ui/button';
 import { Modal } from '@/shared/ui/modal';
-
-import { getCroppedImage } from '../lib/getCroppedImage';
+import { PhotoCropper } from '@/shared/ui/photo-cropper';
 
 import css from './add-photo-modal.module.scss';
-import { PhotoCropper } from './PhotoCropper';
 
 const ADD_PHOTO_MODAL_WIDTH = 492;
 const ICON_SIZE = 48;
 const AVATAR_MAX_SIZE_MB = 10;
+const INITIAL_CROP: Point = { x: 0, y: 0 }; // фото по центру, без сдвига
+const INITIAL_ZOOM = 1; // без приближения
 
 // Правила для аватара: у каждой ошибки свой текст из макета
 const AVATAR_PHOTO_RULES: PhotoRules = {
@@ -48,6 +53,9 @@ export const AddPhotoModal = ({
     const [photo, setPhoto] = useState<SelectedPhoto | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [croppedArea, setCroppedArea] = useState<Area | null>(null);
+    // Сдвиг и приближение фото под кругом. PhotoCropper их не хранит, поэтому храним здесь
+    const [crop, setCrop] = useState<Point>(INITIAL_CROP);
+    const [zoom, setZoom] = useState(INITIAL_ZOOM);
 
     // Окно закрывается: всё сбрасываем, чтобы в следующий раз оно открылось пустым.
     // revokeObjectURL освобождает память, которую браузер держал под временную ссылку
@@ -66,6 +74,8 @@ export const AddPhotoModal = ({
         setPhoto(null);
         setError(null);
         setCroppedArea(null);
+        setCrop(INITIAL_CROP);
+        setZoom(INITIAL_ZOOM);
         onClose();
     };
 
@@ -128,7 +138,16 @@ export const AddPhotoModal = ({
 
                 {photo ? (
                     <div className={css.crop}>
-                        <PhotoCropper image={photo.url} onCropComplete={setCroppedArea} />
+                        <PhotoCropper
+                            image={photo.url}
+                            crop={crop}
+                            zoom={zoom}
+                            onCropChange={setCrop}
+                            onZoomChange={setZoom}
+                            onCropComplete={setCroppedArea}
+                            cropShape="round"
+                            className={css.cropper}
+                        />
                     </div>
                 ) : (
                     <>
