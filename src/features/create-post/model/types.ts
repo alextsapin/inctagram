@@ -29,6 +29,7 @@ export type CreatePostPhoto = {
 export type CreatePostState = {
     step: CreatePostStep;
     photos: CreatePostPhoto[];
+    currentIndex: number; // номер фото, которое сейчас на экране
     aspect: CropAspect; // одни пропорции на весь пост, как в Instagram
     description: string;
 };

@@ -4,6 +4,7 @@ import { cropPhotos } from '../lib/cropPhotos';
 import { readImageSize } from '../lib/readImageSize';
 
 import { getAspectRatio } from './aspect';
+import { MAX_PHOTOS } from './photoRules';
 import type {
     CreatePostPhoto,
     CreatePostState,
@@ -17,6 +18,7 @@ import type {
 const INITIAL_STATE: CreatePostState = {
     step: 'add-photo',
     photos: [],
+    currentIndex: 0,
     aspect: 'original', // в макете по умолчанию выбран Original
     description: '',
 };
@@ -33,6 +35,9 @@ type UseCreatePost = {
     goToStep: (step: CreatePostStep) => void;
     selectPhoto: (file: File) => Promise<void>;
     openDraft: (draft: PostDraft) => Promise<void>;
+    showPhoto: (index: number) => void;
+    addPhoto: (file: File) => Promise<void>;
+    removePhoto: (photoId: string) => void;
     setAspect: (aspect: CropAspect) => void;
     updateCropSettings: (photoId: string, changes: Partial<CropSettings>) => void;
     cropAndContinue: () => Promise<void>;
@@ -45,6 +50,27 @@ const toFile = (draftPhoto: DraftPhoto): File =>
         ? draftPhoto.file
         : new File([draftPhoto.file], 'draft-photo', { type: draftPhoto.file.type });
 
+// Новое фото поста. Размеры узнаём сразу: они нужны для пропорций Original.
+// Если файл повреждён, readImageSize выбросит ошибку, и её покажет тот, кто добавлял фото
+const createPhoto = async (file: File): Promise<CreatePostPhoto> => {
+    const { width, height } = await readImageSize(file);
+
+    return {
+        id: crypto.randomUUID(), // уникальный id, чтобы отличать фото друг от друга
+        originalFile: file,
+        width,
+        height,
+        croppedFile: null,
+        cropSettings: INITIAL_CROP_SETTINGS,
+        filter: null,
+        filteredFile: null,
+    };
+};
+
+// Сбрасывает обрезку у всех фото: нужно, когда у рамки меняется форма
+const resetCropSettings = (photos: CreatePostPhoto[]): CreatePostPhoto[] =>
+    photos.map(photo => ({ ...photo, cropSettings: INITIAL_CROP_SETTINGS }));
+
 // Хранит общее состояние окна создания поста
 export const useCreatePost = (): UseCreatePost => {
     const [state, setState] = useState<CreatePostState>(INITIAL_STATE);
@@ -55,67 +81,92 @@ export const useCreatePost = (): UseCreatePost => {
 
     // Фото выбрано на шаге Add Photo: начинаем пост заново с этим фото и открываем обрезку.
     // Заменяем список целиком, а не добавляем: на Add Photo можно вернуться стрелкой «Назад»,
-    // и тогда старое фото не должно остаться в посте. Добавлять фото будет галерея на шаге Cropping.
-    // Размеры фото узнаём сразу: они нужны для пропорций Original.
-    // Если файл повреждён, readImageSize выбросит ошибку, и шаг Add Photo её покажет
+    // и тогда старое фото не должно остаться в посте. Добавляет фото галерея на шаге Cropping
     const selectPhoto = async (file: File): Promise<void> => {
-        const { width, height } = await readImageSize(file);
+        const photo = await createPhoto(file);
 
-        const photo: CreatePostPhoto = {
-            id: crypto.randomUUID(), // уникальный id, чтобы отличать фото друг от друга
-            originalFile: file,
-            width,
-            height,
-            croppedFile: null,
-            cropSettings: INITIAL_CROP_SETTINGS,
-            filter: null,
-            filteredFile: null,
-        };
-
-        setState(prev => ({ ...prev, photos: [photo], step: 'cropping' }));
+        setState(prev => ({
+            ...prev,
+            photos: [photo],
+            currentIndex: 0,
+            step: 'cropping',
+        }));
     };
 
     // Open Draft: берём фото, фильтры и описание из черновика и открываем шаг Cropping.
-    // Обрезку черновик не хранит (задача 9), поэтому она начинается заново, с пропорций Original.
-    // Размеры каждого фото узнаём так же, как при выборе с компьютера
+    // Обрезку черновик не хранит (задача 9), поэтому она начинается заново, с пропорций Original
     const openDraft = async (draft: PostDraft): Promise<void> => {
         const photos = await Promise.all(
             draft.photos.map(async (draftPhoto): Promise<CreatePostPhoto> => {
-                const file = toFile(draftPhoto);
-                const { width, height } = await readImageSize(file);
+                const photo = await createPhoto(toFile(draftPhoto));
 
-                return {
-                    id: draftPhoto.id,
-                    originalFile: file,
-                    width,
-                    height,
-                    croppedFile: null,
-                    cropSettings: INITIAL_CROP_SETTINGS,
-                    filter: draftPhoto.filter,
-                    filteredFile: null,
-                };
+                // id и фильтр берём из черновика
+                return { ...photo, id: draftPhoto.id, filter: draftPhoto.filter };
             }),
         );
 
         setState({
             step: 'cropping',
             photos,
+            currentIndex: 0,
             aspect: 'original',
             description: draft.description,
+        });
+    };
+
+    // Переключает фото на шаге Cropping: стрелками или миниатюрой в галерее
+    const showPhoto = (index: number): void => {
+        setState(prev => ({ ...prev, currentIndex: index }));
+    };
+
+    // Плюс в галерее: добавляем фото в конец и сразу показываем его.
+    // Файл уже проверен. Плюс неактивен на 10-м фото, но проверяем лимит и здесь
+    const addPhoto = async (file: File): Promise<void> => {
+        const photo = await createPhoto(file);
+
+        setState(prev => {
+            if (prev.photos.length >= MAX_PHOTOS) return prev;
+
+            return {
+                ...prev,
+                photos: [...prev.photos, photo],
+                currentIndex: prev.photos.length, // номер нового фото: оно встало в конец
+            };
+        });
+    };
+
+    // Крестик в галерее: удаляем фото
+    const removePhoto = (photoId: string): void => {
+        setState(prev => {
+            const removedIndex = prev.photos.findIndex(photo => photo.id === photoId);
+            const photos = prev.photos.filter(photo => photo.id !== photoId);
+
+            // Удалили последнее фото: показывать нечего, возвращаемся на Add Photo
+            if (photos.length === 0) return INITIAL_STATE;
+
+            // Если удалили фото левее текущего, все фото сдвинулись на одно влево.
+            // Если удалили само текущее, показываем следующее, а если оно было последним, предыдущее
+            const currentIndex =
+                removedIndex < prev.currentIndex
+                    ? prev.currentIndex - 1
+                    : Math.min(prev.currentIndex, photos.length - 1);
+
+            // Пропорции Original берутся у первого фото. Удалили первое: у рамки другая форма,
+            // поэтому, как при смене пропорций, сбрасываем обрезку у всех фото
+            const isFrameChanged = prev.aspect === 'original' && removedIndex === 0;
+
+            return {
+                ...prev,
+                photos: isFrameChanged ? resetCropSettings(photos) : photos,
+                currentIndex,
+            };
         });
     };
 
     // Новые пропорции: у рамки другая форма, поэтому прежний сдвиг и выбранная область
     // больше не подходят. Сбрасываем их у всех фото, область выберется заново
     const setAspect = (aspect: CropAspect): void => {
-        setState(prev => ({
-            ...prev,
-            aspect,
-            photos: prev.photos.map(photo => ({
-                ...photo,
-                cropSettings: INITIAL_CROP_SETTINGS,
-            })),
-        }));
+        setState(prev => ({ ...prev, aspect, photos: resetCropSettings(prev.photos) }));
     };
 
     // Меняет обрезку одного фото: сдвиг, приближение или выбранную область
@@ -154,6 +205,9 @@ export const useCreatePost = (): UseCreatePost => {
         goToStep,
         selectPhoto,
         openDraft,
+        showPhoto,
+        addPhoto,
+        removePhoto,
         setAspect,
         updateCropSettings,
         cropAndContinue,

@@ -17,3 +17,5 @@ export { ExpandIcon } from './ExpandIcon';
 export { ImageIcon } from './ImageIcon';
 export { ZoomFilledIcon } from './ZoomFilledIcon';
 export { ZoomIcon } from './ZoomIcon';
+export { PlusCircleIcon } from './PlusCircleIcon';
+export { CloseSmallIcon } from './CloseSmallIcon';

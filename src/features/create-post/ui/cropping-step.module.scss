@@ -53,3 +53,54 @@
     bottom: calc(100% + 2px);
     left: 0;
 }
+
+/* Кнопка галереи в 11px от правого и нижнего края */
+.gallery {
+    position: absolute;
+    right: 11px;
+    bottom: 11px;
+}
+
+/* Панель галереи прижата к кнопке правым краем, чтобы не вылезти за окно */
+.menu-right {
+    right: 0;
+    left: auto;
+}
+
+/* Стрелки между фото: в 11px от края, по центру высоты */
+.arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.prev {
+    left: 11px;
+}
+
+.next {
+    right: 11px;
+}
+
+/* Точки по центру, в 26px от нижнего края. Клики проходят сквозь них к фото */
+.dots {
+    position: absolute;
+    bottom: 26px;
+    left: 50%;
+    display: flex;
+    gap: 6px;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #8d9094;
+}
+
+/* Точка фото, которое сейчас на экране */
+.current {
+    background-color: #397df6;
+}

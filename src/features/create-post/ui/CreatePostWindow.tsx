@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 
+import { validatePhoto } from '@/shared/lib';
 import { Alert } from '@/shared/ui/alert';
 import { Button } from '@/shared/ui/button';
 import { ArrowLeftIcon } from '@/shared/ui/icons';
 import { Modal } from '@/shared/ui/modal';
 
 import { getAspectRatio } from '../model/aspect';
+import { POST_PHOTO_ERROR, POST_PHOTO_RULES } from '../model/photoRules';
 import { STEP_SETTINGS } from '../model/stepSettings';
 import { useCreatePost } from '../model/useCreatePost';
 import { useSavedDraft } from '../model/useSavedDraft';
@@ -30,6 +32,9 @@ export const CreatePostWindow = ({
         goToStep,
         selectPhoto,
         openDraft,
+        showPhoto,
+        addPhoto,
+        removePhoto,
         setAspect,
         updateCropSettings,
         cropAndContinue,
@@ -51,8 +56,20 @@ export const CreatePostWindow = ({
               }
             : undefined;
 
-    // Фото, которое сейчас обрезаем. Пока фото одно; переключать их будет галерея
-    const currentPhoto = state.photos[0];
+    // Плюс в галерее: проверяем файл по тем же правилам, что на шаге Add Photo.
+    // Ошибку показываем всплывающим сообщением, а на экране остаётся прежнее фото
+    const handleAddPhoto = (file: File): void => {
+        const validationError = validatePhoto(file, POST_PHOTO_RULES);
+
+        if (validationError) {
+            setError(validationError);
+
+            return;
+        }
+
+        // Формат подходит, но файл может оказаться повреждённым и не открыться
+        addPhoto(file).catch(() => setError(POST_PHOTO_ERROR));
+    };
 
     // Next на шаге Cropping сначала вырезает выбранную область из каждого фото.
     // Это занимает время, поэтому пока идёт обрезка, кнопка неактивна
@@ -120,15 +137,18 @@ export const CreatePostWindow = ({
                 <AddPhotoStep onSelect={selectPhoto} onOpenDraft={handleOpenDraft} />
             )}
 
-            {state.step === 'cropping' && currentPhoto && (
+            {state.step === 'cropping' && state.photos.length > 0 && (
                 <CroppingStep
-                    photo={currentPhoto}
+                    photos={state.photos}
+                    currentIndex={state.currentIndex}
                     aspect={state.aspect}
+                    // У Original пропорции первого фото, они общие для всех фото поста
                     aspectRatio={getAspectRatio(state.aspect, state.photos[0])}
                     onAspectChange={setAspect}
-                    onCropSettingsChange={changes =>
-                        updateCropSettings(currentPhoto.id, changes)
-                    }
+                    onCropSettingsChange={updateCropSettings}
+                    onShowPhoto={showPhoto}
+                    onAddPhoto={handleAddPhoto}
+                    onRemovePhoto={removePhoto}
                 />
             )}
 
