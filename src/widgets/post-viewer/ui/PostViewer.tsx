@@ -2,8 +2,15 @@
 
 import { useState } from 'react';
 
-import { Carousel, MOCK_POSTS, PostCaption, PostHeader, PostMeta } from '@/entities/post';
-import { PostMenu } from '@/entities/post/ui/post-menu';
+import {
+    Carousel,
+    Post,
+    PostCaption,
+    PostHeader,
+    PostMenu,
+    PostMeta,
+} from '@/entities/post';
+import { useCurrentUser } from '@/entities/session';
 import { AddCommentForm } from '@/features/add-comment';
 import { DeletePostModal } from '@/features/delete-post';
 import { LikeCommentButton } from '@/features/like-comment';
@@ -15,26 +22,24 @@ import { CommentsSection } from '@/features/view-comments';
 import s from './post-viewer.module.scss';
 
 type Props = {
-    postId: string;
+    post: Post;
     onEdit?: () => void;
     onDeleted?: () => void;
     onLikesClick?: () => void;
 };
 export const PostViewer = ({
-    postId,
     onEdit,
     onDeleted,
     onLikesClick,
+    post,
 }: Props): React.JSX.Element => {
     //  на какой комментарий мы сейчас отвечаем
     //  null  -  если мы просто пишем коммент, а не отвечаем
     const [replyToId, setReplyToId] = useState<string | null>(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const data = MOCK_POSTS.find(post => post.id === postId);
 
-    if (!data) {
-        return <div>Пост не найден</div>;
-    }
+    const { data: currentUser } = useCurrentUser();
+
     const {
         id,
         author,
@@ -45,15 +50,9 @@ export const PostViewer = ({
         likesCount,
         createdAt,
         caption,
-    } = data;
+    } = post;
 
-    const currentUser = {
-        id: 'user-1',
-        username: 'artem_dev',
-        avatarUrl: '/images/avatars/artem.jpg',
-    };
-
-    const isOwnPost = currentUser?.id === author.id;
+    const isOwnPost = currentUser?.userId === author.id;
 
     const handleDeleteConfirm = (): void => {
         // В будущем муатция удаления
@@ -63,7 +62,7 @@ export const PostViewer = ({
     };
 
     return (
-        <div className={s.wrapper}>
+        <section className={s.wrapper}>
             <div className={s.content}>
                 <div className={s['carousel-wrapper']}>
                     <Carousel slides={images} />
@@ -95,7 +94,7 @@ export const PostViewer = ({
 
                         <CommentsSection
                             onReply={id => setReplyToId(id)}
-                            postId={postId}
+                            postId={id}
                             renderActions={comment => (
                                 <LikeCommentButton
                                     commentId={comment.id}
@@ -124,7 +123,7 @@ export const PostViewer = ({
                         <div className={s['form-wrapper']}>
                             <AddCommentForm
                                 // Пробрасываем id поста и id комментария
-                                postId={postId}
+                                postId={id}
                                 replyToId={replyToId}
                                 // функция сброса в форму
                                 onCancelReply={() => setReplyToId(null)}
@@ -140,6 +139,6 @@ export const PostViewer = ({
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleDeleteConfirm}
             />
-        </div>
+        </section>
     );
 };
