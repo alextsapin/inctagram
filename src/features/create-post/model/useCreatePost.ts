@@ -80,17 +80,13 @@ export const useCreatePost = (): UseCreatePost => {
     };
 
     // Фото выбрано на шаге Add Photo: начинаем пост заново с этим фото и открываем обрезку.
-    // Заменяем список целиком, а не добавляем: на Add Photo можно вернуться стрелкой «Назад»,
-    // и тогда старое фото не должно остаться в посте. Добавляет фото галерея на шаге Cropping
+    // На Add Photo можно вернуться стрелкой «Назад», а по ТЗ это закрытие публикации
+    // (задача 8). Поэтому от прошлой публикации ничего не берём: ни фото, ни пропорции,
+    // ни описание. Добавляет фото к посту галерея на шаге Cropping
     const selectPhoto = async (file: File): Promise<void> => {
         const photo = await createPhoto(file);
 
-        setState(prev => ({
-            ...prev,
-            photos: [photo],
-            currentIndex: 0,
-            step: 'cropping',
-        }));
+        setState({ ...INITIAL_STATE, photos: [photo], step: 'cropping' });
     };
 
     // Open Draft: берём фото, фильтры и описание из черновика и открываем шаг Cropping.
@@ -164,9 +160,14 @@ export const useCreatePost = (): UseCreatePost => {
     };
 
     // Новые пропорции: у рамки другая форма, поэтому прежний сдвиг и выбранная область
-    // больше не подходят. Сбрасываем их у всех фото, область выберется заново
+    // больше не подходят. Сбрасываем их у всех фото, область выберется заново.
+    // Повторный выбор тех же пропорций ничего не меняет, обрезка остаётся
     const setAspect = (aspect: CropAspect): void => {
-        setState(prev => ({ ...prev, aspect, photos: resetCropSettings(prev.photos) }));
+        setState(prev =>
+            prev.aspect === aspect
+                ? prev
+                : { ...prev, aspect, photos: resetCropSettings(prev.photos) },
+        );
     };
 
     // Меняет обрезку одного фото: сдвиг, приближение или выбранную область
