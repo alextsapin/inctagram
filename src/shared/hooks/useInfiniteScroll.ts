@@ -8,7 +8,10 @@ type UseInfiniteScrollOptions = {
 
     // Идёт ли сейчас загрузка следующей страницы. true защищает от повторного срабатывания,
     // пока вызывающий компонент не передаст обновлённое значение обратно в хук.
-    isLoading?: boolean;
+    // Поле обязательно: без внешнего сигнала о завершении загрузки internal-флаг защиты
+    // от повторных вызовов не сможет сброситься, и подгрузка молча перестанет работать
+    // после первого вызова.
+    isLoading: boolean;
 
     // Есть ли ещё данные для подгрузки. Когда false — подгрузка не запускается.
     hasMore?: boolean;
@@ -35,7 +38,7 @@ export const useInfiniteScroll = <T extends HTMLElement = HTMLDivElement>(
 ): RefCallback<T> => {
     const {
         onLoadMore,
-        isLoading = false,
+        isLoading,
         hasMore = true,
         root = null,
         rootMargin = '200px',
@@ -83,7 +86,7 @@ export const useInfiniteScroll = <T extends HTMLElement = HTMLDivElement>(
         return () => {
             observer.disconnect();
         };
-    }, [sentinelNode, onLoadMore, root, rootMargin, hasMore]);
+    }, [sentinelNode, onLoadMore, root, rootMargin, hasMore, isLoading]);
 
     return sentinelRef;
 };
