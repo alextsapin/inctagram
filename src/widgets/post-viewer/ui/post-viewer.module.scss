@@ -1,3 +1,5 @@
+@use '@/shared/styles/scroll' as *;
+
 .wrapper {
     display: flex;
     align-items: center;
@@ -45,26 +47,7 @@
     min-height: 0;
     padding: 16px;
 
-    &::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    &::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background: #555;
-        border-radius: 4px;
-    }
-
-    &::-webkit-scrollbar-thumb:hover {
-        background: #777;
-    }
-
-    &::-webkit-scrollbar-button {
-        display: none;
-    }
+    @include custom-scrollbar;
 }
 
 .footer {
