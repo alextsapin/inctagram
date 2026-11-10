@@ -19,5 +19,6 @@ export { PostHeader } from './ui/header';
 export { PostGrid } from './ui/post-grid';
 export { PostMeta } from './ui/meta';
 export type { User, PostImage, Post } from './model/type';
-export { usePosts } from './model/queries';
+export { getPost, getUserPosts, createPost, updatePost, deletePost } from './api/postApi';
+export { postQueryKeys } from './api/queryKeys';
 export { usePost } from './model/queries';

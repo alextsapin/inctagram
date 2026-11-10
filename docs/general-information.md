@@ -43,13 +43,14 @@ src/
 │   └── index.ts                        # export { EditProfileForm }
 ├── features/change-profile-photo/      # фото профиля
 │   ├── assets/                         # иконки из Figma
-│   ├── lib/validatePhoto.ts            # проверка формата и размера файла
-│   ├── lib/getCroppedImage.ts          # вырезает выбранную область фото
 │   ├── ui/ProfilePhoto.tsx             # аватарка, кнопка загрузки, крестик удаления
 │   ├── ui/AddPhotoModal.tsx            # окно «Add a Profile Photo»
-│   ├── ui/PhotoCropper.tsx             # фото под круглой маской
 │   ├── ui/DeletePhotoModal.tsx         # окно «Delete Photo»
 │   └── index.ts                        # export { ProfilePhoto }
+├── shared/lib/validatePhoto.ts         # проверка формата и размера фото, общая с постами
+├── shared/lib/getCroppedImage.ts       # вырезает выбранную область фото, общая с постами
+├── shared/ui/photo-cropper/            # фото под рамкой обрезки, общее с постами
+├── shared/assets/image-outline.svg     # иконка заглушки, общая с постами
 └── shared/ui/date-picker/              # проп fullWidth и ввод даты с маской
 ```
 
@@ -102,12 +103,13 @@ Privacy Policy на `/privacy-policy`, как в макете.
 | Проверка          | Текст ошибки                                                 |
 | ----------------- | ------------------------------------------------------------ |
 | только PNG и JPEG | Error! The format of the uploaded photo must be PNG and JPEG |
-| не больше 10 MB   | Error! Photo size must be less than 10 MB!                   |
+| меньше 10 MB      | Error! Photo size must be less than 10 MB!                   |
 
 ### Как устроено
 
--   **Обрезка.** Библиотека `react-easy-crop` показывает фото под кругом и сообщает,
-    какой квадрат выбран. Сам квадрат вырезает `getCroppedImage`: рисует его на
+-   **Обрезка.** Общий `PhotoCropper` на библиотеке `react-easy-crop` показывает фото
+    под кругом и сообщает, какой квадрат выбран. Сдвиг и приближение хранит
+    `AddPhotoModal`. Сам квадрат вырезает `getCroppedImage`: рисует его на
     `<canvas>` и получает файл (`Blob`). Формат сохраняется исходный, чтобы у PNG
     не пропала прозрачность.
 -   **Временные ссылки.** Чтобы показать фото до загрузки на сервер, используем

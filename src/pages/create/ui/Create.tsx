@@ -34,11 +34,14 @@ export const Create = ({ isModal }: CreateProps): React.JSX.Element | null => {
         }
     };
 
-    if (isPending || isGuest) {
+    // !user здесь нужен TypeScript: после проверок выше пользователь точно есть
+    if (isPending || isGuest || !user) {
         return null;
     }
 
-    const createPostWindow = <CreatePostWindow onClose={handleClose} />;
+    const createPostWindow = (
+        <CreatePostWindow userId={user.userId} onClose={handleClose} />
+    );
 
     return isModal ? (
         createPostWindow
