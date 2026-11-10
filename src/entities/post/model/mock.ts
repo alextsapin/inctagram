@@ -27,7 +27,12 @@ export const MOCK_SIGNED_IN_AUTHOR: User = {
 };
 
 export const MOCK_USERS: User[] = [
-    { id: 'user-1', username: 'artem_dev', avatarUrl: el1.src, isFollowing: false },
+    {
+        id: '00000000-0000-0000-0000-000000000000',
+        username: 'artem_dev',
+        avatarUrl: el1.src,
+        isFollowing: false,
+    },
     { id: 'user-2', username: 'ivan_ivanov', avatarUrl: el2.src, isFollowing: true },
     { id: 'user-3', username: 'anna_smith', avatarUrl: el3.src, isFollowing: false },
     { id: 'user-4', username: 'olga_k', avatarUrl: el1.src, isFollowing: true },

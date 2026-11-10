@@ -1,21 +1,14 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import { getPost } from '../api/postApi';
+import { postQueryKeys } from '../api/queryKeys';
 
 import { Post } from './type';
-
-// 1. Выносим ключи кэша (Query Keys) в отдельный объект
-export const postKeys = {
-    all: ['posts'] as const,
-    lists: () => [...postKeys.all, 'list'] as const,
-    details: () => [...postKeys.all, 'detail'] as const,
-    detail: (id: string) => [...postKeys.details(), id] as const,
-};
 
 // 3. Хук для получения одного поста по ID
 export const usePost = (postId: string): UseQueryResult<Post, Error> => {
     return useQuery({
-        queryKey: postKeys.detail(postId),
+        queryKey: postQueryKeys.detail(postId),
         queryFn: () => {
             const post = getPost(postId);
 
