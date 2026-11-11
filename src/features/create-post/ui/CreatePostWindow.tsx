@@ -112,12 +112,15 @@ export const CreatePostWindow = ({
         }
     };
 
-    // На первом шаге стрелки и Next в шапке нет: там крестик, как в макете
+    // На первом шаге стрелки и Next в шапке нет: там крестик, как в макете.
+    // Пока Next готовит файлы, «Назад» неактивна: иначе после обработки
+    // окно само перебросило бы пользователя на следующий шаг
     const headerLeft = back && (
         <button
             type="button"
             className={css.back}
             aria-label="Back"
+            disabled={isProcessing}
             onClick={() => goToStep(back)}
         >
             <ArrowLeftIcon />
@@ -175,6 +178,7 @@ export const CreatePostWindow = ({
                 <FiltersStep
                     photos={state.photos}
                     currentIndex={state.currentIndex}
+                    disabled={isProcessing}
                     onShowPhoto={showPhoto}
                     onFilterChange={setFilter}
                 />

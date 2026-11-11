@@ -11,6 +11,9 @@ import { PhotoPreview } from './PhotoPreview';
 type FiltersStepProps = {
     photos: CreatePostPhoto[]; // все фото поста
     currentIndex: number; // номер фото, которое сейчас на экране
+    // Пока Next рисует фильтры в файлы, плитки неактивны:
+    // фильтр, выбранный в это время, в файл уже не попал бы
+    disabled: boolean;
     onShowPhoto: (index: number) => void;
     onFilterChange: (photoId: string, filter: string | null) => void;
 };
@@ -21,11 +24,12 @@ type FiltersStepProps = {
 export const FiltersStep = ({
     photos,
     currentIndex,
+    disabled,
     onShowPhoto,
     onFilterChange,
 }: FiltersStepProps): React.JSX.Element => {
     const photo = photos[currentIndex];
-    // Одна ссылка на всё фото для всех плиток: браузер загрузит его один раз
+    // Одна ссылка на фото для всех 40 плиток, а не по ссылке на каждую
     const photoUrl = useObjectUrl(photo.croppedFile ?? photo.originalFile);
 
     return (
@@ -43,6 +47,7 @@ export const FiltersStep = ({
                             type="button"
                             className={css.filter}
                             aria-pressed={photo.filter === filter}
+                            disabled={disabled}
                             onClick={() => onFilterChange(photo.id, filter)}
                         >
                             {/* Обычный <img>: next/image не работает с временными ссылками blob: */}

@@ -6,12 +6,13 @@
     height: 503px;
 }
 
-/* Плитки в 3 колонки по центру правой части. Все 40 не помещаются, поэтому
-   правая часть прокручивается. Отступы и промежутки из макета */
+/* Плитки в 3 колонки по 108px по центру правой части, отступы из макета.
+   В узком окне колонки сжимаются, чтобы не было прокрутки вбок.
+   Все 40 плиток не помещаются, поэтому правая часть прокручивается вниз */
 .filters {
     display: grid;
     flex-grow: 1;
-    grid-template-columns: repeat(3, 108px);
+    grid-template-columns: repeat(3, minmax(0, 108px));
     gap: 18px 24px;
     place-content: start center; /* ряды сверху, колонки по центру */
     margin: 0;
@@ -29,7 +30,7 @@
     flex-direction: column;
     gap: 6px;
     align-items: center;
-    width: 108px;
+    width: 100%;
     padding: 0;
     border: none;
     background: none;
@@ -43,11 +44,16 @@
         outline: 2px solid #397df6;
         outline-offset: 2px;
     }
+
+    /* Неактивна, пока Next рисует фильтры в файлы */
+    &:disabled {
+        cursor: default;
+    }
 }
 
 .image {
     display: block;
-    width: 108px;
-    height: 108px;
+    width: 100%;
+    aspect-ratio: 1; /* квадрат 108×108, а в узком окне меньше */
     object-fit: cover;
 }
