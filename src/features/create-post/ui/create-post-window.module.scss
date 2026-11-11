@@ -5,6 +5,11 @@
     background: none;
     color: #fff;
     cursor: pointer;
+
+    /* Неактивна, пока Next готовит файлы */
+    &:disabled {
+        cursor: default;
+    }
 }
 
 .next {

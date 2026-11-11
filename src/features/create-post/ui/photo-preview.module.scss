@@ -1,0 +1,71 @@
+/* Левая часть окна: фото 490×503, стрелки и точки лежат поверх него */
+.preview {
+    position: relative;
+    flex-shrink: 0;
+    width: 490px;
+    height: 503px;
+}
+
+/* Фото уже обрезано под выбранные пропорции, поэтому показываем его целиком */
+.image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Стрелки 48px на полупрозрачной подложке. Место из макета: 12px от края,
+   197px от верха фото (чуть выше середины) */
+.arrow {
+    position: absolute;
+    top: 197px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: none;
+    border-radius: 2px;
+    background-color: rgb(51 51 51 / 50%);
+    color: #fff;
+    cursor: pointer;
+
+    &:focus-visible {
+        outline: 2px solid #397df6;
+        outline-offset: 2px;
+    }
+}
+
+.prev {
+    left: 12px;
+}
+
+.next {
+    right: 12px;
+}
+
+/* Точки на подложке по центру, в 12px от нижнего края */
+.dots {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    display: flex;
+    gap: 12px;
+    padding: 8px;
+    border-radius: 2px;
+    background-color: rgb(51 51 51 / 50%);
+    transform: translateX(-50%);
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #fff;
+}
+
+/* Точка фото, которое сейчас на экране */
+.current {
+    background-color: #397df6;
+}

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { applyFilters } from '../lib/applyFilters';
 import { cropPhotos } from '../lib/cropPhotos';
 import { readImageSize } from '../lib/readImageSize';
 
@@ -41,6 +42,8 @@ type UseCreatePost = {
     setAspect: (aspect: CropAspect) => void;
     updateCropSettings: (photoId: string, changes: Partial<CropSettings>) => void;
     cropAndContinue: () => Promise<void>;
+    setFilter: (photoId: string, filter: string | null) => void;
+    applyFiltersAndContinue: () => Promise<void>;
 };
 
 // В черновике фото лежит как Blob, а пост хранит исходное фото как File.
@@ -81,8 +84,8 @@ export const useCreatePost = (): UseCreatePost => {
 
     // Фото выбрано на шаге Add Photo: начинаем пост заново с этим фото и открываем обрезку.
     // На Add Photo можно вернуться стрелкой «Назад», а по ТЗ это закрытие публикации
-    // (задача 8). Поэтому от прошлой публикации ничего не берём: ни фото, ни пропорции,
-    // ни описание. Добавляет фото к посту галерея на шаге Cropping
+    // (задача «Выход из создания поста»). Поэтому от прошлой публикации ничего не берём:
+    // ни фото, ни пропорции, ни описание. Добавляет фото к посту галерея на шаге Cropping
     const selectPhoto = async (file: File): Promise<void> => {
         const photo = await createPhoto(file);
 
@@ -90,7 +93,8 @@ export const useCreatePost = (): UseCreatePost => {
     };
 
     // Open Draft: берём фото, фильтры и описание из черновика и открываем шаг Cropping.
-    // Обрезку черновик не хранит (задача 9), поэтому она начинается заново, с пропорций Original
+    // Обрезку черновик не хранит (задача «Черновик»), поэтому она начинается заново,
+    // с пропорций Original
     const openDraft = async (draft: PostDraft): Promise<void> => {
         const photos = await Promise.all(
             draft.photos.map(async (draftPhoto): Promise<CreatePostPhoto> => {
@@ -201,6 +205,32 @@ export const useCreatePost = (): UseCreatePost => {
         }));
     };
 
+    // Плитка на шаге Filters: выбирает фильтр одному фото. null — без фильтра (Normal)
+    const setFilter = (photoId: string, filter: string | null): void => {
+        setState(prev => ({
+            ...prev,
+            photos: prev.photos.map(photo =>
+                photo.id === photoId ? { ...photo, filter } : photo,
+            ),
+        }));
+    };
+
+    // Кнопка Next на шаге Filters: рисуем выбранный фильтр в файл каждого фото
+    // и переходим к публикации. Обрезанный файл без фильтра остаётся в croppedFile.
+    // Если не получилось, ошибку покажет окно
+    const applyFiltersAndContinue = async (): Promise<void> => {
+        const filteredFiles = await applyFilters(state.photos);
+
+        setState(prev => ({
+            ...prev,
+            photos: prev.photos.map((photo, index) => ({
+                ...photo,
+                filteredFile: filteredFiles[index],
+            })),
+            step: 'publication',
+        }));
+    };
+
     return {
         state,
         goToStep,
@@ -212,5 +242,7 @@ export const useCreatePost = (): UseCreatePost => {
         setAspect,
         updateCropSettings,
         cropAndContinue,
+        setFilter,
+        applyFiltersAndContinue,
     };
 };
