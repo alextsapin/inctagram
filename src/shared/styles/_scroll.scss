@@ -1,0 +1,32 @@
+// Единая полоса прокрутки. Подключается только там, где нужен скролл внутри блока
+// (например, список комментариев в посте, список лайков). Значения взяты из дизайн-макета
+// (Pixso, блок Scroll): thumb default #333, hover #8d9094, track #4c4c4c, ширина 4px, radius 3px.
+@mixin custom-scrollbar {
+    @supports not selector(::-webkit-scrollbar) {
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-dark-300) var(--color-dark-100);
+    }
+
+    &::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: var(--color-dark-100);
+        border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: var(--color-dark-300);
+        border-radius: 3px;
+
+        &:hover {
+            background: var(--color-light-900);
+        }
+    }
+
+    &::-webkit-scrollbar-button {
+        display: none;
+    }
+}
