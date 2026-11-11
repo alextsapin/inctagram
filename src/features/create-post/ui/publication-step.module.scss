@@ -1,0 +1,53 @@
+/* Слева фото, справа автор и описание. Высота окна под шапкой из макета */
+.step {
+    display: flex;
+    height: 503px;
+}
+
+/* Правая часть: отступы 24px, снизу линия, как в макете.
+   Под линией в макете блок Add location, по ТЗ он пока не нужен */
+.details {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-self: flex-start;
+    padding: 24px 24px 18px;
+    border-bottom: 1px solid #4c4c4c;
+
+    /* Поле высотой 120px, как в макете, и размер не меняется.
+       Правило внутри .details сильнее resize: vertical у общего Textarea,
+       поэтому не зависит от порядка подключения стилей */
+    .description {
+        height: 120px;
+        resize: none;
+    }
+}
+
+/* Аватар и имя в ряд, между ними 12px, до описания 24px */
+.author {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.username {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+}
+
+.label {
+    color: #8d9094;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+/* Счётчик справа под полем */
+.counter {
+    margin: 0;
+    color: #8d9094;
+    font-size: 12px;
+    line-height: 16px;
+    text-align: right;
+}

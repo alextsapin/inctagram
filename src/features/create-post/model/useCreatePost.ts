@@ -44,6 +44,7 @@ type UseCreatePost = {
     cropAndContinue: () => Promise<void>;
     setFilter: (photoId: string, filter: string | null) => void;
     applyFiltersAndContinue: () => Promise<void>;
+    setDescription: (description: string) => void;
 };
 
 // В черновике фото лежит как Blob, а пост хранит исходное фото как File.
@@ -231,6 +232,12 @@ export const useCreatePost = (): UseCreatePost => {
         }));
     };
 
+    // Поле описания на шаге Publication. Описание хранится в общем состоянии окна:
+    // его же сохраняет черновик
+    const setDescription = (description: string): void => {
+        setState(prev => ({ ...prev, description }));
+    };
+
     return {
         state,
         goToStep,
@@ -244,5 +251,6 @@ export const useCreatePost = (): UseCreatePost => {
         cropAndContinue,
         setFilter,
         applyFiltersAndContinue,
+        setDescription,
     };
 };
