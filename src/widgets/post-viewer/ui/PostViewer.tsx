@@ -75,7 +75,7 @@ export const PostViewer = ({
                                 <PostMenu
                                     postId={id}
                                     isOwnPost={isOwnPost}
-                                    isFollow={false}
+                                    isFollow={author.isFollowing ?? false}
                                     onEdit={onEdit}
                                     onDelete={() => setIsDeleteModalOpen(true)}
                                 />

@@ -9,16 +9,7 @@ import { Post } from './type';
 export const usePost = (postId: string): UseQueryResult<Post, Error> => {
     return useQuery({
         queryKey: postQueryKeys.detail(postId),
-        queryFn: () => {
-            const post = getPost(postId);
-
-            if (!post) {
-                throw new Error('Пост не найден');
-            }
-
-            return post;
-        },
-        // Включаем запрос только если postId существует
-        enabled: !!postId,
+        queryFn: () => getPost(postId),
+        enabled: Boolean(postId),
     });
 };
