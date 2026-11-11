@@ -40,18 +40,10 @@
         outline: 2px solid #397df6;
         outline-offset: 2px;
     }
-}
 
-/* Кнопка открытого меню синяя */
-.active {
-    color: #397df6;
-}
-
-/* Меню в 2px над кнопкой, левым краем по кнопке */
-.menu {
-    position: absolute;
-    bottom: calc(100% + 2px);
-    left: 0;
+    &[aria-expanded='true'] {
+        color: #397df6;
+    }
 }
 
 /* Кнопка галереи в 11px от правого и нижнего края */
@@ -59,12 +51,6 @@
     position: absolute;
     right: 11px;
     bottom: 11px;
-}
-
-/* Панель галереи прижата к кнопке правым краем, чтобы не вылезти за окно */
-.menu-right {
-    right: 0;
-    left: auto;
 }
 
 /* Стрелки между фото: в 11px от края, по центру высоты */

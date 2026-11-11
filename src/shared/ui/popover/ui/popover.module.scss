@@ -1,0 +1,36 @@
+.wrapper {
+    position: relative;
+    display: inline-flex;
+}
+
+.trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+
+    &:focus-visible {
+        outline: 2px solid #397df6;
+        outline-offset: 2px;
+    }
+}
+
+.content {
+    position: absolute;
+    bottom: calc(100% + 2px);
+    z-index: 10;
+    width: max-content;
+    max-width: calc(100vw - 32px);
+}
+
+.start {
+    left: 0;
+}
+
+.end {
+    right: 0;
+}
