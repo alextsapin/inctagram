@@ -530,6 +530,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 | **Input**                       | `src/shared/ui/input/`         | [README Input](src/shared/ui/input/README.md)                |
 | **Modal**                       | `src/shared/ui/modal/`         | [README Modal](src/shared/ui/modal/README.md)                |
 | **PhotoCropper**                | `src/shared/ui/photo-cropper/` | [README PhotoCropper](src/shared/ui/photo-cropper/README.md) |
+| **Popover**                     | `src/shared/ui/popover/`       | [README Popover](src/shared/ui/popover/README.md)            |
 | **Select**                      | `src/shared/ui/select/`        | [README Select](src/shared/ui/select/README.md)              |
 | **Tabs**                        | `src/shared/ui/tabs/`          | [README Tabs](src/shared/ui/tabs/README.md)                  |
 | **Textarea**                    | `src/shared/ui/textarea/`      | [README Textarea](src/shared/ui/textarea/README.md)          |

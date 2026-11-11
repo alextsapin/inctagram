@@ -11,6 +11,8 @@ export type PopoverProps = {
     triggerLabel?: string;
     triggerClassName?: string;
     align?: 'start' | 'end';
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
     children: ReactNode;
 };
 
@@ -19,18 +21,30 @@ export const Popover = ({
     triggerLabel,
     triggerClassName,
     align = 'start',
+    open,
+    onOpenChange,
     children,
 }: PopoverProps): React.JSX.Element => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [internalOpen, setInternalOpen] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
     const contentId = useId();
 
+    const isOpen = open ?? internalOpen;
+
+    const changeOpen = (nextOpen: boolean): void => {
+        if (open === undefined) {
+            setInternalOpen(nextOpen);
+        }
+
+        onOpenChange?.(nextOpen);
+    };
+
     useCloseOnOutsideClick(wrapperRef, isOpen, () => {
-        setIsOpen(false);
+        changeOpen(false);
     });
 
     const togglePopover = (): void => {
-        setIsOpen(prev => !prev);
+        changeOpen(!isOpen);
     };
 
     return (

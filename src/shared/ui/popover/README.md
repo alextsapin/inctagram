@@ -22,3 +22,38 @@ import { Popover } from '@/shared/ui/popover';
 
 Если триггер содержит только иконку, передайте `triggerLabel` для доступного
 названия кнопки.
+
+
+## Управляемый режим
+
+Popover поддерживает два режима:
+
+- Автономный — самостоятельно управляет открытием.
+- Управляемый — получает состояние через `open` и `onOpenChange`.
+
+```tsx
+const [isOpen, setIsOpen] = useState(false);
+
+<Popover
+    trigger="Open"
+    open={isOpen}
+    onOpenChange={setIsOpen}
+>
+    <div>Popover content</div>
+</Popover>
+```
+
+## Свойства
+
+| Свойство | Назначение |
+| --- | --- |
+| `trigger` | Содержимое кнопки открытия |
+| `triggerLabel` | Доступное название кнопки |
+| `triggerClassName` | Дополнительный CSS-класс кнопки |
+| `align` | Выравнивание: `start` или `end` |
+| `open` | Внешнее состояние открытия |
+| `onOpenChange` | Обработчик изменения состояния |
+| `children` | Содержимое Popover |
+
+`trigger` не должен содержать вложенный `<button>`:
+Popover уже создаёт кнопку самостоятельно.
