@@ -3,10 +3,11 @@ import {
     deleteMockPost,
     getMockPost,
     getMockUserPosts,
+    getMockUserPostsPage,
     MOCK_SIGNED_IN_AUTHOR,
     updateMockPost,
 } from '../model/mock';
-import type { Post, PostImage } from '../model/type';
+import type { Post, PostImage, UserPostsPage } from '../model/type';
 
 // Get a post by ID or throw an error if it is not found
 export const getPost = async (id: string): Promise<Post> => {
@@ -22,6 +23,17 @@ export const getPost = async (id: string): Promise<Post> => {
 // Get a user's posts sorted from newest to oldest
 export const getUserPosts = async (username: string): Promise<Post[]> => {
     return getMockUserPosts(username);
+};
+
+// Get a page of a user's posts for infinite loading (задача 12 / BLD-142).
+// cursor — id последнего поста предыдущей страницы (null на первой странице).
+// Тонкая обёртка над моком; при переходе на реальный API тело заменим на запрос.
+export const getUserPostsPage = async (
+    username: string,
+    cursor: string | null,
+    limit: number,
+): Promise<UserPostsPage> => {
+    return getMockUserPostsPage(username, cursor, limit);
 };
 
 // Extract and normalize the description from FormData

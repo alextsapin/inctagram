@@ -11,6 +11,14 @@ type UseInfiniteScrollOptions = {
     // Поле обязательно: без внешнего сигнала о завершении загрузки internal-флаг защиты
     // от повторных вызовов не сможет сброситься, и подгрузка молча перестанет работать
     // после первого вызова.
+    //
+    // Контракт: isLoading должен отражать РЕАЛЬНЫЙ in-flight запрос (не «возможно, грузим»).
+    // Гарантия от повторного срабатывания: onLoadMore не вызывается повторно, пока
+    // isLoading === true (или пока isLoadingRef не сброшен), и разрешается снова
+    // только на ближайшем рендере с isLoading === false. То есть между двумя вызовами
+    // onLoadMore всегда есть рендер, на котором isLoading вернулся в false. Если
+    // isLoading не отражает фактический in-flight (например, остаётся false, пока запрос
+    // в полёте), хук не сможет защититься от параллельных вызовов.
     isLoading: boolean;
 
     // Есть ли ещё данные для подгрузки. Когда false — подгрузка не запускается.
@@ -52,15 +60,25 @@ export const useInfiniteScroll = <T extends HTMLElement = HTMLDivElement>(
     }, []);
 
     // Флаг защиты от повторного срабатывания (race condition): взводится сразу при вызове
-    // onLoadMore и сбрасывается, только когда входной isLoading становится false.
+    // onLoadMore и сбрасывается, когда входной isLoading становится false.
     // useRef, а не useState — не нужен лишний ре-рендер.
     const isLoadingRef = useRef(false);
 
-    // Синхронизируем флаг с входным isLoading в обе стороны: если загрузка уже идёт
-    // при монтировании (isLoading изначально true), ref сразу это учитывает
-    useEffect(() => {
-        isLoadingRef.current = isLoading;
-    }, [isLoading]);
+    // Сброс защёлки не должен зависеть от ПЕРЕХОДА isLoading: если запрос завершается
+    // мгновенно (кэш, очень быстрый ответ), isLoading не успевает пройти false→true→false,
+    // и useEffect [isLoading] не перезапускается, оставляя защёлку true навсегда.
+    // Поэтому снимаем флаг синхронно на каждом рендере, когда загрузка не идёт.
+    // Запись в ref во время рендера безопасна (не вызывает ре-рендер) и отражает
+    // текущее значение isLoading как «вычисляемое из пропсов».
+    //
+    // Идемпотентность: присваивание isLoadingRef.current = false при !isLoading — чистая
+    // функция от текущего пропса (не накапливается, не зависит от предыдущих значений),
+    // поэтому повторные рендеры не меняют результат. Это тот же «вычисляемый из пропсов»
+    // ref, что и useState-производное значение, только без лишнего ре-рендера. НЕ менять
+    // обратно на useEffect [isLoading] — тот снова внесёт зависимость от перехода.
+    if (!isLoading) {
+        isLoadingRef.current = false;
+    }
 
     useEffect(() => {
         if (!sentinelNode) return;
@@ -71,8 +89,10 @@ export const useInfiniteScroll = <T extends HTMLElement = HTMLDivElement>(
 
                 if (!entry.isIntersecting) return;
 
-                // Уже загружаем или данных больше нет — не срабатываем повторно
-                if (isLoadingRef.current || !hasMore) return;
+                // Уже загружаем, загрузка идёт или данных больше нет — не срабатываем повторно.
+                // isLoading в guard защищает от повторного onLoadMore при пересоздании эффекта
+                // во время уже идущего запроса (ref в этот момент может быть ещё false).
+                if (isLoadingRef.current || isLoading || !hasMore) return;
 
                 isLoadingRef.current = true;
                 onLoadMore();

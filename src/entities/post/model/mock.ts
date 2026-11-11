@@ -12,7 +12,7 @@ import post5 from '../assets/post5.png';
 import post6 from '../assets/post6.png';
 // --- Импорты картинок для аватарок ---
 
-import type { Post, User } from './type';
+import type { Post, User, UserPostsPage } from './type';
 
 // ==========================================
 // 1. ПОЛЬЗОВАТЕЛИ (База)
@@ -294,6 +294,33 @@ export const getMockPost = (id: string): Post | undefined =>
 
 export const getMockUserPosts = (username: string): Post[] =>
     MOCK_POSTS.filter(post => post.author.username === username).sort(newestFirst);
+
+// Страница постов пользователя для бесконечной загрузки (задача 12 / BLD-142).
+// cursor — id последнего поста предыдущей страницы (null на первой странице).
+// nextCursor — id последнего поста страницы, либо null, если постов больше нет.
+export const getMockUserPostsPage = async (
+    username: string,
+    cursor: string | null,
+    limit: number,
+): Promise<UserPostsPage> => {
+    const posts = getMockUserPosts(username);
+
+    const startIndex =
+        cursor === null ? 0 : posts.findIndex(post => post.id === cursor) + 1;
+
+    if (startIndex === 0 && cursor !== null) {
+        // Курсор указывает на пост, которого больше нет (удалён): страница не может быть
+        // построена от него. Бросаем ошибку, чтобы UI показал Retry, а не молча объявлял
+        // список законченным.
+        throw new Error('Stale cursor');
+    }
+
+    const page = posts.slice(startIndex, startIndex + limit);
+    const nextCursor =
+        startIndex + limit < posts.length ? page[page.length - 1]?.id ?? null : null;
+
+    return { posts: page, nextCursor };
+};
 
 export const getMockLatestPosts = (limit = 4): Post[] =>
     [...MOCK_POSTS].sort(newestFirst).slice(0, limit);
