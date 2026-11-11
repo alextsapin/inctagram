@@ -17,6 +17,7 @@ import { useSavedDraft } from '../model/useSavedDraft';
 import { AddPhotoStep } from './AddPhotoStep';
 import css from './create-post-window.module.scss';
 import { CroppingStep } from './CroppingStep';
+import { FiltersStep } from './FiltersStep';
 
 type CreatePostWindowProps = {
     userId: string; // черновик хранится отдельно для каждого пользователя
@@ -38,11 +39,15 @@ export const CreatePostWindow = ({
         setAspect,
         updateCropSettings,
         cropAndContinue,
+        setFilter,
+        applyFiltersAndContinue,
     } = useCreatePost();
     const { title, width, back, next } = STEP_SETTINGS[state.step];
     const savedDraft = useSavedDraft(userId);
 
-    const [isCropping, setIsCropping] = useState(false);
+    // Next на шагах Cropping и Filters готовит файлы, а это занимает время.
+    // Пока они готовятся, кнопка неактивна
+    const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     // Кнопка Open Draft нужна, только если в черновике есть фото.
@@ -71,23 +76,37 @@ export const CreatePostWindow = ({
         addPhoto(file).catch(() => setError(POST_PHOTO_ERROR));
     };
 
-    // Next на шаге Cropping сначала вырезает выбранную область из каждого фото.
-    // Это занимает время, поэтому пока идёт обрезка, кнопка неактивна
+    // Next на шаге Cropping сначала вырезает выбранную область из каждого фото
     const handleCropNext = async (): Promise<void> => {
-        setIsCropping(true);
+        setIsProcessing(true);
 
         try {
             await cropAndContinue();
         } catch {
             setError('Failed to crop the photo. Please try again');
         } finally {
-            setIsCropping(false);
+            setIsProcessing(false);
+        }
+    };
+
+    // Next на шаге Filters рисует выбранные фильтры в файлы фото
+    const handleFiltersNext = async (): Promise<void> => {
+        setIsProcessing(true);
+
+        try {
+            await applyFiltersAndContinue();
+        } catch {
+            setError('Failed to apply the filter. Please try again');
+        } finally {
+            setIsProcessing(false);
         }
     };
 
     const handleNext = (): void => {
         if (state.step === 'cropping') {
             handleCropNext();
+        } else if (state.step === 'filters') {
+            handleFiltersNext();
         } else if (next) {
             goToStep(next);
         }
@@ -106,12 +125,12 @@ export const CreatePostWindow = ({
     );
 
     // На последнем шаге вместо Next кнопка Publish. Пока она просто закрывает окно,
-    // отправку поста добавит задача 7
+    // отправку поста добавит задача «Описание и кнопка Publish»
     const headerRight = next ? (
         <Button
             variant="text"
             className={css.next}
-            disabled={isCropping}
+            disabled={isProcessing}
             onClick={handleNext}
         >
             Next
@@ -130,8 +149,8 @@ export const CreatePostWindow = ({
             width={width}
             headerLeft={headerLeft}
             headerRight={back && headerRight}
-            // На шаге Cropping фото прилегает к краям окна, как в макете
-            noPadding={state.step === 'cropping'}
+            // На шагах Cropping и Filters фото прилегает к краям окна, как в макете
+            noPadding={state.step === 'cropping' || state.step === 'filters'}
         >
             {state.step === 'add-photo' && (
                 <AddPhotoStep onSelect={selectPhoto} onOpenDraft={handleOpenDraft} />
@@ -152,8 +171,17 @@ export const CreatePostWindow = ({
                 />
             )}
 
-            {/* Заглушка: остальные экраны делаются в задачах 6 и 7 */}
-            {(state.step === 'filters' || state.step === 'publication') && (
+            {state.step === 'filters' && state.photos.length > 0 && (
+                <FiltersStep
+                    photos={state.photos}
+                    currentIndex={state.currentIndex}
+                    onShowPhoto={showPhoto}
+                    onFilterChange={setFilter}
+                />
+            )}
+
+            {/* Заглушка: экран публикации делается в задаче «Описание и кнопка Publish» */}
+            {state.step === 'publication' && (
                 <div className={css.stub}>
                     <p>{title}</p>
                 </div>

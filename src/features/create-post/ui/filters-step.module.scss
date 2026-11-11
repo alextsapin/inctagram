@@ -1,0 +1,53 @@
+@use '@/shared/styles/scroll' as *;
+
+/* Слева фото, справа плитки. Высота окна под шапкой из макета */
+.step {
+    display: flex;
+    height: 503px;
+}
+
+/* Плитки в 3 колонки по центру правой части. Все 40 не помещаются, поэтому
+   правая часть прокручивается. Отступы и промежутки из макета */
+.filters {
+    display: grid;
+    flex-grow: 1;
+    grid-template-columns: repeat(3, 108px);
+    gap: 18px 24px;
+    place-content: start center; /* ряды сверху, колонки по центру */
+    margin: 0;
+    padding: 24px 0;
+    overflow-y: auto;
+    list-style: none;
+
+    /* Полоса прокрутки как во всём проекте: общий миксин из shared/styles */
+    @include custom-scrollbar;
+}
+
+/* Плитка: картинка и подпись под ней через 6px */
+.filter {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+    width: 108px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: #fff;
+    font: inherit; /* кнопка сама шрифт страницы не берёт */
+    font-size: 16px;
+    line-height: 24px;
+    cursor: pointer;
+
+    &:focus-visible {
+        outline: 2px solid #397df6;
+        outline-offset: 2px;
+    }
+}
+
+.image {
+    display: block;
+    width: 108px;
+    height: 108px;
+    object-fit: cover;
+}
