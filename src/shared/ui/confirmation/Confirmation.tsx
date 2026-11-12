@@ -7,6 +7,9 @@ type ConfirmationProps = {
     open: boolean;
     title: string;
     text: React.ReactNode;
+    confirmText?: string;
+    cancelText?: string;
+    onCancel?: () => void;
     width?: number;
     actionsAlign?: 'end' | 'between';
     onConfirm: () => void;
@@ -18,6 +21,9 @@ export const Confirmation = ({
     title,
     width,
     text,
+    confirmText,
+    cancelText,
+    onCancel,
     actionsAlign = 'end',
     onConfirm,
     onClose,
@@ -32,9 +38,9 @@ export const Confirmation = ({
             actions={
                 <>
                     <Button variant="outlined" onClick={onConfirm}>
-                        Yes
+                        {confirmText}
                     </Button>
-                    <Button onClick={onClose}>No</Button>
+                    <Button onClick={onCancel}>{cancelText}</Button>
                 </>
             }
         >

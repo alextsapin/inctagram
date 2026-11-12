@@ -422,6 +422,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 ├── 📁 ui/
 │   ├── 📁 alert/
 │   ├── 📁 button/
+│   ├── 📁 confirmation/
 │   ├── 📁 input/
 │   ├── 📁 textarea/
 │   ├── 📁 modal/
@@ -526,6 +527,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 | **Alert**                       | `src/shared/ui/alert/`         | [README Alert](src/shared/ui/alert/README.md)                |
 | **Button**                      | `src/shared/ui/button/`        | [README Button](src/shared/ui/button/README.md)              |
 | **Checkbox**                    | `src/shared/ui/checkbox/`      | [README Checkbox](src/shared/ui/checkbox/README.md)          |
+| **Confirmation**                | `src/shared/ui/confirmation/`  | [README Confirmation](src/shared/ui/confirmation/README.md)  |
 | **DatePicker, DateRangePicker** | `src/shared/ui/date-picker/`   | [README DatePicker](src/shared/ui/date-picker/README.md)     |
 | **Input**                       | `src/shared/ui/input/`         | [README Input](src/shared/ui/input/README.md)                |
 | **Modal**                       | `src/shared/ui/modal/`         | [README Modal](src/shared/ui/modal/README.md)                |
