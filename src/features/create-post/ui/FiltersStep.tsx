@@ -37,6 +37,7 @@ export const FiltersStep = ({
             <PhotoPreview
                 photos={photos}
                 currentIndex={currentIndex}
+                disabled={disabled}
                 onShowPhoto={onShowPhoto}
             />
 

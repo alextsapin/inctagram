@@ -14,6 +14,11 @@ const ARROW_ICON_SIZE = 48;
 type PhotoPreviewProps = {
     photos: CreatePostPhoto[]; // все фото поста
     currentIndex: number; // номер фото, которое сейчас на экране
+    // Пока Next готовит файлы или Publish отправляет пост, стрелки неактивны
+    disabled: boolean;
+    // На Publication показываем готовый файл с фильтром: ровно то, что уйдёт на сервер.
+    // На Filters фильтр ещё выбирают, поэтому там обрезанное фото с CSS-фильтром
+    showFilteredFile?: boolean;
     onShowPhoto: (index: number) => void;
 };
 
@@ -23,24 +28,30 @@ type PhotoPreviewProps = {
 export const PhotoPreview = ({
     photos,
     currentIndex,
+    disabled,
+    showFilteredFile = false,
     onShowPhoto,
 }: PhotoPreviewProps): React.JSX.Element => {
     const photo = photos[currentIndex];
+    const filteredFile = showFilteredFile ? photo.filteredFile : null;
     // После шага Cropping обрезанный файл есть у каждого фото, originalFile — на всякий случай
-    const photoUrl = useObjectUrl(photo.croppedFile ?? photo.originalFile);
+    const photoUrl = useObjectUrl(
+        filteredFile ?? photo.croppedFile ?? photo.originalFile,
+    );
+    // В готовом файле фильтр уже нарисован, поэтому CSS-фильтр второй раз не накладываем
+    const filterStyle = filteredFile ? 'none' : getFilterStyle(photo.filter);
     const isFirst = currentIndex === 0;
     const isLast = currentIndex === photos.length - 1;
 
     return (
         <div className={css.preview}>
-            {/* Обычный <img>: next/image не работает с временными ссылками blob:.
-                Фильтр на экране — это CSS-стиль. В сам файл он попадёт по кнопке Next */}
+            {/* Обычный <img>: next/image не работает с временными ссылками blob: */}
             {photoUrl && (
                 <img
                     src={photoUrl}
                     alt=""
                     className={css.image}
-                    style={{ filter: getFilterStyle(photo.filter) }}
+                    style={{ filter: filterStyle }}
                 />
             )}
 
@@ -50,6 +61,7 @@ export const PhotoPreview = ({
                     type="button"
                     className={`${css.arrow} ${css.prev}`}
                     aria-label="Previous photo"
+                    disabled={disabled}
                     onClick={() => onShowPhoto(currentIndex - 1)}
                 >
                     <ArrowLeftIcon width={ARROW_ICON_SIZE} height={ARROW_ICON_SIZE} />
@@ -61,6 +73,7 @@ export const PhotoPreview = ({
                     type="button"
                     className={`${css.arrow} ${css.next}`}
                     aria-label="Next photo"
+                    disabled={disabled}
                     onClick={() => onShowPhoto(currentIndex + 1)}
                 >
                     <ArrowRightIcon width={ARROW_ICON_SIZE} height={ARROW_ICON_SIZE} />

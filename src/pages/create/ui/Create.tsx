@@ -39,8 +39,18 @@ export const Create = ({ isModal }: CreateProps): React.JSX.Element | null => {
         return null;
     }
 
+    // После публикации ведём в профиль автора
+    const handlePublished = (): void => {
+        router.push(`/profile/${user.username}`);
+    };
+
     const createPostWindow = (
-        <CreatePostWindow userId={user.userId} onClose={handleClose} />
+        <CreatePostWindow
+            userId={user.userId}
+            username={user.username}
+            onClose={handleClose}
+            onPublished={handlePublished}
+        />
     );
 
     return isModal ? (

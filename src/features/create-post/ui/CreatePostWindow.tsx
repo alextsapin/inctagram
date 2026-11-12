@@ -12,21 +12,27 @@ import { getAspectRatio } from '../model/aspect';
 import { POST_PHOTO_ERROR, POST_PHOTO_RULES } from '../model/photoRules';
 import { STEP_SETTINGS } from '../model/stepSettings';
 import { useCreatePost } from '../model/useCreatePost';
+import { usePublishPost } from '../model/usePublishPost';
 import { useSavedDraft } from '../model/useSavedDraft';
 
 import { AddPhotoStep } from './AddPhotoStep';
 import css from './create-post-window.module.scss';
 import { CroppingStep } from './CroppingStep';
 import { FiltersStep } from './FiltersStep';
+import { PublicationStep } from './PublicationStep';
 
 type CreatePostWindowProps = {
     userId: string; // черновик хранится отдельно для каждого пользователя
+    username: string; // имя автора на шаге Publication
     onClose: () => void;
+    onPublished: () => void; // пост опубликован: куда перейти, решает страница
 };
 
 export const CreatePostWindow = ({
     userId,
+    username,
     onClose,
+    onPublished,
 }: CreatePostWindowProps): React.JSX.Element => {
     const {
         state,
@@ -41,12 +47,14 @@ export const CreatePostWindow = ({
         cropAndContinue,
         setFilter,
         applyFiltersAndContinue,
+        setDescription,
     } = useCreatePost();
+    const { mutateAsync: publishPost } = usePublishPost(userId, username);
     const { title, width, back, next } = STEP_SETTINGS[state.step];
     const savedDraft = useSavedDraft(userId);
 
-    // Next на шагах Cropping и Filters готовит файлы, а это занимает время.
-    // Пока они готовятся, кнопка неактивна
+    // Next на шагах Cropping и Filters готовит файлы, а Publish отправляет пост.
+    // Это занимает время, поэтому пока идёт работа, кнопки неактивны
     const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -102,6 +110,28 @@ export const CreatePostWindow = ({
         }
     };
 
+    // Publish отправляет фото с фильтрами и описание. Если не получилось,
+    // окно остаётся открытым, фото и текст не пропадают
+    const handlePublish = async (): Promise<void> => {
+        setIsProcessing(true);
+
+        try {
+            await publishPost({ photos: state.photos, description: state.description });
+            // После успеха кнопки не включаем: окно закроется переходом в профиль,
+            // а до этого второй клик по Publish создал бы второй такой же пост
+            onPublished();
+        } catch {
+            setError('Failed to publish the post. Please try again');
+            setIsProcessing(false);
+        }
+    };
+
+    // Пока Next готовит файлы или Publish отправляет пост, окно не закрывается
+    // ни по Esc, ни кликом мимо: иначе работа продолжится в уже закрытом окне
+    const handleClose = (): void => {
+        if (!isProcessing) onClose();
+    };
+
     const handleNext = (): void => {
         if (state.step === 'cropping') {
             handleCropNext();
@@ -113,8 +143,8 @@ export const CreatePostWindow = ({
     };
 
     // На первом шаге стрелки и Next в шапке нет: там крестик, как в макете.
-    // Пока Next готовит файлы, «Назад» неактивна: иначе после обработки
-    // окно само перебросило бы пользователя на следующий шаг
+    // Пока Next готовит файлы или Publish отправляет пост, «Назад» неактивна:
+    // иначе после этого окно само перебросило бы пользователя вперёд или в профиль
     const headerLeft = back && (
         <button
             type="button"
@@ -127,8 +157,7 @@ export const CreatePostWindow = ({
         </button>
     );
 
-    // На последнем шаге вместо Next кнопка Publish. Пока она просто закрывает окно,
-    // отправку поста добавит задача «Описание и кнопка Publish»
+    // На последнем шаге вместо Next кнопка Publish
     const headerRight = next ? (
         <Button
             variant="text"
@@ -139,7 +168,12 @@ export const CreatePostWindow = ({
             Next
         </Button>
     ) : (
-        <Button variant="text" className={css.next} onClick={onClose}>
+        <Button
+            variant="text"
+            className={css.next}
+            disabled={isProcessing}
+            onClick={handlePublish}
+        >
             Publish
         </Button>
     );
@@ -147,13 +181,13 @@ export const CreatePostWindow = ({
     return (
         <Modal
             open
-            onClose={onClose}
+            onClose={handleClose}
             title={title}
             width={width}
             headerLeft={headerLeft}
             headerRight={back && headerRight}
-            // На шагах Cropping и Filters фото прилегает к краям окна, как в макете
-            noPadding={state.step === 'cropping' || state.step === 'filters'}
+            // На всех шагах, кроме Add Photo, фото прилегает к краям окна, как в макете
+            noPadding={state.step !== 'add-photo'}
         >
             {state.step === 'add-photo' && (
                 <AddPhotoStep onSelect={selectPhoto} onOpenDraft={handleOpenDraft} />
@@ -184,11 +218,16 @@ export const CreatePostWindow = ({
                 />
             )}
 
-            {/* Заглушка: экран публикации делается в задаче «Описание и кнопка Publish» */}
-            {state.step === 'publication' && (
-                <div className={css.stub}>
-                    <p>{title}</p>
-                </div>
+            {state.step === 'publication' && state.photos.length > 0 && (
+                <PublicationStep
+                    photos={state.photos}
+                    currentIndex={state.currentIndex}
+                    username={username}
+                    description={state.description}
+                    disabled={isProcessing}
+                    onShowPhoto={showPhoto}
+                    onDescriptionChange={setDescription}
+                />
             )}
 
             {/* Alert внутри Modal: рядом с ним он оказался бы под затемнением */}
