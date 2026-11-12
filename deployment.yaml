@@ -37,6 +37,8 @@ spec:
               value: "3000"
             - name: HOSTNAME
               value: "0.0.0.0"
+            - name: SERVER_API_URL
+              value: "SERVER_API_URL_PLACEHOLDER"
 
           securityContext:
             allowPrivilegeEscalation: false

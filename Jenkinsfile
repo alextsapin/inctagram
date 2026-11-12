@@ -201,6 +201,7 @@ pipeline {
                         -e "s|TAG_VERSION|$IMAGE_TAG|g" \
                         -e "s|DEPLOYMENT_NAME|$DEPLOYMENT_NAME|g" \
                         -e "s|PORT_CONTAINER|3000|g" \
+                        -e "s|SERVER_API_URL_PLACEHOLDER|${SERVER_API_URL}|g" \
                         -e "s|NAMESPACE|$NAMESPACE|g" \
                         deployment.yaml > deployment.rendered.yaml
                     cat deployment.rendered.yaml
