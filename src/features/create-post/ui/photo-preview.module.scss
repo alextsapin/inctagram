@@ -35,6 +35,11 @@
         outline: 2px solid #397df6;
         outline-offset: 2px;
     }
+
+    /* Неактивна, пока Next готовит файлы или Publish отправляет пост */
+    &:disabled {
+        cursor: default;
+    }
 }
 
 .prev {

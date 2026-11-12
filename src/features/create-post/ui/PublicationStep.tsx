@@ -48,6 +48,8 @@ export const PublicationStep = ({
             <PhotoPreview
                 photos={photos}
                 currentIndex={currentIndex}
+                disabled={disabled}
+                showFilteredFile
                 onShowPhoto={onShowPhoto}
             />
 
