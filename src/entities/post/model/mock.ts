@@ -27,12 +27,7 @@ export const MOCK_SIGNED_IN_AUTHOR: User = {
 };
 
 export const MOCK_USERS: User[] = [
-    {
-        id: '00000000-0000-0000-0000-000000000000',
-        username: 'artem_dev',
-        avatarUrl: el1.src,
-        isFollowing: false,
-    },
+    { id: 'user-1', username: 'artem_dev', avatarUrl: el1.src, isFollowing: false },
     { id: 'user-2', username: 'ivan_ivanov', avatarUrl: el2.src, isFollowing: true },
     { id: 'user-3', username: 'anna_smith', avatarUrl: el3.src, isFollowing: false },
     { id: 'user-4', username: 'olga_k', avatarUrl: el1.src, isFollowing: true },
@@ -61,7 +56,7 @@ export const mockLikedByEmpty: User[] = []; // 0 юзеров (тест пуст
 const FEED_POSTS: Post[] = [
     {
         id: 'post-1',
-        author: mockAuthor,
+        author: MOCK_SIGNED_IN_AUTHOR,
         // 3 картинки (тест карусели: стрелки + 3 точки)
         images: [
             { id: 'img-1', url: post1.src, alt: 'Пляж' },

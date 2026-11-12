@@ -6,13 +6,13 @@ import Link from 'next/link';
 
 import {
     Carousel,
-    MOCK_POSTS,
     Post,
     PostCaption,
     PostHeader,
     PostMenu,
     PostMeta,
 } from '@/entities/post';
+import { useCurrentUser } from '@/entities/session';
 import { AddCommentForm } from '@/features/add-comment';
 import { LikeCommentButton } from '@/features/like-comment';
 import { LikePostButton } from '@/features/like-post';
@@ -25,14 +25,14 @@ import { CommentIcon } from '@/shared/ui/icons';
 import s from './post-feed.module.scss';
 
 type Props = {
-    post?: Post;
+    post: Post;
     onDeleteClick: () => void;
     onEditClick: () => void;
     onLikesClick: () => void;
 };
 
 export const PostFeed = ({
-    post = MOCK_POSTS[0],
+    post,
     onDeleteClick,
     onEditClick,
     onLikesClick,
@@ -52,7 +52,9 @@ export const PostFeed = ({
 
     const [isShow, setIsShow] = useState(false);
     const [replyToId, setReplyToId] = useState<string | null>(null);
-    const isOwnPost = author.id === 'user-1';
+    const { data: currentUser } = useCurrentUser();
+    const isOwnPost = currentUser?.userId === author.id;
+
     const handleCommentClick = (): void => {
         // 1. Если комменты скрыты, раскрываем их
         if (!isShow) setIsShow(true);
@@ -78,7 +80,7 @@ export const PostFeed = ({
                             onEdit={onEditClick}
                             postId={id}
                             isOwnPost={isOwnPost}
-                            isFollow={false}
+                            isFollow={author.isFollowing ?? false}
                             onDelete={onDeleteClick}
                         />
                     }
