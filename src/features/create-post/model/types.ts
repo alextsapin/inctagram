@@ -37,7 +37,7 @@ export type CreatePostState = {
 // Фото в черновике: файл хранится как есть (Blob), фильтр отдельной строкой
 export type DraftPhoto = {
     id: string;
-    file: Blob; // фото без фильтра: File после выбора или Blob после обрезки
+    file: Blob; // исходный файл фото, без обрезки и без фильтра
     filter: string | null; // название фильтра cc-gram, null = без фильтра
 };
 

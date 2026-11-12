@@ -8,6 +8,20 @@ import css from './modal.module.scss';
 
 const DEFAULT_WIDTH = 378;
 
+// Окно закрылось, а под ним осталось другое открытое окно (например, окно создания поста
+// под вопросом «Close»). Браузер возвращает фокус туда, где он был до открытия верхнего
+// окна. Если там ничего не было, фокус остаётся в закрытом окне и уходит на страницу.
+// Тогда Esc нажимается мимо окон, наш обработчик его не видит, и Chrome может закрыть
+// нижнее окно сам, хотя мы это запрещаем. Поэтому возвращаем фокус в открытое окно
+const focusDialogBelow = (): void => {
+    // Фокус уже внутри открытого окна: браузер вернул его сам, ничего не делаем
+    if (document.activeElement?.closest('dialog[open]')) return;
+
+    const openDialogs = document.querySelectorAll<HTMLDialogElement>('dialog[open]');
+
+    openDialogs[openDialogs.length - 1]?.focus();
+};
+
 type ModalProps = {
     open: boolean;
     onClose: () => void;
@@ -52,6 +66,7 @@ export const Modal = ({
 
         if (!open && dialog.open) {
             dialog.close();
+            focusDialogBelow();
         }
     }, [open]);
 

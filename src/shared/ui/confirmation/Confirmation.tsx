@@ -12,6 +12,8 @@ type ConfirmationProps = {
     onCancel?: () => void;
     width?: number;
     actionsAlign?: 'end' | 'between';
+    // Обе кнопки неактивны, например пока действие выполняется: второй клик ничего не сделает
+    disabled?: boolean;
     onConfirm: () => void;
     onClose: () => void;
 };
@@ -25,6 +27,7 @@ export const Confirmation = ({
     cancelText,
     onCancel,
     actionsAlign = 'end',
+    disabled = false,
     onConfirm,
     onClose,
 }: ConfirmationProps): React.JSX.Element => {
@@ -37,10 +40,12 @@ export const Confirmation = ({
             actionsAlign={actionsAlign}
             actions={
                 <>
-                    <Button variant="outlined" onClick={onConfirm}>
+                    <Button variant="outlined" disabled={disabled} onClick={onConfirm}>
                         {confirmText}
                     </Button>
-                    <Button onClick={onCancel}>{cancelText}</Button>
+                    <Button disabled={disabled} onClick={onCancel}>
+                        {cancelText}
+                    </Button>
                 </>
             }
         >

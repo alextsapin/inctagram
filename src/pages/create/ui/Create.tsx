@@ -39,8 +39,8 @@ export const Create = ({ isModal }: CreateProps): React.JSX.Element | null => {
         return null;
     }
 
-    // После публикации ведём в профиль автора
-    const handlePublished = (): void => {
+    // После публикации, Save draft и Discard ведём в профиль автора
+    const handleGoToProfile = (): void => {
         router.push(`/profile/${user.username}`);
     };
 
@@ -49,7 +49,7 @@ export const Create = ({ isModal }: CreateProps): React.JSX.Element | null => {
             userId={user.userId}
             username={user.username}
             onClose={handleClose}
-            onPublished={handlePublished}
+            onGoToProfile={handleGoToProfile}
         />
     );
 
