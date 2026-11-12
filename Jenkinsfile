@@ -27,6 +27,7 @@ pipeline {
         // These are public client-side settings baked into the Next.js bundle.
         // Set production reCAPTCHA site keys before deploying real signup traffic.
         NEXT_PUBLIC_API_URL = ''
+        SERVER_API_URL = ''
         NEXT_PUBLIC_RECAPTCHA_SITE_KEY_CHECKBOX = '6Lc71AQuAAAAANehzC_S9hq6A2Hzn02YZeFtsPzN'
         NEXT_PUBLIC_RECAPTCHA_SITE_KEY_INVISIBLE = '6LfF0wQuAAAAAPKRG6ec8X-B4m0JOsjngS4o6gyK'
     }
@@ -170,6 +171,7 @@ pipeline {
                 sh '''
                     set -eu
                     docker build \
+                        --build-arg "SERVER_API_URL=${SERVER_API_URL:-}" \
                         --build-arg "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-}" \
                         --build-arg "NEXT_PUBLIC_RECAPTCHA_SITE_KEY_CHECKBOX=$NEXT_PUBLIC_RECAPTCHA_SITE_KEY_CHECKBOX" \
                         --build-arg "NEXT_PUBLIC_RECAPTCHA_SITE_KEY_INVISIBLE=$NEXT_PUBLIC_RECAPTCHA_SITE_KEY_INVISIBLE" \
