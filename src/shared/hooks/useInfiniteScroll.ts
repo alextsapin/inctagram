@@ -4,13 +4,20 @@ type UseInfiniteScrollOptions = {
     // Вызывается, когда sentinel-элемент (элемент в конце списка) попадает в зону видимости.
     // Функция должна быть мемоизирована на стороне вызывающего компонента (useCallback):
     // иначе useEffect будет пересоздавать IntersectionObserver на каждый рендер родителя.
-    onLoadMore: () => void;
+    // Функция должна возвращать Promise, который resolve/reject-ится по завершении загрузки:
+    // именно на основании этого Promise хук снимает внутреннюю блокировку от повторных
+    // вызовов, а не на основании внешнего isLoading.
+    onLoadMore: () => Promise<unknown>;
 
-    // Идёт ли сейчас загрузка следующей страницы. true защищает от повторного срабатывания,
-    // пока вызывающий компонент не передаст обновлённое значение обратно в хук.
-    // Поле обязательно: без внешнего сигнала о завершении загрузки internal-флаг защиты
-    // от повторных вызовов не сможет сброситься, и подгрузка молча перестанет работать
-    // после первого вызова.
+    // Идёт ли сейчас загрузка следующей страницы. true участвует в guard-проверке как
+    // дополнительная защита на случай, когда внешнее состояние уже сигналит «идёт загрузка»
+    // до того, как успела взвестись внутренняя защёлка (например, во время самой первой
+    // загрузки страницы). Поле обязательно.
+    //
+    // Важно: единственным источником снятия внутренней блокировки является .finally() у
+    // Promise, который возвращает onLoadMore, — НЕ синхронизация с этим isLoading через
+    // рендер или эффект. Поэтому isLoading не обязан проходить false→true→false на каждом
+    // запросе: даже при мгновенном резолве Promise хук корректно снимет защёлку.
     isLoading: boolean;
 
     // Есть ли ещё данные для подгрузки. Когда false — подгрузка не запускается.
@@ -52,15 +59,9 @@ export const useInfiniteScroll = <T extends HTMLElement = HTMLDivElement>(
     }, []);
 
     // Флаг защиты от повторного срабатывания (race condition): взводится сразу при вызове
-    // onLoadMore и сбрасывается, только когда входной isLoading становится false.
+    // onLoadMore и сбрасывается в .finally() у возвращаемого Promise.
     // useRef, а не useState — не нужен лишний ре-рендер.
     const isLoadingRef = useRef(false);
-
-    // Синхронизируем флаг с входным isLoading в обе стороны: если загрузка уже идёт
-    // при монтировании (isLoading изначально true), ref сразу это учитывает
-    useEffect(() => {
-        isLoadingRef.current = isLoading;
-    }, [isLoading]);
 
     useEffect(() => {
         if (!sentinelNode) return;
@@ -71,11 +72,26 @@ export const useInfiniteScroll = <T extends HTMLElement = HTMLDivElement>(
 
                 if (!entry.isIntersecting) return;
 
-                // Уже загружаем или данных больше нет — не срабатываем повторно
-                if (isLoadingRef.current || !hasMore) return;
+                // Уже загружаем, загрузка идёт или данных больше нет — не срабатываем повторно.
+                // isLoading в guard защищает от повторного onLoadMore при пересоздании эффекта
+                // во время уже идущего запроса (ref в этот момент может быть ещё false).
+                if (isLoadingRef.current || isLoading || !hasMore) return;
 
                 isLoadingRef.current = true;
-                onLoadMore();
+
+                // Цепочка без void: правило no-void (airbnb) запрещает оператор void.
+                // unhandled rejection не возникает, т.к. .catch() поглощает ошибку —
+                // её отображает вызывающий компонент через isError/isFetchNextPageError.
+                Promise.resolve()
+                    .then(onLoadMore)
+                    .catch(() => {
+                        // Ошибку отображает вызывающий компонент (через isError/
+                        // isFetchNextPageError из useInfiniteQuery), здесь её
+                        // достаточно проглотить, чтобы не было unhandled rejection.
+                    })
+                    .finally(() => {
+                        isLoadingRef.current = false;
+                    });
             },
             { root, rootMargin, threshold: 0 },
         );

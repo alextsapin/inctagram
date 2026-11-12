@@ -1,0 +1,1 @@
+export { InfinitePostGrid } from './InfinitePostGrid';
