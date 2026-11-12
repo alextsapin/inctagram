@@ -31,6 +31,8 @@ export const InfinitePostGrid = ({
     } = useUserPostsInfinite(username);
 
     // onLoadMore должна быть мемоизирована, иначе observer пересоздаётся каждый рендер.
+    // Возвращает Promise от fetchNextPage: по нему useInfiniteScroll снимает внутреннюю
+    // блокировку от повторных вызовов.
     const onLoadMore = useCallback(() => fetchNextPage(), [fetchNextPage]);
 
     const sentinelRef = useInfiniteScroll({
@@ -60,7 +62,12 @@ export const InfinitePostGrid = ({
         return (
             <div className={s.error} role="alert">
                 Failed to load posts.
-                <button type="button" onClick={refetch}>
+                <button
+                    type="button"
+                    onClick={() => {
+                        refetch();
+                    }}
+                >
                     Retry
                 </button>
             </div>
@@ -82,7 +89,12 @@ export const InfinitePostGrid = ({
                 {isError && isFetchNextPageError && (
                     <div className={s.error} role="alert">
                         Failed to load more posts.
-                        <button type="button" onClick={refetch}>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                fetchNextPage();
+                            }}
+                        >
                             Retry
                         </button>
                     </div>

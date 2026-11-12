@@ -12,7 +12,7 @@ const POSTS_PER_PAGE = 8;
 
 type UseUserPostsInfinite = {
     posts: Post[];
-    fetchNextPage: () => void;
+    fetchNextPage: () => Promise<unknown>;
     hasNextPage: boolean;
     isFetching: boolean;
     isFetchingNextPage: boolean;
