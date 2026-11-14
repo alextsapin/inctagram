@@ -56,7 +56,7 @@ export const mockLikedByEmpty: User[] = []; // 0 юзеров (тест пуст
 const FEED_POSTS: Post[] = [
     {
         id: 'post-1',
-        author: mockAuthor,
+        author: MOCK_SIGNED_IN_AUTHOR,
         // 3 картинки (тест карусели: стрелки + 3 точки)
         images: [
             { id: 'img-1', url: post1.src, alt: 'Пляж' },

@@ -30,3 +30,4 @@ export {
     deletePost,
 } from './api/postApi';
 export { postQueryKeys } from './api/queryKeys';
+export { usePost } from './model/queries';
