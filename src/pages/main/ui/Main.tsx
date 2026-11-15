@@ -27,11 +27,12 @@ export const Main = async (): Promise<React.JSX.Element> => {
                     posts.map(post => (
                         <UserCard
                             key={post.id}
+                            postId={post.id}
                             username={post.author.username}
                             publishedAt={post.createdAt.slice(0, 10)}
                             postText={post.caption}
-                            postImage={nature}
-                            authorAvatar={tanya}
+                            postImage={post.images[0]?.url || nature}
+                            authorAvatar={post.author.avatarUrl || tanya}
                         />
                     ))
                 )}
