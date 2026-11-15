@@ -4,9 +4,7 @@ type RegisteredUsersProps = {
     values?: string;
 };
 
-export const RegisteredUsers = ({
-    values,
-}: RegisteredUsersProps): React.JSX.Element => {
+export const RegisteredUsers = ({ values }: RegisteredUsersProps): React.JSX.Element => {
     const digits = (values ?? '').split('');
 
     return (

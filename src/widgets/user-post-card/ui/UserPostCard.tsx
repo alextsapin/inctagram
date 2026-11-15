@@ -1,10 +1,11 @@
 'use client';
 
+import { useState } from 'react';
+
 import Image, { type StaticImageData } from 'next/image';
 import Link from 'next/link';
 
 import { Carousel, type PostImage } from '@/entities/post';
-import { useState } from 'react';
 
 import styles from './user-post-card.module.scss';
 
@@ -33,6 +34,7 @@ export const UserCard = ({
     const textLimit = isExpanded ? EXPANDED_TEXT_LENGTH : INITIAL_TEXT_LENGTH;
     const visibleText = text.slice(0, textLimit);
     const isTextTruncated = text.length > textLimit;
+
     return (
         <article className={styles.card}>
             <Link
