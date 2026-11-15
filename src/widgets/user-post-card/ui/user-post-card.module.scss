@@ -4,6 +4,12 @@ $avatar-size: 36px;
 $accent: rgb(190 27 117);
 
 .link {
+     display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.card {
     display: block;
     max-width: $card-width;
     margin: 25px 1px;
@@ -11,17 +17,33 @@ $accent: rgb(190 27 117);
     text-decoration: none;
 }
 
-.card {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+.author-avatar-wrapper {
+    position: relative;
+    flex: 0 0 $avatar-size;
+    width: $avatar-size;
+    height: $avatar-size;
+    overflow: hidden;
+    border-radius: 50%;
+    background-color: $accent;
 }
 
-.post-image,
-.author-avatar {
+.post-image {
     object-fit: cover;
     background-color: $accent;
 }
+
+.author-avatar {
+    object-fit: cover;
+}
+
+
+.carousel-wrapper {
+    width: 100%;
+    max-width: $card-width;
+    height: $post-height;
+    overflow: hidden;
+}
+
 
 .post-image {
     display: block;
@@ -66,4 +88,21 @@ $accent: rgb(190 27 117);
 
 .author-name {
     @include text(600, 16px, 24px);
+}
+
+.carousel-wrapper-expanded {
+    height: $post-height / 2;
+
+    img {
+        object-fit: cover;
+    }
+}
+
+.text-toggle {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: $accent;
+    font: inherit;
+    cursor: pointer;
 }

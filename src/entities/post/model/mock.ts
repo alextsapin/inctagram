@@ -100,6 +100,36 @@ const FEED_POSTS: Post[] = [
         likedBy: mockLikedByEmpty, // Нет лайков
         createdAt: '2023-10-18T08:00:00.000Z',
     },
+    {
+        id: 'post-4',
+        author: MOCK_SIGNED_IN_AUTHOR,
+        // 3 картинки (тест карусели: стрелки + 3 точки)
+        images: [
+            { id: 'img-1', url: post1.src, alt: 'Пляж' },
+            { id: 'img-2', url: post2.src, alt: 'Океан' },
+            { id: 'img-3', url: post3.src, alt: 'Пальмы' },
+        ],
+        caption: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus, veniam, sed laboriosam accusantium modi nisi voluptatum nobis nesciunt libero optio aspernatur, excepturi explicabo amet ex inventore assumenda nostrum itaque. Id dolorum odio obcaecati eaque fugiat dolores, consectetur libero perspiciatis, fuga nihil asperiores eveniet consequuntur, velit voluptatum sunt eius in iusto?',
+        likesCount: 1243,
+        commentsCount: 2,
+        isLiked: false,
+        isSaved: true,
+        likedBy: mockLikedByMany, // Много лайков
+        createdAt: '2023-10-20T10:30:00.000Z', // Статичная дата (SSR safe)
+    },
+       {
+        id: 'post-5',
+        author: mockUser2,
+        // 1 картинка (тест карусели: без стрелок и точек)
+        images: [{ id: 'img-4', url: post4.src, alt: 'Горы' }],
+        caption: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus, veniam, sed laboriosam accusantium modi nisi voluptatum nobis nesciunt libero optio aspernatur, excepturi explicabo amet ex inventore assumenda nostrum itaque. Id dolorum odio obcaecati eaque fugiat dolores, consectetur libero perspiciatis, fuga nihil asperiores eveniet consequuntur, velit voluptatum sunt eius in iusto?',
+        likesCount: 2,
+        commentsCount: 1,
+        isLiked: true,
+        isSaved: false,
+        likedBy: mockLikedByFew, // Мало лайков
+        createdAt: '2023-10-19T14:15:00.000Z',
+    },
 ];
 
 // Посты профиля: картинки public/profile/post-1...8 в том порядке,

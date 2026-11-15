@@ -5,9 +5,9 @@ type RegisteredUsersProps = {
 };
 
 export const RegisteredUsers = ({
-    values = '009213',
+    values,
 }: RegisteredUsersProps): React.JSX.Element => {
-    const digits = values.split('');
+    const digits = (values ?? '').split('');
 
     return (
         <div className={styles['registered-users']}>
