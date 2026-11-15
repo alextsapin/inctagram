@@ -1,6 +1,7 @@
 import axios, { isAxiosError } from 'axios';
 
 import { getAccessToken } from './accessToken';
+import { getClientIp } from './getClientIp';
 import { refreshAccessToken } from './refreshToken';
 
 const UNAUTHORIZED = 401;
@@ -16,12 +17,19 @@ export const instance = axios.create({
     withCredentials: true,
 });
 
-// Перед каждым запросом добавляем токен, если он есть
-instance.interceptors.request.use(config => {
+// Перед каждым запросом добавляем access-токен и IP пользователя, если они есть
+instance.interceptors.request.use(async config => {
     const token = getAccessToken();
 
     if (token) {
         config.headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    const clientIp = await getClientIp();
+    const headerName = process.env.NEXT_PUBLIC_CLIENT_IP_HEADER;
+
+    if (clientIp && headerName) {
+        config.headers.set(headerName, clientIp);
     }
 
     return config;
