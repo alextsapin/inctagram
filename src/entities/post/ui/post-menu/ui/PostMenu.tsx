@@ -16,7 +16,6 @@ import {
 import s from './post-menu.module.scss';
 
 type PostMenuProps = {
-    postId: string;
     isOwnPost: boolean;
     isFollow: boolean;
     onEdit?: () => void;
@@ -25,10 +24,8 @@ type PostMenuProps = {
     onCopy?: () => void;
 };
 export const PostMenu = ({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    postId,
-    isOwnPost = false,
-    isFollow = true,
+    isOwnPost,
+    isFollow,
     onEdit,
     onDelete,
     onFollow,
