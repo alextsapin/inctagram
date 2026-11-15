@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { setAccessToken } from './accessToken';
+import { getClientIp } from './getClientIp';
 
 type RefreshResponse = {
     accessToken: string;
@@ -16,9 +17,19 @@ let refreshPromise: Promise<string | null> | null = null;
 // Обычный axios, а не instance: иначе обработчик 401 в instance перехватывал бы и этот запрос
 const requestNewToken = async (): Promise<string | null> => {
     try {
+        const clientIp = await getClientIp();
+        const headerName = process.env.NEXT_PUBLIC_CLIENT_IP_HEADER;
+
+        const headers: Record<string, string> = {};
+
+        if (clientIp && headerName) {
+            headers[headerName] = clientIp;
+        }
+
         const response = await axios.post<RefreshResponse>('/api/v1/auth/refresh', null, {
             baseURL: process.env.NEXT_PUBLIC_API_URL ?? '', // как в instance.ts
             withCredentials: true, // чтобы браузер отправил и сохранил cookie
+            headers,
         });
 
         setAccessToken(response.data.accessToken);
