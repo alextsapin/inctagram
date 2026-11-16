@@ -1,26 +1,29 @@
-/* eslint-disable no-magic-numbers */
-import { useState } from 'react';
+import {
+    useMutation,
+    type UseMutationResult,
+    useQueryClient,
+} from '@tanstack/react-query';
 
-type EditPostPayload = {
+import { postQueryKeys } from '@/entities/post';
+
+import { updatePost } from '../api/editPostApi';
+
+type EditPostVariables = {
     postId: string;
     caption: string;
 };
-type UseEditPostReturn = {
-    mutateAsync: (payload: EditPostPayload) => Promise<void>;
-    isPending: boolean;
-};
-export const useEditPost = (): UseEditPostReturn => {
-    const [isPending, setIsPending] = useState(false);
 
-    const mutateAsync = async (payload: EditPostPayload): Promise<void> => {
-        setIsPending(true);
+export const useEditPost = (): UseMutationResult<void, Error, EditPostVariables> => {
+    const queryClient = useQueryClient();
 
-        await new Promise(resolve => {
-            setTimeout(() => resolve(payload), 800);
-        });
+    return useMutation({
+        mutationFn: ({ postId, caption }: EditPostVariables) =>
+            updatePost(postId, caption),
 
-        setIsPending(false);
-    };
-
-    return { mutateAsync, isPending };
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({
+                queryKey: postQueryKeys.detail(variables.postId),
+            });
+        },
+    });
 };
