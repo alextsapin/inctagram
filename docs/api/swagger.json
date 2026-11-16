@@ -38,7 +38,7 @@
             }
           },
           "401": {
-            "description": "Access token is missing, invalid or expired"
+            "description": "Invalid or missing access token"
           }
         },
         "security": [
@@ -46,7 +46,7 @@
             "bearer": []
           }
         ],
-        "summary": "Get the current user by the access token",
+        "summary": "Current user",
         "tags": [
           "auth"
         ]
@@ -78,7 +78,14 @@
             }
           },
           "400": {
-            "description": "Validation failed"
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsMessagesDto"
+                }
+              }
+            }
           },
           "401": {
             "description": "Invalid email or password"
@@ -98,7 +105,7 @@
     },
     "/api/v1/auth/refresh": {
       "post": {
-        "description": "The used refresh token stops working. Presenting an already used token revokes the whole session.",
+        "description": "The old refresh token stops working; reusing it ends the session.",
         "operationId": "AuthController_refresh",
         "parameters": [],
         "responses": {
@@ -113,10 +120,7 @@
             }
           },
           "401": {
-            "description": "Refresh token is missing, invalid, expired or already used"
-          },
-          "429": {
-            "description": "Too many requests from this IP"
+            "description": "Invalid or missing refresh token"
           }
         },
         "security": [
@@ -124,7 +128,7 @@
             "refreshToken": []
           }
         ],
-        "summary": "Issue a new token pair by the refresh token cookie",
+        "summary": "Refresh the token pair",
         "tags": [
           "auth"
         ]
@@ -139,7 +143,7 @@
             "description": "Session ended, cookie cleared"
           },
           "401": {
-            "description": "Refresh token is missing, invalid, expired or already used"
+            "description": "Invalid or missing refresh token"
           },
           "429": {
             "description": "Too many requests from this IP"
@@ -163,10 +167,23 @@
           {
             "name": "X-Recaptcha-Token",
             "in": "header",
-            "description": "reCAPTCHA v2 token from the widget. Not verified yet: the endpoint accepts requests without it for now.",
+            "description": "reCAPTCHA v2 token. Not checked while the server has no reCAPTCHA secrets.",
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "X-Recaptcha-Type",
+            "in": "header",
+            "description": "Which widget issued the token",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "invisible",
+                "checkbox"
+              ]
             }
           }
         ],
@@ -192,19 +209,79 @@
             }
           },
           "400": {
-            "description": "Validation failed"
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsMessagesDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "reCAPTCHA token is missing or rejected (not enforced yet)"
+            "description": "reCAPTCHA check failed"
           },
           "409": {
-            "description": "Email or username is already taken (confirmed or not)"
+            "description": "Email or username is taken"
+          },
+          "429": {
+            "description": "Too many requests from this IP"
+          },
+          "503": {
+            "description": "Google reCAPTCHA did not respond"
+          }
+        },
+        "summary": "Register and send a confirmation link",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/add-email": {
+      "post": {
+        "description": "For users without an email or with an unconfirmed one.",
+        "operationId": "AuthController_addEmail",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddEmailDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Email saved, confirmation link sent"
+          },
+          "400": {
+            "description": "Validation failed or email already confirmed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsMessagesDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing access token"
+          },
+          "409": {
+            "description": "Email is taken by another user"
           },
           "429": {
             "description": "Too many requests from this IP"
           }
         },
-        "summary": "Register a new user and send an email confirmation link",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Set an email and send a confirmation link",
         "tags": [
           "auth"
         ]
@@ -229,13 +306,20 @@
             "description": "Email confirmed"
           },
           "400": {
-            "description": "Code is invalid, already used or expired"
+            "description": "Validation failed or invalid code",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsMessagesDto"
+                }
+              }
+            }
           },
           "429": {
             "description": "Too many requests from this IP"
           }
         },
-        "summary": "Confirm email with the code from the link",
+        "summary": "Confirm email",
         "tags": [
           "auth"
         ]
@@ -243,16 +327,29 @@
     },
     "/api/v1/auth/resend-verification": {
       "post": {
-        "description": "The response is the same whether the email is unknown, unconfirmed or already confirmed; the email is sent only to unconfirmed users.",
+        "description": "Same response for any email. Previous links stop working.",
         "operationId": "AuthController_resendVerification",
         "parameters": [
           {
             "name": "X-Recaptcha-Token",
             "in": "header",
-            "description": "reCAPTCHA v2 token from the widget. Not verified yet: the endpoint accepts requests without it for now.",
+            "description": "reCAPTCHA v2 token. Not checked while the server has no reCAPTCHA secrets.",
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "X-Recaptcha-Type",
+            "in": "header",
+            "description": "Which widget issued the token",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "invisible",
+                "checkbox"
+              ]
             }
           }
         ],
@@ -278,16 +375,26 @@
             }
           },
           "400": {
-            "description": "Validation failed"
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsMessagesDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "reCAPTCHA token is missing or rejected (not enforced yet)"
+            "description": "reCAPTCHA check failed"
           },
           "429": {
             "description": "Too many requests from this IP"
+          },
+          "503": {
+            "description": "Google reCAPTCHA did not respond"
           }
         },
-        "summary": "Send a new confirmation link (previous links stop working)",
+        "summary": "Resend the confirmation link",
         "tags": [
           "auth"
         ]
@@ -295,16 +402,29 @@
     },
     "/api/v1/auth/password-recovery": {
       "post": {
-        "description": "The response is the same whether the email is registered or not; the email is sent only to registered users.",
+        "description": "Same response for any email. Previous links stop working.",
         "operationId": "AuthController_passwordRecovery",
         "parameters": [
           {
             "name": "X-Recaptcha-Token",
             "in": "header",
-            "description": "reCAPTCHA v2 token from the widget. Not verified yet: the endpoint accepts requests without it for now.",
+            "description": "reCAPTCHA v2 token. Not checked while the server has no reCAPTCHA secrets.",
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "X-Recaptcha-Type",
+            "in": "header",
+            "description": "Which widget issued the token",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "invisible",
+                "checkbox"
+              ]
             }
           }
         ],
@@ -323,16 +443,26 @@
             "description": "Request accepted"
           },
           "400": {
-            "description": "Validation failed"
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsMessagesDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "reCAPTCHA token is missing or rejected (not enforced yet)"
+            "description": "reCAPTCHA check failed"
           },
           "429": {
             "description": "Too many requests from this IP"
+          },
+          "503": {
+            "description": "Google reCAPTCHA did not respond"
           }
         },
-        "summary": "Send a password recovery link (previous links stop working)",
+        "summary": "Send a password recovery link",
         "tags": [
           "auth"
         ]
@@ -340,7 +470,7 @@
     },
     "/api/v1/auth/new-password": {
       "post": {
-        "description": "Also marks the email as confirmed and ends all sessions of the user.",
+        "description": "Also confirms the email and ends all sessions.",
         "operationId": "AuthController_newPassword",
         "parameters": [],
         "requestBody": {
@@ -358,13 +488,20 @@
             "description": "Password changed"
           },
           "400": {
-            "description": "Validation failed, passwords do not match, or the code is invalid, already used or expired"
+            "description": "Validation failed or invalid code",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsMessagesDto"
+                }
+              }
+            }
           },
           "429": {
             "description": "Too many requests from this IP"
           }
         },
-        "summary": "Set a new password with the code from the recovery link",
+        "summary": "Set a new password",
         "tags": [
           "auth"
         ]
@@ -389,7 +526,7 @@
             }
           },
           "401": {
-            "description": "Refresh token is missing, invalid, expired or already used"
+            "description": "Invalid or missing refresh token"
           }
         },
         "security": [
@@ -397,7 +534,7 @@
             "refreshToken": []
           }
         ],
-        "summary": "List active sessions of the current user",
+        "summary": "Active sessions",
         "tags": [
           "sessions"
         ]
@@ -410,7 +547,7 @@
             "description": "Other sessions ended"
           },
           "401": {
-            "description": "Refresh token is missing, invalid, expired or already used"
+            "description": "Invalid or missing refresh token"
           }
         },
         "security": [
@@ -418,7 +555,7 @@
             "refreshToken": []
           }
         ],
-        "summary": "End all sessions of the current user except this one",
+        "summary": "End all other sessions",
         "tags": [
           "sessions"
         ]
@@ -426,7 +563,7 @@
     },
     "/api/v1/auth/sessions/{deviceId}": {
       "delete": {
-        "description": "Ending the current session also clears the refresh cookie.",
+        "description": "Ending the current one also clears the refresh cookie.",
         "operationId": "SessionController_endOne",
         "parameters": [
           {
@@ -444,13 +581,20 @@
             "description": "Session ended"
           },
           "400": {
-            "description": "deviceId is not a UUID"
+            "description": "deviceId is not a UUID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsMessagesDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Refresh token is missing, invalid, expired or already used"
+            "description": "Invalid or missing refresh token"
           },
           "404": {
-            "description": "No such session among the current user sessions"
+            "description": "Session not found"
           }
         },
         "security": [
@@ -458,7 +602,7 @@
             "refreshToken": []
           }
         ],
-        "summary": "End one session of the current user",
+        "summary": "End a session",
         "tags": [
           "sessions"
         ]
@@ -466,18 +610,18 @@
     },
     "/api/v1/auth/google": {
       "get": {
-        "description": "Open with a full-page navigation (window.location), not fetch. Redirects to the Google consent page; Google then returns the user to the callback endpoint.",
+        "description": "Open via window.location, not fetch. The result comes back through the callback redirect.",
         "operationId": "OAuthController_google",
         "parameters": [],
         "responses": {
           "302": {
             "description": "Redirect to Google consent page"
           },
-          "501": {
-            "description": "Not implemented yet"
+          "429": {
+            "description": "Too many requests from this IP"
           }
         },
-        "summary": "Start login with Google (stub)",
+        "summary": "Start login with Google",
         "tags": [
           "oauth"
         ]
@@ -485,7 +629,7 @@
     },
     "/api/v1/auth/google/callback": {
       "get": {
-        "description": "Called by Google, not by the frontend. On success: creates or links the user, starts a session, sets the refresh token cookie and redirects to FRONTEND_URL/auth/oauth/success. The frontend then calls POST /api/v1/auth/refresh to get the access token. On failure: redirects to FRONTEND_URL/auth/oauth/failure?error=<reason>.",
+        "description": "Called by the provider, not by the frontend. On success sets the refresh cookie; then call POST /api/v1/auth/refresh for the access token. Failure reasons: access_denied, expired, invalid_state, account_conflict, server_error.",
         "operationId": "OAuthController_googleCallback",
         "parameters": [
           {
@@ -504,19 +648,16 @@
             "name": "error",
             "required": false,
             "in": "query",
-            "description": "Set by the provider when the user denied access",
+            "description": "Set when the user denied access",
             "schema": {}
           }
         ],
         "responses": {
           "302": {
-            "description": "Redirect to the frontend"
-          },
-          "501": {
-            "description": "Not implemented yet"
+            "description": "Redirect to FRONTEND_URL/auth/oauth/success or FRONTEND_URL/auth/oauth/failure?error=<reason>"
           }
         },
-        "summary": "Google OAuth callback (stub)",
+        "summary": "Google OAuth callback",
         "tags": [
           "oauth"
         ]
@@ -524,18 +665,18 @@
     },
     "/api/v1/auth/github": {
       "get": {
-        "description": "Open with a full-page navigation (window.location), not fetch. Redirects to the GitHub consent page; GitHub then returns the user to the callback endpoint.",
+        "description": "Open via window.location, not fetch. The result comes back through the callback redirect.",
         "operationId": "OAuthController_github",
         "parameters": [],
         "responses": {
           "302": {
             "description": "Redirect to GitHub consent page"
           },
-          "501": {
-            "description": "Not implemented yet"
+          "429": {
+            "description": "Too many requests from this IP"
           }
         },
-        "summary": "Start login with GitHub (stub)",
+        "summary": "Start login with GitHub",
         "tags": [
           "oauth"
         ]
@@ -543,7 +684,7 @@
     },
     "/api/v1/auth/github/callback": {
       "get": {
-        "description": "Called by GitHub, not by the frontend. On success: creates or links the user, starts a session, sets the refresh token cookie and redirects to FRONTEND_URL/auth/oauth/success. The frontend then calls POST /api/v1/auth/refresh to get the access token. On failure: redirects to FRONTEND_URL/auth/oauth/failure?error=<reason>.",
+        "description": "Called by the provider, not by the frontend. On success sets the refresh cookie; then call POST /api/v1/auth/refresh for the access token. Failure reasons: access_denied, expired, invalid_state, account_conflict, server_error. Without a verified GitHub email the user gets email null and must call POST /api/v1/auth/add-email.",
         "operationId": "OAuthController_githubCallback",
         "parameters": [
           {
@@ -562,21 +703,354 @@
             "name": "error",
             "required": false,
             "in": "query",
-            "description": "Set by the provider when the user denied access",
+            "description": "Set when the user denied access",
             "schema": {}
           }
         ],
         "responses": {
           "302": {
-            "description": "Redirect to the frontend"
-          },
-          "501": {
-            "description": "Not implemented yet"
+            "description": "Redirect to FRONTEND_URL/auth/oauth/success or FRONTEND_URL/auth/oauth/failure?error=<reason>"
           }
         },
-        "summary": "GitHub OAuth callback (stub)",
+        "summary": "GitHub OAuth callback",
         "tags": [
           "oauth"
+        ]
+      }
+    },
+    "/api/v1/{userId}/posts": {
+      "get": {
+        "description": "Public. Up to 8 posts, newest first. Use nextCursor for the next page.",
+        "operationId": "PostController_findAll",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "Post author ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Unix milliseconds_UUID from nextCursor; omit for the first page",
+            "schema": {
+              "pattern": "^\\d{1,13}_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "example": "1794484800000_123e4567-e89b-42d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostsResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user UUID or cursor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsMessagesDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "User posts",
+        "tags": [
+          "post"
+        ]
+      }
+    },
+    "/api/v1/post/{id}": {
+      "delete": {
+        "operationId": "PostController_softDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          },
+          "400": {
+            "description": "Invalid UUID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsMessagesDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Author only"
+          },
+          "404": {
+            "description": "Post not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete post",
+        "tags": [
+          "post"
+        ]
+      },
+      "put": {
+        "operationId": "PostController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePostDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Updated"
+          },
+          "400": {
+            "description": "Invalid UUID or description",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsMessagesDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Author only"
+          },
+          "404": {
+            "description": "Post not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update description",
+        "tags": [
+          "post"
+        ]
+      }
+    },
+    "/api/v1/post": {
+      "post": {
+        "operationId": "PostController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "default": ""
+                  },
+                  "photos": {
+                    "type": "array",
+                    "minItems": 0,
+                    "maxItems": 10,
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsMessagesDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "413": {
+            "description": "Image exceeds the size limit or cannot be compressed"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create post",
+        "tags": [
+          "post"
+        ]
+      }
+    },
+    "/api/v1/{username}/profile": {
+      "get": {
+        "description": "Public. Stub: subscriptions contain only the user themselves, followers is always 1.",
+        "operationId": "ProfileController_findOne",
+        "parameters": [
+          {
+            "name": "username",
+            "required": true,
+            "in": "path",
+            "description": "Username, case-insensitive",
+            "schema": {
+              "example": "ivan_petrov",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid username",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsMessagesDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "User profile",
+        "tags": [
+          "profile"
+        ]
+      }
+    },
+    "/api/v1/profile": {
+      "put": {
+        "description": "All fields are optional: absent ones are not changed. null clears avatar and description; null username is ignored.",
+        "operationId": "ProfileController_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Profile updated"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsMessagesDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing, invalid or expired"
+          },
+          "403": {
+            "description": "Email is not confirmed. After confirming, call POST /api/v1/auth/refresh to get a new access token"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "409": {
+            "description": "Username is already taken"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update own profile",
+        "tags": [
+          "profile"
         ]
       }
     }
@@ -636,7 +1110,9 @@
           "email": {
             "type": "string",
             "format": "email",
-            "example": "ivan@example.com"
+            "nullable": true,
+            "example": "ivan@example.com",
+            "description": "null after GitHub login without an email — ask for one"
           }
         },
         "required": [
@@ -676,6 +1152,38 @@
         },
         "required": [
           "accessToken"
+        ]
+      },
+      "FieldErrorDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Minimum number of characters 6"
+          },
+          "field": {
+            "type": "string",
+            "description": "Request field",
+            "example": "password"
+          }
+        },
+        "required": [
+          "message",
+          "field"
+        ]
+      },
+      "ErrorsMessagesDto": {
+        "type": "object",
+        "properties": {
+          "errorsMessages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldErrorDto"
+            }
+          }
+        },
+        "required": [
+          "errorsMessages"
         ]
       },
       "RegistrationDto": {
@@ -738,12 +1246,27 @@
           "email"
         ]
       },
+      "AddEmailDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 255,
+            "description": "Trimmed and lowercased before validation",
+            "example": "ivan@example.com"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
       "ConfirmEmailDto": {
         "type": "object",
         "properties": {
           "code": {
             "type": "string",
-            "description": "Confirmation code from the link in the email (the `code` query parameter)",
+            "description": "The code query parameter from the email link",
             "example": "q3Jx0l8m3VZ6bJ9a0nYp1cK7wR2tE5uH4iO6pA8sD0f"
           }
         },
@@ -796,7 +1319,7 @@
           },
           "code": {
             "type": "string",
-            "description": "Recovery code from the link in the email (the `code` query parameter)",
+            "description": "The code query parameter from the email link",
             "example": "q3Jx0l8m3VZ6bJ9a0nYp1cK7wR2tE5uH4iO6pA8sD0f"
           }
         },
@@ -848,6 +1371,187 @@
           "createdAt",
           "current"
         ]
+      },
+      "PostPhotoResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "minimum": 0,
+            "example": 0,
+            "description": "Photo index in this post, starting at 0"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "id",
+          "url"
+        ]
+      },
+      "PostResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "authorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "photos": {
+            "description": "Public URLs of original photos; files are uploaded in background",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostPhotoResponseDto"
+            }
+          },
+          "previewUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "likesCount": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 0
+          },
+          "commentsCount": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 0
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "authorId",
+          "description",
+          "photos",
+          "previewUrl",
+          "likesCount",
+          "commentsCount",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PostsResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostResponseDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Unix milliseconds_UUID; pass as cursor for the next page; null means the end",
+            "pattern": "^\\d{1,13}_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "example": "1794484800000_123e4567-e89b-42d3-a456-426614174000"
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "UpdatePostDto": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "description"
+        ]
+      },
+      "ProfileResponseDto": {
+        "type": "object",
+        "properties": {
+          "uid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string",
+            "example": "ivan_petrov"
+          },
+          "avatar": {
+            "type": "string",
+            "nullable": true,
+            "description": "Avatar URL"
+          },
+          "subscriptions": {
+            "description": "Ids of followed users. Stub: only the user themselves",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "followers": {
+            "type": "number",
+            "description": "Stub: always 1 (the user themselves)"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "About me"
+          }
+        },
+        "required": [
+          "uid",
+          "username",
+          "avatar",
+          "subscriptions",
+          "followers",
+          "description"
+        ]
+      },
+      "UpdateProfileDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "nullable": true,
+            "minLength": 6,
+            "maxLength": 30,
+            "pattern": "^[0-9A-Za-z_-]+$",
+            "description": "Unique case-insensitively. null or absent — not changed",
+            "example": "ivan_petrov"
+          },
+          "avatar": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "maxLength": 2048,
+            "description": "Avatar URL. null — remove, absent — not changed"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200,
+            "description": "About me. null — clear, absent — not changed"
+          }
+        }
       }
     }
   }
