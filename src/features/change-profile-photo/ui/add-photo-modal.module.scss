@@ -38,6 +38,14 @@
     margin-bottom: 18px;
 }
 
+/* Размер области с фото под кругом, как в макете */
+.cropper {
+    width: 100%;
+    max-width: 332px;
+    aspect-ratio: 332 / 340;
+    border-radius: 2px;
+}
+
 /* Сам input не показываем: вместо него кнопка «Select from Computer» */
 .input {
     display: none;

@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react';
 
-import { MOCK_PROFILE_POSTS, PostGrid } from '@/entities/post';
+import { InfinitePostGrid } from '@/entities/post';
 import { profileApi } from '@/entities/profile';
 import { ProfileHeader } from '@/widgets/profile-header';
 import { ProfileLayout } from '@/widgets/profile-layout';
@@ -25,8 +25,6 @@ export const ProfilePage = ({
     actions,
 }: ProfilePageProps): React.JSX.Element => {
     const profile = profileApi.getUserProfile(username);
-
-    const posts = MOCK_PROFILE_POSTS;
 
     const formatNumber = (value: number): string =>
         value.toLocaleString('en-US').replace(/,/g, ' ');
@@ -69,7 +67,7 @@ export const ProfilePage = ({
                     description={profile.aboutMe}
                 />
 
-                <PostGrid posts={posts} />
+                <InfinitePostGrid username={username} />
             </div>
         </ProfileLayout>
     );

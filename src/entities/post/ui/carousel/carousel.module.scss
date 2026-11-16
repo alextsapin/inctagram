@@ -1,3 +1,5 @@
+@use '@/shared/styles/vars' as *;
+
 .no-image {
     display: flex;
     align-items: center;
@@ -22,13 +24,16 @@
     // aspect-ratio: 480 / 560;
 }
 
+/* Фото показываем целиком, в пропорциях, которые выбрал автор при создании поста.
+   Если пропорции не совпадают с рамкой, по краям остаются тёмные полосы */
 .viewport {
     position: relative;
     width: 100%;
     height: 100%;
+    background-color: $dark;
 
     img {
-        object-fit: cover;
+        object-fit: contain;
     }
 }
 

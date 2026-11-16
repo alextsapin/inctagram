@@ -1,75 +1,41 @@
-'use client';
-
-import { useCurrentUser } from '@/entities/session';
-import { ProfileLayout } from '@/widgets/profile-layout';
+/* eslint-disable no-magic-numbers */
 import { RegisteredUsers } from '@/widgets/registered-users';
 import { UserCard } from '@/widgets/user-post-card';
 
+import { getMainPageData } from '../api/getMainPageData';
 import nature from '../assets/nature.jpg';
 import tanya from '../assets/tanya.jpg';
 
 import style from './main.module.scss';
+import { MainClientLayout } from './MainClientLayout';
 
-const posts = [
-    {
-        id: 1,
-        username: 'UserName',
-        publishedAt: '22 min ago',
-        postText: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
-        postImage: nature,
-        authorAvatar: tanya,
-    },
-    {
-        id: 2,
-        username: 'AnotherUser',
-        publishedAt: '1 hour ago',
-        postText: 'ALorem ipsum dolor sit amet consectetur adipisicing elit. Iste, quia?',
-        postImage: nature,
-        authorAvatar: tanya,
-    },
-    {
-        id: 3,
-        username: 'ThirdUser',
-        publishedAt: '3 hours ago',
-        postText: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste, quia?',
-        postImage: nature,
-        authorAvatar: tanya,
-    },
-    {
-        id: 4,
-        username: 'FourthUser',
-        publishedAt: 'Yesterday',
-        postText: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste, quia?',
-        postImage: nature,
-        authorAvatar: tanya,
-    },
-];
+const COUNTER_LENGTH = 6;
 
-export const Main = (): React.JSX.Element => {
-    const { data: user, isError } = useCurrentUser();
-    const isAuthed = Boolean(user) && !isError;
+export const Main = async (): Promise<React.JSX.Element> => {
+    const { posts, registeredUsersCount } = await getMainPageData();
 
-    const content = (
-        <>
-            <RegisteredUsers />
-            <div className={style.container}>
-                {posts.map(post => (
-                    <UserCard key={post.id} {...post} />
-                ))}
-            </div>
-        </>
-    );
+    const registeredUsers = String(registeredUsersCount).padStart(COUNTER_LENGTH, '0');
 
-    // Гость: главная без сайдбара
-    if (!isAuthed) {
-        return <main className={style.main}>{content}</main>;
-    }
-
-    // Вошедший пользователь: сайдбар слева, как в макете и в ленте.
-    // <main> рисует ProfileLayout, поэтому здесь div
     return (
-        <ProfileLayout withSidebar>
-            <div className={style.main}>{content}</div>
-        </ProfileLayout>
+        <MainClientLayout>
+            <RegisteredUsers values={registeredUsers} />
+
+            <div className={style.container}>
+                {posts.length === 0 ? (
+                    <p>No posts yet.</p>
+                ) : (
+                    posts.map(post => (
+                        <UserCard
+                            key={post.id}
+                            username={post.author.username}
+                            publishedAt={post.createdAt.slice(0, 10)}
+                            postText={post.caption}
+                            postImage={nature}
+                            authorAvatar={tanya}
+                        />
+                    ))
+                )}
+            </div>
+        </MainClientLayout>
     );
 };

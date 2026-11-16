@@ -17,7 +17,6 @@ export const FeedPage = (): React.JSX.Element => {
     const [postIdToDelete, setPostIdToDelete] = useState<string | null>(null);
     const router = useRouter();
     const { data: currentUser } = useCurrentUser();
-
     const handleDeleteConfirm = (): void => {
         if (!postIdToDelete) return;
 

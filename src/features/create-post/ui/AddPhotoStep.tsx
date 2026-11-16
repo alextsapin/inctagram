@@ -5,25 +5,18 @@ import { useRef, useState } from 'react';
 import Image from 'next/image';
 
 import imageOutline from '@/shared/assets/image-outline.svg';
-import { ALLOWED_PHOTO_TYPES, type PhotoRules, validatePhoto } from '@/shared/lib';
+import { ALLOWED_PHOTO_TYPES, validatePhoto } from '@/shared/lib';
 import { Button } from '@/shared/ui/button';
+
+import { POST_PHOTO_ERROR, POST_PHOTO_RULES } from '../model/photoRules';
 
 import css from './add-photo-step.module.scss';
 
 const ICON_SIZE = 48;
-const POST_MAX_SIZE_MB = 20;
-const POST_PHOTO_ERROR = `The photo must be less than ${POST_MAX_SIZE_MB} Mb and have JPEG or PNG format`;
-
-// У постов в ТЗ один текст на обе ошибки: и про формат, и про размер
-const POST_PHOTO_RULES: PhotoRules = {
-    maxSizeMb: POST_MAX_SIZE_MB,
-    formatError: POST_PHOTO_ERROR,
-    sizeError: POST_PHOTO_ERROR,
-};
 
 type AddPhotoStepProps = {
-    // Получает файл, который уже прошёл проверку
-    onSelect: (file: File) => void;
+    // Получает файл, который уже прошёл проверку. Выбрасывает ошибку, если файл не открылся
+    onSelect: (file: File) => Promise<void>;
     // Открывает сохранённый черновик. Передаётся, только если черновик есть:
     // без него кнопки Open Draft на экране нет
     onOpenDraft?: () => void;
@@ -42,7 +35,9 @@ export const AddPhotoStep = ({
         inputRef.current?.click();
     };
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const handleFileChange = async (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ): Promise<void> => {
         const file = event.target.files?.[0];
 
         if (!file) return;
@@ -56,7 +51,13 @@ export const AddPhotoStep = ({
             return;
         }
 
-        onSelect(file);
+        // Формат подходит, но файл может оказаться повреждённым и не открыться.
+        // Тогда показываем ту же ошибку: для пользователя это тоже неподходящий файл
+        try {
+            await onSelect(file);
+        } catch {
+            setError(POST_PHOTO_ERROR);
+        }
     };
 
     return (

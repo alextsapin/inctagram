@@ -5,17 +5,13 @@
     background: none;
     color: #fff;
     cursor: pointer;
+
+    /* Неактивна, пока Next готовит файлы или Publish отправляет пост */
+    &:disabled {
+        cursor: default;
+    }
 }
 
 .next {
     padding: 0;
-}
-
-.stub {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    align-items: center;
-    justify-content: center;
-    min-height: 300px;
 }

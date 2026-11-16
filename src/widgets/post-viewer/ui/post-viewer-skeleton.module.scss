@@ -1,0 +1,194 @@
+// Анимация пульсации
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+// Базовый класс для всех скелетон-блоков
+.skeleton {
+    background-color: #363636; // Темно-серый цвет заглушки
+    border-radius: 4px;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+// ================= ЛЕЙАУТ (Копия PostViewer) =================
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.content {
+    display: flex;
+    width: 100%;
+    max-width: 975px;
+    height: 560px;
+    background: var(--color-dark-300, #262626);
+    border: 1px solid var(--color-dark-100, #363636);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.carousel-wrapper {
+    width: 100%;
+    max-width: 490px;
+    flex-shrink: 0;
+    height: 100%;
+    border-right: 1px solid var(--color-dark-100, #363636);
+}
+
+.image-skeleton {
+    width: 100%;
+    height: 100%;
+    background-color: #1a1a1a; // Чуть темнее основного фона
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.sidebar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    height: 100%;
+}
+
+// ================= ДЕТАЛИ =================
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-dark-100, #363636);
+}
+
+.comments {
+    flex: 1;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.comment {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.comment-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.footer {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--color-dark-100, #363636);
+    padding-top: 8px;
+}
+
+.actions-panel {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 16px;
+}
+
+.left-actions {
+    display: flex;
+    gap: 24px;
+}
+
+.meta {
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.avatars-stack {
+    display: flex;
+}
+
+.form-wrapper {
+    padding: 16px;
+    border-top: 1px solid var(--color-dark-100, #363636);
+}
+
+// ================= РАЗМЕРЫ БЛОКОВ =================
+
+.avatar-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.avatar-small {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin-left: -8px;
+    border: 2px solid var(--color-dark-300, #262626); // Чтобы накладывались красиво
+
+    &:first-child {
+        margin-left: 0;
+    }
+}
+
+.username-line {
+    width: 120px;
+    height: 16px;
+}
+
+.text-line-full {
+    width: 90%;
+    height: 14px;
+}
+
+.text-line-short {
+    width: 60%;
+    height: 14px;
+}
+
+.meta-line {
+    width: 100px;
+    height: 12px;
+    margin-top: 4px;
+}
+
+.icon-skeleton {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+}
+
+.likes-line {
+    width: 80px;
+    height: 16px;
+}
+
+.date-line {
+    width: 100px;
+    height: 12px;
+}
+
+.input-line {
+    width: 100%;
+    height: 40px;
+    border-radius: 8px;
+}

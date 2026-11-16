@@ -1,0 +1,40 @@
+@use '@/shared/styles/vars' as *;
+
+/* Блок под сеткой: сюда ставится sentinel для бесконечной загрузки. */
+.sentinel {
+    min-height: 1px;
+}
+
+/* Индикатор загрузки следующей страницы и конца списка. */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 0;
+    color: #8c8c8c;
+    font-size: 13px;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d9d9d9;
+    border-top-color: var(--color-accent-500);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Сообщение об ошибке загрузки постов. */
+.error {
+    padding: 16px 0;
+    text-align: center;
+    color: $error;
+    font-size: 14px;
+}

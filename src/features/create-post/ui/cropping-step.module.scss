@@ -1,0 +1,96 @@
+/* Шаг занимает всё окно под шапкой: кнопки лежат поверх фото */
+.step {
+    position: relative;
+}
+
+/* Фото на всю ширину окна, высота из макета */
+.cropper {
+    width: 100%;
+    height: 503px;
+}
+
+/* Кнопки в 11px от левого и нижнего края, между ними 24px */
+.controls {
+    position: absolute;
+    bottom: 11px;
+    left: 11px;
+    display: flex;
+    gap: 24px;
+}
+
+/* Обёртка кнопки с меню. Popover внутри неё inline-flex, и в обычном блоке браузер
+   оставляет под ним место, как под строкой текста: кнопка поднималась бы над краем.
+   display: flex убирает этот зазор */
+.control {
+    display: flex;
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    border-radius: 2px;
+    background-color: rgb(23 23 23 / 80%);
+    color: #fff;
+    cursor: pointer;
+
+    &:focus-visible {
+        outline: 2px solid #397df6;
+        outline-offset: 2px;
+    }
+
+    &[aria-expanded='true'] {
+        color: #397df6;
+    }
+}
+
+/* Кнопка галереи в 11px от правого и нижнего края.
+   display: flex по той же причине, что у .control */
+.gallery {
+    position: absolute;
+    right: 11px;
+    bottom: 11px;
+    display: flex;
+}
+
+/* Стрелки между фото: в 11px от края, по центру высоты */
+.arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.prev {
+    left: 11px;
+}
+
+.next {
+    right: 11px;
+}
+
+/* Точки по центру, в 26px от нижнего края. Клики проходят сквозь них к фото */
+.dots {
+    position: absolute;
+    bottom: 26px;
+    left: 50%;
+    display: flex;
+    gap: 6px;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #8d9094;
+}
+
+/* Точка фото, которое сейчас на экране */
+.current {
+    background-color: #397df6;
+}

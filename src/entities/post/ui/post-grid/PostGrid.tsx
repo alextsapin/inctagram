@@ -28,8 +28,9 @@ export const PostGrid = ({ posts }: Props): React.JSX.Element => {
                                 className={s.image}
                                 // Ширина плитки: на телефоне половина экрана, иначе не больше 234px
                                 sizes="(max-width: 768px) 50vw, 234px"
-                                // Грузим сразу, а не при прокрутке: постов в профиле немного
-                                loading="eager"
+                                // Ленивая загрузка (задача 12: «В PostGrid поставить ленивую загрузку»).
+                                // eager был временным решением, пока постов в профиле мало.
+                                loading="lazy"
                             />
                         )}
                     </Link>
