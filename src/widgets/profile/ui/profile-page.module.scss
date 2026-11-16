@@ -23,3 +23,130 @@
     font-weight: 400;
     line-height: 24px;
 }
+
+/* ============ Skeleton шапки (loading) ============ */
+
+.skeleton {
+    display: flex;
+    gap: 38px;
+    max-width: 972px;
+    margin-bottom: 48px;
+
+    @media (max-width: 900px) {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.skeleton-avatar {
+    flex-shrink: 0;
+    width: clamp(96px, 18vw, 204px);
+    height: clamp(96px, 18vw, 204px);
+    border-radius: 50%;
+    background-color: #d9d9d9;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeleton-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    min-width: 0;
+}
+
+.skeleton-name {
+    width: 30%;
+    height: 36px;
+    border-radius: 4px;
+    background-color: #d9d9d9;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeleton-stats {
+    width: 60%;
+    height: 24px;
+    border-radius: 4px;
+    background-color: #d9d9d9;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeleton-description {
+    width: 80%;
+    height: 24px;
+    border-radius: 4px;
+    background-color: #d9d9d9;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* ============ Ошибка загрузки профиля ============ */
+
+.error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 32px 0;
+    color: $error;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.error-retry {
+    min-height: 36px;
+    padding: 0 24px;
+    border-radius: 2px;
+    border: none;
+    background-color: #397df6;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #73a5ff;
+    }
+
+    &:active {
+        background-color: #2f68cc;
+    }
+}
+
+/* ============ «Такого профиля нет» ============ */
+
+.not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 35px 0 49px;
+    text-align: center;
+}
+
+.not-found-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 36px;
+}
+
+.not-found-text {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+}

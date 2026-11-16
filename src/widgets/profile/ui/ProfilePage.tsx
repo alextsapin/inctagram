@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 
 import { InfinitePostGrid } from '@/entities/post';
-import { profileApi } from '@/entities/profile';
+import { useProfile } from '@/entities/profile';
 import { ProfileHeader } from '@/widgets/profile-header';
 import { ProfileLayout } from '@/widgets/profile-layout';
 
@@ -23,14 +23,78 @@ export const ProfilePage = ({
     isVerified,
     withSidebar = false,
     actions,
-}: ProfilePageProps): React.JSX.Element => {
-    const profile = profileApi.getUserProfile(username);
+}: ProfilePageProps): React.JSX.Element | null => {
+    const {
+        data: profile,
+        isPending,
+        isError,
+        isNotFound,
+        refetch,
+    } = useProfile(username);
 
     const formatNumber = (value: number): string =>
         value.toLocaleString('en-US').replace(/,/g, ' ');
 
-    const verified = isVerified ?? profile.isVerified;
-    const avatar = avatarUrl ?? profile.avatarUrl;
+    // «Такого профиля нет»: username не существует. Показываем целиком отдельное
+    // состояние, а не шапку с ошибкой и сетку постов рядом — два независимых запроса
+    // (профиль + посты) не должны показывать противоречивые состояния одновременно.
+    if (isNotFound) {
+        return (
+            <ProfileLayout withSidebar={withSidebar}>
+                <div className={css.notFound} role="alert">
+                    <h2 className={css['not-found-title']}>Profile not found</h2>
+                    <p className={css['not-found-text']}>
+                        User &quot;{username}&quot; doesn&apos;t exist.
+                    </p>
+                </div>
+            </ProfileLayout>
+        );
+    }
+
+    // Первичная загрузка шапки: skeleton на месте фото+username+About me,
+    // не весь экран, потому что посты загружаются параллельно.
+    if (isPending) {
+        return (
+            <ProfileLayout withSidebar={withSidebar}>
+                <div className={css.content}>
+                    <ProfileHeaderSkeleton />
+                    <InfinitePostGrid username={username} />
+                </div>
+            </ProfileLayout>
+        );
+    }
+
+    // Ошибка запроса профиля (не «профиль не найден»): явное сообщение + Retry.
+    // Посты в этом случае не показываем, чтобы не смешивать две ошибки.
+    if (isError) {
+        return (
+            <ProfileLayout withSidebar={withSidebar}>
+                <div className={css.content}>
+                    <div className={css.error} role="alert">
+                        Failed to load profile.
+                        <button
+                            type="button"
+                            className={css['error-retry']}
+                            onClick={() => {
+                                refetch();
+                            }}
+                        >
+                            Retry
+                        </button>
+                    </div>
+                </div>
+            </ProfileLayout>
+        );
+    }
+
+    if (!profile) {
+        // Теоретически недостижимо после isPending/isError/isNotFound: useQuery
+        // в этом случае вернул бы data. Оставлено для типизации (profile: Profile).
+        return null;
+    }
+
+    const verified = isVerified ?? false;
+    const avatar = avatarUrl ?? profile.avatar ?? '/profile/avatar.png';
 
     return (
         <ProfileLayout withSidebar={withSidebar}>
@@ -43,28 +107,14 @@ export const ProfilePage = ({
                     isVerified={verified}
                     actions={actions}
                     stats={
-                        <>
-                            <div className={css.stat}>
-                                <span className={css['stat-value']}>
-                                    {formatNumber(profile.stats.following)}
-                                </span>
-                                <span className={css['stat-label']}>Following</span>
-                            </div>
-                            <div className={css.stat}>
-                                <span className={css['stat-value']}>
-                                    {formatNumber(profile.stats.followers)}
-                                </span>
-                                <span className={css['stat-label']}>Followers</span>
-                            </div>
-                            <div className={css.stat}>
-                                <span className={css['stat-value']}>
-                                    {formatNumber(profile.stats.publications)}
-                                </span>
-                                <span className={css['stat-label']}>Publications</span>
-                            </div>
-                        </>
+                        <div className={css.stat}>
+                            <span className={css['stat-value']}>
+                                {formatNumber(profile.followers)}
+                            </span>
+                            <span className={css['stat-label']}>Followers</span>
+                        </div>
                     }
-                    description={profile.aboutMe}
+                    description={profile.description}
                 />
 
                 <InfinitePostGrid username={username} />
@@ -72,3 +122,15 @@ export const ProfilePage = ({
         </ProfileLayout>
     );
 };
+
+// Скелетон шапки: фото+username+About me в виде пульсирующих блоков.
+const ProfileHeaderSkeleton = (): React.JSX.Element => (
+    <div className={css.skeleton} role="status" aria-label="Loading profile">
+        <div className={css['skeleton-avatar']} />
+        <div className={css['skeleton-content']}>
+            <div className={css['skeleton-name']} />
+            <div className={css['skeleton-stats']} />
+            <div className={css['skeleton-description']} />
+        </div>
+    </div>
+);
