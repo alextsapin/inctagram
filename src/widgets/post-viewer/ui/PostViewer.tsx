@@ -10,7 +10,6 @@ import {
     PostMenu,
     PostMeta,
 } from '@/entities/post';
-import { useCurrentUser } from '@/entities/session';
 import { AddCommentForm } from '@/features/add-comment';
 import { DeletePostModal } from '@/features/delete-post';
 import { LikeCommentButton } from '@/features/like-comment';
@@ -26,19 +25,21 @@ type Props = {
     onEdit?: () => void;
     onDeleted?: () => void;
     onLikesClick?: () => void;
+    isAuthed: boolean;
+    isOwnPost: boolean;
 };
 export const PostViewer = ({
     onEdit,
     onDeleted,
     onLikesClick,
     post,
+    isAuthed,
+    isOwnPost,
 }: Props): React.JSX.Element => {
     //  на какой комментарий мы сейчас отвечаем
     //  null  -  если мы просто пишем коммент, а не отвечаем
     const [replyToId, setReplyToId] = useState<string | null>(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
-    const { data: currentUser } = useCurrentUser();
 
     const {
         id,
@@ -51,8 +52,6 @@ export const PostViewer = ({
         createdAt,
         caption,
     } = post;
-
-    const isOwnPost = currentUser?.userId === author.id;
 
     const handleDeleteConfirm = (): void => {
         // В будущем муатция удаления
@@ -72,13 +71,14 @@ export const PostViewer = ({
                         <PostHeader
                             size={36}
                             actionSlot={
-                                <PostMenu
-                                    postId={id}
-                                    isOwnPost={isOwnPost}
-                                    isFollow={author.isFollowing ?? false}
-                                    onEdit={onEdit}
-                                    onDelete={() => setIsDeleteModalOpen(true)}
-                                />
+                                isAuthed ? (
+                                    <PostMenu
+                                        isOwnPost={isOwnPost}
+                                        isFollow={author.isFollowing ?? false}
+                                        onEdit={onEdit}
+                                        onDelete={() => setIsDeleteModalOpen(true)}
+                                    />
+                                ) : null
                             }
                             author={author}
                         />
@@ -93,52 +93,62 @@ export const PostViewer = ({
                         </div>
 
                         <CommentsSection
-                            onReply={id => setReplyToId(id)}
+                            onReply={isAuthed ? id => setReplyToId(id) : undefined}
                             postId={id}
-                            renderActions={comment => (
-                                <LikeCommentButton
-                                    commentId={comment.id}
-                                    isLiked={comment.isLiked}
-                                />
-                            )}
+                            renderActions={
+                                isAuthed
+                                    ? comment => (
+                                          <LikeCommentButton
+                                              commentId={comment.id}
+                                              isLiked={comment.isLiked}
+                                          />
+                                      )
+                                    : undefined
+                            }
                         />
                     </div>
                     <div className={s.footer}>
-                        <div className={s['actions-panel']}>
-                            <div className={s['left-actions']}>
-                                <LikePostButton postId={id} isLiked={isLiked} />
-                                <SharePostButton postId={id} />
+                        {isAuthed && (
+                            <div className={s['actions-panel']}>
+                                <div className={s['left-actions']}>
+                                    <LikePostButton postId={id} isLiked={isLiked} />
+                                    <SharePostButton postId={id} />
+                                </div>
+                                <SavePostButton postId={id} isSaved={isSaved} />
                             </div>
-                            <SavePostButton postId={id} isSaved={isSaved} />
-                        </div>
-                        <div className={s.meta}>
+                        )}
+                        <div className={isAuthed ? s.meta : s['meta-guest']}>
                             <PostMeta
                                 likedBy={likedBy}
                                 likesCount={likesCount}
                                 createdAt={createdAt}
-                                onLikesClick={onLikesClick}
+                                onLikesClick={isAuthed ? onLikesClick : undefined}
                                 size={36}
                             />
                         </div>
-                        <div className={s['form-wrapper']}>
-                            <AddCommentForm
-                                // Пробрасываем id поста и id комментария
-                                postId={id}
-                                replyToId={replyToId}
-                                // функция сброса в форму
-                                onCancelReply={() => setReplyToId(null)}
-                                // После успешной отправки сбрасываем replyToId
-                                onSuccess={() => setReplyToId(null)}
-                            />
-                        </div>
+                        {isAuthed && (
+                            <div className={s['form-wrapper']}>
+                                <AddCommentForm
+                                    // Пробрасываем id поста и id комментария
+                                    postId={id}
+                                    replyToId={replyToId}
+                                    // функция сброса в форму
+                                    onCancelReply={() => setReplyToId(null)}
+                                    // После успешной отправки сбрасываем replyToId
+                                    onSuccess={() => setReplyToId(null)}
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
-            <DeletePostModal
-                isOpen={isDeleteModalOpen}
-                onClose={() => setIsDeleteModalOpen(false)}
-                onConfirm={handleDeleteConfirm}
-            />
+            {isAuthed && (
+                <DeletePostModal
+                    isOpen={isDeleteModalOpen}
+                    onClose={() => setIsDeleteModalOpen(false)}
+                    onConfirm={handleDeleteConfirm}
+                />
+            )}
         </section>
     );
 };

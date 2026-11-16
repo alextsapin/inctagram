@@ -30,7 +30,7 @@ export const PostMeta = ({
                 type="button"
                 className={s.likes}
                 onClick={onLikesClick}
-                disabled={!hasLikes}
+                disabled={!hasLikes || !onLikesClick}
             >
                 {hasLikes && (
                     <div className={s.stack}>

@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 
 import { usePost } from '@/entities/post';
+import { useCurrentUser } from '@/entities/session';
 import { Alert } from '@/shared/ui/alert';
 import { Modal } from '@/shared/ui/modal';
 import { PostViewer, PostViewerSkeleton } from '@/widgets/post-viewer';
@@ -18,16 +19,22 @@ const POST_MODAL_WIDTH = 975;
 export const PostPage = ({ postId, isModal }: Props): React.JSX.Element => {
     const router = useRouter();
     const { data: post, isLoading, isError, error } = usePost(postId);
+    const {
+        data: currentUser,
+        isError: isErrorUser,
+        isLoading: isLoadingUser,
+    } = useCurrentUser();
+    const isAuthed = Boolean(currentUser) && !isErrorUser;
+    const isOwnPost = currentUser?.userId === post?.author.id;
 
     const handleClose = (): void => {
         // В модалке закрываем назад, на странице — редирект в ленту
-        if (isModal) {
-            return router.back();
-        }
+        if (isModal) return router.back();
+        if (!isAuthed) return router.push('/');
         router.push('/feed');
     };
 
-    if (isLoading) {
+    if (isLoading || isLoadingUser) {
         return isModal ? (
             <Modal open onClose={handleClose} width={POST_MODAL_WIDTH} closeOutside>
                 <PostViewerSkeleton />
@@ -73,6 +80,8 @@ export const PostPage = ({ postId, isModal }: Props): React.JSX.Element => {
             onEdit={handleEdit}
             onDeleted={handleDeleted}
             onLikesClick={handleLikesClick}
+            isAuthed={isAuthed}
+            isOwnPost={isOwnPost}
         />
     );
 
