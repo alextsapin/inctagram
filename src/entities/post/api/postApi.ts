@@ -1,3 +1,5 @@
+import { instance } from '@/shared/api';
+
 import {
     createMockPost,
     deleteMockPost,
@@ -10,14 +12,63 @@ import {
 import type { Post, PostImage, UserPostsPage } from '../model/type';
 
 // Get a post by ID or throw an error if it is not found
-export const getPost = async (id: string): Promise<Post> => {
-    const post = getMockPost(id);
 
-    if (!post) {
-        throw new Error(`Post with id ${id} not found`);
+type PostWithAuthorResponseDto = {
+    id: string;
+    description: string;
+    photos: {
+        id: number;
+        url: string;
+    }[];
+    likesCount: number;
+    commentsCount: number;
+    createdAt: string;
+    author: {
+        id: string;
+        username: string;
+        avatarUrl: string | null;
+    };
+};
+
+export const getPost = async (id: string): Promise<Post> => {
+    const mockPost = getMockPost(id);
+
+    // Сохраняем возможность открывать моковые публикации
+    // во время локальной разработки.
+    if (
+        process.env.NEXT_PUBLIC_USE_MOCKS === 'true' ||
+        (process.env.NODE_ENV === 'development' && mockPost)
+    ) {
+        if (!mockPost) {
+            throw new Error(`Post with id ${id} not found`);
+        }
+
+        return mockPost;
     }
 
-    return post;
+    const { data } = await instance.get<PostWithAuthorResponseDto>(
+        `/api/v1/post/${encodeURIComponent(id)}`,
+    );
+
+    return {
+        id: data.id,
+        author: {
+            id: data.author.id,
+            username: data.author.username,
+            avatarUrl: data.author.avatarUrl ?? '/profile/avatar.png',
+        },
+        images: data.photos.map(photo => ({
+            id: String(photo.id),
+            url: photo.url,
+        })),
+        caption: data.description,
+        likesCount: data.likesCount,
+        commentsCount: data.commentsCount,
+        createdAt: data.createdAt,
+        isLiked: false,
+        isSaved: false,
+        likedBy: [],
+    };
 };
 
 // Get a user's posts sorted from newest to oldest

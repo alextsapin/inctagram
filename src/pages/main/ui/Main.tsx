@@ -13,12 +13,26 @@ import { MainClientLayout } from './MainClientLayout';
 const COUNTER_LENGTH = 6;
 
 export const Main = async (): Promise<React.JSX.Element> => {
-    const { posts, registeredUsersCount } = await getMainPageData();
+    const data = await getMainPageData();
+
+    if (data.source === 'unavailable') {
+        return (
+            <MainClientLayout>
+                <p role="alert">
+                    Publications are temporarily unavailable. Please try again later.
+                </p>
+            </MainClientLayout>
+        );
+    }
+
+    const { posts, registeredUsersCount } = data;
 
     const registeredUsers = String(registeredUsersCount).padStart(COUNTER_LENGTH, '0');
 
     return (
         <MainClientLayout>
+            {data.source === 'mock' && <span>Demo data</span>}
+
             <RegisteredUsers values={registeredUsers} />
 
             <div className={style.container}>

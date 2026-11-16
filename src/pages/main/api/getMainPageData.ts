@@ -25,10 +25,15 @@ type MainFeedResponseDto = {
     registeredUsersCount: number;
 };
 
-export type MainPageData = {
-    posts: MainPost[];
-    registeredUsersCount: number;
-};
+export type MainPageData =
+    | {
+          source: 'api' | 'mock';
+          posts: MainPost[];
+          registeredUsersCount: number;
+      }
+    | {
+          source: 'unavailable';
+      };
 
 const REVALIDATE_SECONDS = 60;
 const POSTS_LIMIT = 4;
@@ -50,21 +55,22 @@ const mapMockPost = (post: Post): MainPost => ({
 });
 
 const getMockMainPageData = (): MainPageData => ({
+    source: 'mock',
     posts: getMockLatestPosts(POSTS_LIMIT).map(mapMockPost),
     registeredUsersCount: MOCK_REGISTERED_USERS_COUNT,
 });
 
-const shouldUseMocks = process.env.NEXT_PUBLIC_USE_MOCKS === 'true';
-
 export const getMainPageData = async (): Promise<MainPageData> => {
-    if (shouldUseMocks) {
+    const isDevelopment = process.env.NODE_ENV === 'development';
+
+    if (isDevelopment && process.env.NEXT_PUBLIC_USE_MOCKS === 'true') {
         return getMockMainPageData();
     }
 
     const apiUrl = process.env.SERVER_API_URL;
 
     if (!apiUrl) {
-        throw new Error('SERVER_API_URL is not configured');
+        return isDevelopment ? getMockMainPageData() : { source: 'unavailable' };
     }
 
     try {
@@ -73,20 +79,17 @@ export const getMainPageData = async (): Promise<MainPageData> => {
         });
 
         if (!response.ok) {
-            throw new Error(`Failed to load main page: ${response.status}`);
+            throw new Error(`Main API returned ${response.status}`);
         }
 
         const data = (await response.json()) as MainFeedResponseDto;
 
         return {
+            source: 'api',
             posts: data.items,
             registeredUsersCount: data.registeredUsersCount,
         };
-    } catch (error) {
-        if (process.env.NODE_ENV !== 'development') {
-            throw error;
-        }
-
-        return getMockMainPageData();
+    } catch {
+        return isDevelopment ? getMockMainPageData() : { source: 'unavailable' };
     }
 };
