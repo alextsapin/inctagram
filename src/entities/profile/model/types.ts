@@ -7,6 +7,8 @@ export type Profile = {
     subscriptions: string[];
     // Заглушка на бэкенде: всегда 1 (сам пользователь).
     followers: number;
+    // Количество созданных постов.
+    publications: number;
     // «About me».
     description: string | null;
 };

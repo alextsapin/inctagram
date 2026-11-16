@@ -37,6 +37,8 @@ export const MOCK_PROFILE: Profile = {
     subscriptions: ['a1b2c3d4-5e6f-4a7b-8c9d-0e1f2a3b4c5d'],
     // Заглушка бэкенда: всегда 1 (сам пользователь).
     followers: 1,
+    // Совпадает с числом постов в MOCK_PROFILE_POSTS (entities/post/model/mock.ts).
+    publications: 8,
     description:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ' +
         'tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, ' +
