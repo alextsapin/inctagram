@@ -776,7 +776,74 @@
         ]
       }
     },
+    "/api/v1/public/main": {
+      "get": {
+        "description": "Public. 4 newest posts of all users and approximate registered users count.",
+        "operationId": "PostController_findLatest",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MainFeedResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Main page posts",
+        "tags": [
+          "post"
+        ]
+      }
+    },
     "/api/v1/post/{id}": {
+      "get": {
+        "description": "Public.",
+        "operationId": "PostController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostWithAuthorResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid UUID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsMessagesDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Post not found"
+          }
+        },
+        "summary": "Get post",
+        "tags": [
+          "post"
+        ]
+      },
       "delete": {
         "operationId": "PostController_softDelete",
         "parameters": [
@@ -1391,6 +1458,144 @@
           "url"
         ]
       },
+      "PostAuthorResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "avatarUrl"
+        ]
+      },
+      "PostWithAuthorResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "authorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "photos": {
+            "description": "Public URLs of original photos; files are uploaded in background",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostPhotoResponseDto"
+            }
+          },
+          "previewUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "likesCount": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 0
+          },
+          "commentsCount": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 0
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "author": {
+            "$ref": "#/components/schemas/PostAuthorResponseDto"
+          }
+        },
+        "required": [
+          "id",
+          "authorId",
+          "description",
+          "photos",
+          "previewUrl",
+          "likesCount",
+          "commentsCount",
+          "createdAt",
+          "updatedAt",
+          "author"
+        ]
+      },
+      "PostsResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostWithAuthorResponseDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Unix milliseconds_UUID; pass as cursor for the next page; null means the end",
+            "pattern": "^\\d{1,13}_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "example": "1794484800000_123e4567-e89b-42d3-a456-426614174000"
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "MainFeedResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostWithAuthorResponseDto"
+            }
+          },
+          "registeredUsersCount": {
+            "type": "number",
+            "example": 1250,
+            "description": "Approximate number of registered users"
+          }
+        },
+        "required": [
+          "items",
+          "registeredUsersCount"
+        ]
+      },
+      "UpdatePostDto": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "description"
+        ]
+      },
       "PostResponseDto": {
         "type": "object",
         "properties": {
@@ -1449,40 +1654,6 @@
           "updatedAt"
         ]
       },
-      "PostsResponseDto": {
-        "type": "object",
-        "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PostResponseDto"
-            }
-          },
-          "nextCursor": {
-            "type": "string",
-            "nullable": true,
-            "description": "Unix milliseconds_UUID; pass as cursor for the next page; null means the end",
-            "pattern": "^\\d{1,13}_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "example": "1794484800000_123e4567-e89b-42d3-a456-426614174000"
-          }
-        },
-        "required": [
-          "items",
-          "nextCursor"
-        ]
-      },
-      "UpdatePostDto": {
-        "type": "object",
-        "properties": {
-          "description": {
-            "type": "string",
-            "maxLength": 500
-          }
-        },
-        "required": [
-          "description"
-        ]
-      },
       "ProfileResponseDto": {
         "type": "object",
         "properties": {
@@ -1511,6 +1682,12 @@
             "type": "number",
             "description": "Stub: always 1 (the user themselves)"
           },
+          "publications": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 0,
+            "description": "Number of created posts"
+          },
           "description": {
             "type": "string",
             "nullable": true,
@@ -1523,6 +1700,7 @@
           "avatar",
           "subscriptions",
           "followers",
+          "publications",
           "description"
         ]
       },
