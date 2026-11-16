@@ -2,32 +2,30 @@
 
 import Image from 'next/image';
 
-import { MOCK_POSTS } from '@/entities/post/model/mock';
+import { Post } from '@/entities/post';
 import { EditPostForm } from '@/features/edit-post';
 import { Avatar } from '@/shared/ui/avatar';
 
 import s from './post-edit.module.scss';
 
 type Props = {
-    postId: string;
+    post: Post;
     onDirtyChange: (isDirty: boolean) => void;
     onSuccess: () => void;
 };
 
 export const PostEdit = ({
-    postId,
+    post,
     onDirtyChange,
     onSuccess,
 }: Props): React.JSX.Element => {
-    const data = MOCK_POSTS.find(p => p.id === postId);
-
-    if (!data) return <div>Пост не найден </div>;
+    const { id, author, images, caption } = post;
 
     return (
         <div className={s.content}>
             <div className={s['image-wrapper']}>
                 <Image
-                    src={data.images[0].url}
+                    src={images[0].url}
                     alt="Post"
                     fill
                     className={s.image}
@@ -37,18 +35,14 @@ export const PostEdit = ({
 
             <div className={s.sidebar}>
                 <div className={s.header}>
-                    <Avatar
-                        src={data.author.avatarUrl}
-                        alt={data.author.username}
-                        size={32}
-                    />
-                    <span className={s.username}>{data.author.username}</span>
+                    <Avatar src={author.avatarUrl} alt={author.username} size={32} />
+                    <span className={s.username}>{author.username}</span>
                 </div>
 
                 <EditPostForm
                     onSuccess={onSuccess}
-                    postId={postId}
-                    initialCaption={data.caption || ''}
+                    postId={id}
+                    initialCaption={caption || ''}
                     onDirtyChange={onDirtyChange}
                 />
             </div>
