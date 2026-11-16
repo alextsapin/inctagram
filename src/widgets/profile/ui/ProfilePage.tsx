@@ -11,7 +11,6 @@ import css from './profile-page.module.scss';
 
 type ProfilePageProps = {
     username: string;
-    avatarUrl?: string;
     isVerified?: boolean;
     withSidebar?: boolean;
     actions?: ReactNode;
@@ -19,7 +18,6 @@ type ProfilePageProps = {
 
 export const ProfilePage = ({
     username,
-    avatarUrl,
     isVerified,
     withSidebar = false,
     actions,
@@ -94,7 +92,8 @@ export const ProfilePage = ({
     }
 
     const verified = isVerified ?? false;
-    const avatar = avatarUrl ?? profile.avatar ?? '/profile/avatar.png';
+    // Аватар с сервера; локальная картинка — только fallback.
+    const avatar = profile.avatar ?? '/profile/avatar.png';
 
     return (
         <ProfileLayout withSidebar={withSidebar}>
@@ -107,12 +106,26 @@ export const ProfilePage = ({
                     isVerified={verified}
                     actions={actions}
                     stats={
-                        <div className={css.stat}>
-                            <span className={css['stat-value']}>
-                                {formatNumber(profile.followers)}
-                            </span>
-                            <span className={css['stat-label']}>Followers</span>
-                        </div>
+                        <>
+                            {/* Following: subscriptions — заглушка бэкенда (только сам
+                                пользователь), поэтому реального числа подписок нет. */}
+                            <div className={css.stat}>
+                                <span className={css['stat-value']}>—</span>
+                                <span className={css['stat-label']}>Following</span>
+                            </div>
+                            <div className={css.stat}>
+                                <span className={css['stat-value']}>
+                                    {formatNumber(profile.followers)}
+                                </span>
+                                <span className={css['stat-label']}>Followers</span>
+                            </div>
+                            <div className={css.stat}>
+                                <span className={css['stat-value']}>
+                                    {formatNumber(profile.publications)}
+                                </span>
+                                <span className={css['stat-label']}>Publications</span>
+                            </div>
+                        </>
                     }
                     description={profile.description}
                 />
