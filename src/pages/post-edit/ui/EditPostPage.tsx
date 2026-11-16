@@ -1,12 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { Button } from '@/shared/ui/button';
+import { usePost } from '@/entities/post';
+import { useCurrentUser } from '@/entities/session';
+import { Alert } from '@/shared/ui/alert';
+import { Confirmation } from '@/shared/ui/confirmation';
 import { Modal } from '@/shared/ui/modal';
-import { PostEdit } from '@/widgets/post-editor';
+import { PostEdit, PostEditSkeleton } from '@/widgets/post-editor';
 
 import s from './edit-post-page.module.scss';
 
@@ -18,23 +21,61 @@ type Props = {
 const EDIT_POST_MODAL_WIDTH = 972;
 const CLOSE_MODAL_WIDTH = 432;
 
-export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element => {
+export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element | null => {
     const router = useRouter();
     // const safeClose = useSafeClose('/feed');
     const [isDirty, setIsDirty] = useState(false);
 
     const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
+    const { data: post, isLoading, isError, error } = usePost(postId);
+    const { data: currentUser, isLoading: isUserLoading } = useCurrentUser();
 
     // --- ФУНКЦИИ НАВИГАЦИИ ---
 
+    useEffect(() => {
+        if (!isLoading && !isUserLoading && post) {
+            // Если гость (currentUser === null) ИЛИ ID не совпадают
+            // Проверяем чтобы в url руками не ввели postId/edit
+            if (!currentUser || currentUser.userId !== post.author.id) {
+                router.replace(`/post/${postId}`);
+            }
+        }
+    }, [post, currentUser, isLoading, isUserLoading, router, postId]);
+
+    if (isLoading || isUserLoading) {
+        return isModal ? (
+            <Modal open onClose={() => router.back()} width={EDIT_POST_MODAL_WIDTH}>
+                <PostEditSkeleton />
+            </Modal>
+        ) : (
+            <main className={s.page}>
+                <PostEditSkeleton />
+            </main>
+        );
+    }
+
+    if (isError || !post) {
+        return (
+            <Alert
+                open
+                onClose={() => router.back()}
+                type="error"
+                message={error?.message || 'Не удалось загрузить пост'}
+            />
+        );
+    }
+
+    // Блокируем рендер формы для не-автора (пока срабатывает useEffect)
+    if (!currentUser || currentUser.userId !== post.author.id) {
+        return null;
+    }
     // Единая функция закрытия (выполняется, если нет несохраненных изменений или юзер подтвердил)
     const executeClose = (): void => {
         if (isModal) {
             // Если это модалка — возвращаемся туда, откуда пришли (к просмотру поста)
             router.back();
         } else {
-            // Если это страница — ведем в ленту
-            router.push('/feed');
+            router.replace(`/post/${postId}`);
         }
     };
 
@@ -85,7 +126,7 @@ export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element => {
                     closeOutside={false}
                 >
                     <PostEdit
-                        postId={postId}
+                        post={post}
                         onDirtyChange={setIsDirty}
                         onSuccess={handleSuccess}
                     />
@@ -105,7 +146,7 @@ export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element => {
                             </button>
                         </div>
                         <PostEdit
-                            postId={postId}
+                            post={post}
                             onDirtyChange={setIsDirty}
                             onSuccess={handleSuccess}
                         />
@@ -113,25 +154,17 @@ export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element => {
                 </main>
             )}
 
-            <Modal
+            <Confirmation
+                title="Close Post"
                 open={isCloseModalOpen}
                 onClose={() => setIsCloseModalOpen(false)}
-                title="Unsaved Changes"
                 width={CLOSE_MODAL_WIDTH}
-                actions={
-                    <>
-                        <Button variant="outlined" onClick={handleCloseConfirm}>
-                            Yes
-                        </Button>
-                        <Button onClick={() => setIsCloseModalOpen(false)}>Cancel</Button>
-                    </>
-                }
-            >
-                <p>
-                    Do you really want to close editing? If you close, changes won&apos;t
-                    be saved.
-                </p>
-            </Modal>
+                confirmText="Yes"
+                cancelText="No"
+                onConfirm={handleCloseConfirm}
+                onCancel={() => setIsCloseModalOpen(false)}
+                text="Do you really want to finish editing? If you close the changes you have made will not be saved"
+            />
         </>
     );
 };
