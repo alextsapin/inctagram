@@ -56,7 +56,6 @@ export const ProfilePage = ({
             <ProfileLayout withSidebar={withSidebar}>
                 <div className={css.content}>
                     <ProfileHeaderSkeleton />
-                    <InfinitePostGrid username={username} />
                 </div>
             </ProfileLayout>
         );
@@ -130,7 +129,7 @@ export const ProfilePage = ({
                     description={profile.description}
                 />
 
-                <InfinitePostGrid username={username} />
+                <InfinitePostGrid username={profile.username} />
             </div>
         </ProfileLayout>
     );
