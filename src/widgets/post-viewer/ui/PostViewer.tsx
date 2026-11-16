@@ -122,7 +122,7 @@ export const PostViewer = ({
                                 likedBy={likedBy}
                                 likesCount={likesCount}
                                 createdAt={createdAt}
-                                onLikesClick={onLikesClick}
+                                onLikesClick={isAuthed ? onLikesClick : undefined}
                                 size={36}
                             />
                         </div>
