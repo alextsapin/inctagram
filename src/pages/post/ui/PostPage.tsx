@@ -19,7 +19,11 @@ const POST_MODAL_WIDTH = 975;
 export const PostPage = ({ postId, isModal }: Props): React.JSX.Element => {
     const router = useRouter();
     const { data: post, isLoading, isError, error } = usePost(postId);
-    const { data: currentUser, isError: isErrorUser } = useCurrentUser();
+    const {
+        data: currentUser,
+        isError: isErrorUser,
+        isLoading: isLoadingUser,
+    } = useCurrentUser();
     const isAuthed = Boolean(currentUser) && !isErrorUser;
     const isOwnPost = currentUser?.userId === post?.author.id;
 
@@ -30,7 +34,7 @@ export const PostPage = ({ postId, isModal }: Props): React.JSX.Element => {
         router.push('/feed');
     };
 
-    if (isLoading) {
+    if (isLoading || isLoadingUser) {
         return isModal ? (
             <Modal open onClose={handleClose} width={POST_MODAL_WIDTH} closeOutside>
                 <PostViewerSkeleton />

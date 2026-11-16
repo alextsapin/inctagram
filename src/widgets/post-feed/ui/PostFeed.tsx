@@ -78,7 +78,6 @@ export const PostFeed = ({
                     actionSlot={
                         <PostMenu
                             onEdit={onEditClick}
-                            postId={id}
                             isOwnPost={isOwnPost}
                             isFollow={author.isFollowing ?? false}
                             onDelete={onDeleteClick}
