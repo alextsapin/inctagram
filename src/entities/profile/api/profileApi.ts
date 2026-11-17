@@ -1,22 +1,38 @@
-import { MOCK_OTHER_PROFILE, MOCK_PROFILE } from '../mocks/profile.mock';
+import { isAxiosError } from 'axios';
+
+import { instance } from '@/shared/api';
+
 import type { Profile } from '../model/types';
 
-// Заглушки API. На бэкенде пока нет эндпоинтов профиля и постов,
-// поэтому методы всегда возвращают mock-данные, даже без NEXT_PUBLIC_USE_MOCKS.
-// Вход и данные текущего пользователя (getMe) при этом настоящие.
-// Когда появятся реальные endpoints, замени тела функций на запросы к API.
-// Сейчас методы синхронные (моки), при переходе на реальный API их нужно
-// сделать async и вызывать через TanStack Query.
+const NOT_FOUND = 404;
+
+// Профиль не найден: username не существует. UI должен показать целое состояние
+// «такого профиля нет», а не шапку с ошибкой и сетку постов рядом.
+export class ProfileNotFoundError extends Error {
+    constructor(username: string) {
+        super(`Profile with username ${username} not found`);
+        this.name = 'ProfileNotFoundError';
+    }
+}
 
 export const profileApi = {
-    // TODO: заменить на GET /api/profile
-    getProfile(): Profile {
-        return MOCK_PROFILE;
-    },
+    // GET /api/v1/{username}/profile (ProfileResponseDto).
+    // 404 приходит без JSON-тела (в спеке у него нет content/schema), поэтому
+    // «профиля нет» распознаём по HTTP-статусу, а не по телу ответа.
+    // Остальные ошибки (400, сетевые, 5xx) пробрасываем как есть.
+    async getUserProfile(username: string): Promise<Profile> {
+        try {
+            const { data } = await instance.get<Profile>(
+                `/api/v1/${encodeURIComponent(username)}/profile`,
+            );
 
-    // TODO: заменить на GET /api/profile/{username}
-    // username берём из адреса, чтобы на странице было настоящее имя
-    getUserProfile(username: string): Profile {
-        return { ...MOCK_OTHER_PROFILE, username };
+            return data;
+        } catch (error) {
+            if (isAxiosError(error) && error.response?.status === NOT_FOUND) {
+                throw new ProfileNotFoundError(username);
+            }
+
+            throw error;
+        }
     },
 };

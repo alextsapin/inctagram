@@ -1,4 +1,5 @@
 /* eslint-disable no-magic-numbers */
+import { formatAbsoluteDate } from '@/shared/lib/formatDate';
 import { RegisteredUsers } from '@/widgets/registered-users';
 import { UserCard } from '@/widgets/user-post-card';
 
@@ -12,12 +13,26 @@ import { MainClientLayout } from './MainClientLayout';
 const COUNTER_LENGTH = 6;
 
 export const Main = async (): Promise<React.JSX.Element> => {
-    const { posts, registeredUsersCount } = await getMainPageData();
+    const data = await getMainPageData();
+
+    if (data.source === 'unavailable') {
+        return (
+            <MainClientLayout>
+                <p role="alert">
+                    Publications are temporarily unavailable. Please try again later.
+                </p>
+            </MainClientLayout>
+        );
+    }
+
+    const { posts, registeredUsersCount } = data;
 
     const registeredUsers = String(registeredUsersCount).padStart(COUNTER_LENGTH, '0');
 
     return (
         <MainClientLayout>
+            {data.source === 'mock' && <span>Demo data</span>}
+
             <RegisteredUsers values={registeredUsers} />
 
             <div className={style.container}>
@@ -27,11 +42,12 @@ export const Main = async (): Promise<React.JSX.Element> => {
                     posts.map(post => (
                         <UserCard
                             key={post.id}
+                            postId={post.id}
                             username={post.author.username}
-                            publishedAt={post.createdAt.slice(0, 10)}
-                            postText={post.caption}
-                            postImage={nature}
-                            authorAvatar={tanya}
+                            publishedAt={formatAbsoluteDate(post.createdAt)}
+                            postText={post.description}
+                            postImage={post.previewUrl ?? post.photos[0]?.url ?? nature}
+                            authorAvatar={post.author.avatarUrl ?? tanya}
                         />
                     ))
                 )}

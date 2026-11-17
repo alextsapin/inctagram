@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import { MyProfile } from '@/pages/my-profile';
+import { ProfileRedirect } from '@/pages/my-profile';
 
 export const metadata: Metadata = {
     title: 'My Profile | Inctagram',
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 const MyProfilePage = (): React.JSX.Element => {
-    return <MyProfile />;
+    return <ProfileRedirect />;
 };
 
 export default MyProfilePage;
