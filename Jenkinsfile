@@ -5,6 +5,14 @@
 pipeline {
     agent any
 
+    parameters {
+        string(
+            name: 'SERVER_API_URL',
+            defaultValue: '',
+            description: 'Backend API origin (configure after server migration)'
+        )
+    }
+
     options {
         skipDefaultCheckout(true)
         disableConcurrentBuilds()
@@ -30,7 +38,7 @@ pipeline {
         NEXT_PUBLIC_CLIENT_IP_ENABLED = 'false'
         NEXT_PUBLIC_CLIENT_IP_HEADER = 'X-Client-IP'
         NEXT_PUBLIC_CLIENT_IP_SERVICE_URL = 'https://api.ipify.org?format=json'
-        SERVER_API_URL = ''
+        SERVER_API_URL = "${params.SERVER_API_URL}"
         NEXT_PUBLIC_RECAPTCHA_SITE_KEY_CHECKBOX = '6Lc71AQuAAAAANehzC_S9hq6A2Hzn02YZeFtsPzN'
         NEXT_PUBLIC_RECAPTCHA_SITE_KEY_INVISIBLE = '6LfF0wQuAAAAAPKRG6ec8X-B4m0JOsjngS4o6gyK'
     }
