@@ -30,8 +30,6 @@ export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element | nu
     const { data: post, isLoading, isError, error } = usePost(postId);
     const { data: currentUser, isLoading: isUserLoading } = useCurrentUser();
 
-    // --- ФУНКЦИИ НАВИГАЦИИ ---
-
     useEffect(() => {
         if (!isLoading && !isUserLoading && post) {
             // Если гость (currentUser === null) ИЛИ ID не совпадают
@@ -70,6 +68,7 @@ export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element | nu
         return null;
     }
     // Единая функция закрытия (выполняется, если нет несохраненных изменений или юзер подтвердил)
+    // --- ФУНКЦИИ НАВИГАЦИИ ---
     const executeClose = (): void => {
         if (isModal) {
             // Если это модалка — возвращаемся туда, откуда пришли (к просмотру поста)

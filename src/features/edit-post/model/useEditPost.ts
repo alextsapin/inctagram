@@ -6,7 +6,7 @@ import {
 
 import { postQueryKeys } from '@/entities/post';
 
-import { updatePost } from '../api/editPostApi';
+import { editPost } from '../api/editPostApi';
 
 type EditPostVariables = {
     postId: string;
@@ -17,8 +17,7 @@ export const useEditPost = (): UseMutationResult<void, Error, EditPostVariables>
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ postId, caption }: EditPostVariables) =>
-            updatePost(postId, caption),
+        mutationFn: ({ postId, caption }: EditPostVariables) => editPost(postId, caption),
 
         onSuccess: async (_, variables) => {
             await queryClient.invalidateQueries({
