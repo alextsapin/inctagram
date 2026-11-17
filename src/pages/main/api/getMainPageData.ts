@@ -35,7 +35,7 @@ export type MainPageData =
           source: 'unavailable';
       };
 
-const REVALIDATE_SECONDS = 60;
+const API_TIMEOUT_MS = 5_000;
 const POSTS_LIMIT = 4;
 
 const mapMockPost = (post: Post): MainPost => ({
@@ -75,7 +75,7 @@ export const getMainPageData = async (): Promise<MainPageData> => {
 
     try {
         const response = await fetch(`${apiUrl.replace(/\/$/, '')}/api/v1/public/main`, {
-            next: { revalidate: REVALIDATE_SECONDS },
+            signal: AbortSignal.timeout(API_TIMEOUT_MS),
         });
 
         if (!response.ok) {
@@ -89,7 +89,17 @@ export const getMainPageData = async (): Promise<MainPageData> => {
             posts: data.items,
             registeredUsersCount: data.registeredUsersCount,
         };
-    } catch {
-        return isDevelopment ? getMockMainPageData() : { source: 'unavailable' };
+    } catch (error) {
+        if (isDevelopment) {
+            return getMockMainPageData();
+        }
+
+        // Build stays available even when the backend is down.
+        if (process.env.NEXT_PHASE === 'phase-production-build') {
+            return { source: 'unavailable' };
+        }
+
+        // ISR must retain the last successfully generated page.
+        throw error;
     }
 };
