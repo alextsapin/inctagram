@@ -36,7 +36,6 @@ export const MyProfile = ({ isVerified }: MyProfileProps = {}): JSX.Element => {
     return (
         <ProfilePage
             username={user.username}
-            avatarUrl="/profile/avatar.png"
             isVerified={isVerified ?? user.isVerified}
             withSidebar
             actions={
