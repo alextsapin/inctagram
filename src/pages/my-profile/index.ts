@@ -1,1 +1,1 @@
-export { MyProfile } from './ui/MyProfile';
+export { ProfileRedirect } from './ui/ProfileRedirect';

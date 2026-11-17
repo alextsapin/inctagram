@@ -17,7 +17,9 @@ export const UserProfile = ({ username }: UserProfileProps): JSX.Element => {
     const { data: user, isError } = useCurrentUser();
 
     const isAuthed = Boolean(user) && !isError;
-    const isMyProfile = user?.username === username;
+    // API ищет профиль регистронезависимо, поэтому владельца тоже сравниваем
+    // без учёта регистра: /profile/IVAN_PETROV — тот же профиль, что ivan_petrov.
+    const isMyProfile = user?.username.toLowerCase() === username.toLowerCase();
 
     const handleFollow = (): void => {
         // TODO: заменить на реальный вызов API (endpoint: POST /api/profile/{username}/follow)
