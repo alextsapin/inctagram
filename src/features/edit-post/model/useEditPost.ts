@@ -20,8 +20,8 @@ export const useEditPost = (): UseMutationResult<void, Error, EditPostVariables>
         mutationFn: ({ postId, caption }: EditPostVariables) =>
             updatePost(postId, caption),
 
-        onSuccess: (_, variables) => {
-            queryClient.invalidateQueries({
+        onSuccess: async (_, variables) => {
+            await queryClient.invalidateQueries({
                 queryKey: postQueryKeys.detail(variables.postId),
             });
         },

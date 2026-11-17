@@ -24,13 +24,17 @@ export const PostEdit = ({
     return (
         <div className={s.content}>
             <div className={s['image-wrapper']}>
-                <Image
-                    src={images[0].url}
-                    alt="Post"
-                    fill
-                    className={s.image}
-                    sizes="(max-width: 768px) 100vw, 490px"
-                />
+                {images[0]?.url ? (
+                    <Image
+                        src={images[0].url}
+                        alt="Post"
+                        fill
+                        className={s.image}
+                        sizes="(max-width: 768px) 100vw, 490px"
+                    />
+                ) : (
+                    <div className={s['image-placeholder']}>No image</div>
+                )}
             </div>
 
             <div className={s.sidebar}>
