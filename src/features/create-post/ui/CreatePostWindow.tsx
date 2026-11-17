@@ -54,7 +54,7 @@ export const CreatePostWindow = ({
         applyFiltersAndContinue,
         setDescription,
     } = useCreatePost();
-    const { mutateAsync: publishPost } = usePublishPost(userId, username);
+    const { mutateAsync: publishPost } = usePublishPost(userId);
     const { title, width, back, next } = STEP_SETTINGS[state.step];
     const savedDraft = useSavedDraft(userId);
 

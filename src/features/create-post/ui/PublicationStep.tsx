@@ -2,6 +2,7 @@
 
 import { useId } from 'react';
 
+import { useProfile } from '@/entities/profile';
 import { Avatar } from '@/shared/ui/avatar';
 import { Textarea } from '@/shared/ui/textarea';
 
@@ -12,9 +13,8 @@ import css from './publication-step.module.scss';
 
 const AVATAR_SIZE = 36;
 const MAX_DESCRIPTION_LENGTH = 500;
-// TODO: брать аватар из профиля с сервера, когда профиль подключат к API
-// в задаче «Посты в профиле». Пока аватар из мока профиля.
-const AVATAR_URL = '/profile/avatar.png';
+// Аватар, если пользователь его не поставил (в профиле avatar: null)
+const DEFAULT_AVATAR_URL = '/profile/avatar.png';
 
 type PublicationStepProps = {
     photos: CreatePostPhoto[]; // все фото поста
@@ -40,6 +40,10 @@ export const PublicationStep = ({
 }: PublicationStepProps): React.JSX.Element => {
     // Связывает подпись с полем: по клику на подпись курсор встаёт в поле
     const descriptionId = useId();
+    // Аватар берём из профиля автора. Обычно профиль уже загружен
+    // на странице профиля, тогда повторного запроса не будет
+    const { data: profile } = useProfile(username);
+    const avatarUrl = profile?.avatar ?? DEFAULT_AVATAR_URL;
 
     return (
         <div className={css.step}>
@@ -53,7 +57,7 @@ export const PublicationStep = ({
 
             <div className={css.details}>
                 <div className={css.author}>
-                    <Avatar src={AVATAR_URL} alt="" size={AVATAR_SIZE} />
+                    <Avatar src={avatarUrl} alt="" size={AVATAR_SIZE} />
                     <span className={css.username}>{username}</span>
                 </div>
 
