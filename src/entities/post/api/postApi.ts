@@ -1,11 +1,6 @@
 import { instance } from '@/shared/api';
 
-import {
-    deleteMockPost,
-    getMockPost,
-    getMockUserPosts,
-    updateMockPost,
-} from '../model/mock';
+import { getMockPost, getMockUserPosts, updateMockPost } from '../model/mock';
 import type { Post, UserPostsPage } from '../model/type';
 
 type PostWithAuthorResponseDto = {
@@ -118,17 +113,5 @@ export const updatePost = async (id: string, description: string): Promise<Post>
 
 // Delete a post and release the blob URLs created for its images
 export const deletePost = async (id: string): Promise<void> => {
-    const post = getMockPost(id);
-
-    if (!post) {
-        throw new Error(`Post with id ${id} not found`);
-    }
-
-    deleteMockPost(id);
-
-    post.images.forEach(image => {
-        if (image.url.startsWith('blob:')) {
-            URL.revokeObjectURL(image.url);
-        }
-    });
+    await instance.delete(`/api/v1/post/${encodeURIComponent(id)}`);
 };
