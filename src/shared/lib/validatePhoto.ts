@@ -20,7 +20,7 @@ export const validatePhoto = (file: File, rules: PhotoRules): string | null => {
         return rules.formatError;
     }
 
-    // Файл должен быть строго меньше лимита, как в текстах ошибок: «less than 20 Mb»
+    // Файл должен быть строго меньше лимита, как в текстах ошибок: «less than 1 Mb»
     if (file.size >= rules.maxSizeMb * MEGABYTE) {
         return rules.sizeError;
     }

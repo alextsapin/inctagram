@@ -26,6 +26,16 @@ const getCenteredArea = (photo: CreatePostPhoto, aspectRatio: number): Area => {
     return { x: 0, y: (photo.height - height) / HALF, width: photo.width, height };
 };
 
+// Область обрезки приходит дробной, поэтому сравниваем с точностью до пикселя
+const PIXEL_TOLERANCE = 1;
+
+// Выбрано всё фото целиком: обрезать нечего
+const isWholePhoto = (area: Area, photo: CreatePostPhoto): boolean =>
+    Math.abs(area.x) <= PIXEL_TOLERANCE &&
+    Math.abs(area.y) <= PIXEL_TOLERANCE &&
+    Math.abs(area.width - photo.width) <= PIXEL_TOLERANCE &&
+    Math.abs(area.height - photo.height) <= PIXEL_TOLERANCE;
+
 // Вырезает из каждого фото выбранную область и возвращает готовые файлы в том же порядке
 export const cropPhotos = (
     photos: CreatePostPhoto[],
@@ -34,6 +44,11 @@ export const cropPhotos = (
     Promise.all(
         photos.map(async photo => {
             const area = photo.cropSettings.area ?? getCenteredArea(photo, aspectRatio);
+
+            // Фото не обрезали: отдаём исходный файл. Если перерисовать его на canvas,
+            // браузер сохранит его заново, и файл станет тяжелее (PNG примерно на 17%)
+            if (isWholePhoto(area, photo)) return photo.originalFile;
+
             // getCroppedImage читает фото по ссылке, поэтому создаём временную и потом освобождаем
             const url = URL.createObjectURL(photo.originalFile);
 
