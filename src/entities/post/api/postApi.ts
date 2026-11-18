@@ -5,7 +5,6 @@ import {
     deleteMockPost,
     getMockPost,
     getMockUserPosts,
-    getMockUserPostsPage,
     MOCK_SIGNED_IN_AUTHOR,
     updateMockPost,
 } from '../model/mock';
@@ -31,6 +30,32 @@ type PostWithAuthorResponseDto = {
     };
 };
 
+type PostsResponseDto = {
+    items: PostWithAuthorResponseDto[];
+    nextCursor: string | null;
+};
+
+const toPost = (dto: PostWithAuthorResponseDto): Post => ({
+    id: dto.id,
+    author: {
+        id: dto.author.id,
+        username: dto.author.username,
+        avatarUrl: dto.author.avatarUrl ?? '/profile/avatar.png',
+    },
+    images: dto.photos.map(photo => ({
+        id: String(photo.id),
+        url: photo.url,
+    })),
+    previewUrl: dto.previewUrl,
+    caption: dto.description,
+    likesCount: dto.likesCount,
+    commentsCount: dto.commentsCount,
+    createdAt: dto.createdAt,
+    isLiked: false,
+    isSaved: false,
+    likedBy: [],
+});
+
 export const getPost = async (id: string): Promise<Post> => {
     const mockPost = getMockPost(id);
 
@@ -51,25 +76,7 @@ export const getPost = async (id: string): Promise<Post> => {
         `/api/v1/post/${encodeURIComponent(id)}`,
     );
 
-    return {
-        id: data.id,
-        author: {
-            id: data.author.id,
-            username: data.author.username,
-            avatarUrl: data.author.avatarUrl ?? '/profile/avatar.png',
-        },
-        images: data.photos.map(photo => ({
-            id: String(photo.id),
-            url: photo.url,
-        })),
-        caption: data.description,
-        likesCount: data.likesCount,
-        commentsCount: data.commentsCount,
-        createdAt: data.createdAt,
-        isLiked: false,
-        isSaved: false,
-        likedBy: [],
-    };
+    return toPost(data);
 };
 
 // Get a user's posts sorted from newest to oldest
@@ -83,9 +90,18 @@ export const getUserPosts = async (userId: string): Promise<Post[]> => {
 export const getUserPostsPage = async (
     userId: string,
     cursor: string | null,
-    limit: number,
 ): Promise<UserPostsPage> => {
-    return getMockUserPostsPage(userId, cursor, limit);
+    const { data } = await instance.get<PostsResponseDto>(
+        `/api/v1/${encodeURIComponent(userId)}/posts`,
+        {
+            params: cursor ? { cursor } : undefined,
+        },
+    );
+
+    return {
+        posts: data.items.map(toPost),
+        nextCursor: data.nextCursor,
+    };
 };
 
 // Extract and normalize the description from FormData

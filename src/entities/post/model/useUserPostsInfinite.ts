@@ -7,9 +7,6 @@ import { postQueryKeys } from '../api/queryKeys';
 
 import type { Post } from './type';
 
-// Размер страницы постов профиля при бесконечной загрузке (задача 12 / BLD-142).
-const POSTS_PER_PAGE = 8;
-
 type UseUserPostsInfinite = {
     posts: Post[];
     fetchNextPage: () => Promise<unknown>;
@@ -42,7 +39,7 @@ export const useUserPostsInfinite = (userId: string): UseUserPostsInfinite => {
         refetch,
     } = useInfiniteQuery({
         queryKey: postQueryKeys.userPosts(userId),
-        queryFn: ({ pageParam }) => getUserPostsPage(userId, pageParam, POSTS_PER_PAGE),
+        queryFn: ({ pageParam }) => getUserPostsPage(userId, pageParam),
         initialPageParam: null as string | null,
         getNextPageParam: lastPage => lastPage.nextCursor,
         enabled: Boolean(userId),
