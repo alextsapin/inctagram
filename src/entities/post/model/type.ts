@@ -6,10 +6,6 @@ export type User = {
     isFollowing?: boolean;
 };
 
-// TODO (задача 1): когда бэкенд назовёт поля, добавить в PostImage отдельные
-// адреса превью и полного фото (например previewUrl / fullUrl) и использовать
-// их соответственно в сетке (превью) и в просмотре поста (полное фото).
-// Сейчас на этапе моков для обоих случаев используется один url.
 export type PostImage = {
     id: string;
     url: string;
@@ -20,6 +16,7 @@ export type Post = {
     id: string;
     author: User;
     images: PostImage[];
+    previewUrl?: string | null;
     caption?: string;
     likesCount: number;
     commentsCount: number;
