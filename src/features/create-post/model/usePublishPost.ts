@@ -29,8 +29,8 @@ export const usePublishPost = (
         mutationFn: ({ photos, description }: PublishPostParams) =>
             createPost(createPostFormData(photos, description)),
         onSuccess: async () => {
-            // Обновляем все посты и все профили, а не один ключ: так не важно,
-            // по username или по id сейчас загружается список постов профиля
+            // Обновляем все посты и все профили: новый пост должен появиться в списке
+            // профиля, ключ которого строится по userId.
             await Promise.all([
                 queryClient.invalidateQueries({ queryKey: postQueryKeys.all }),
                 queryClient.invalidateQueries({ queryKey: profileQueryKeys.all }),

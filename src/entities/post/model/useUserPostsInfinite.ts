@@ -25,9 +25,9 @@ type UseUserPostsInfinite = {
 };
 
 // Бесконечная загрузка постов пользователя.
-// queryKey — существующий postQueryKeys.userPosts(username), чтобы будущая
+// queryKey — существующий postQueryKeys.userPosts(userId), чтобы будущая
 // инвалидация postQueryKeys.all (задачи 7/10/11) обновляла и список профиля.
-export const useUserPostsInfinite = (username: string): UseUserPostsInfinite => {
+export const useUserPostsInfinite = (userId: string): UseUserPostsInfinite => {
     const {
         data,
         fetchNextPage,
@@ -41,11 +41,11 @@ export const useUserPostsInfinite = (username: string): UseUserPostsInfinite => 
         isFetchNextPageError,
         refetch,
     } = useInfiniteQuery({
-        queryKey: postQueryKeys.userPosts(username),
-        queryFn: ({ pageParam }) => getUserPostsPage(username, pageParam, POSTS_PER_PAGE),
+        queryKey: postQueryKeys.userPosts(userId),
+        queryFn: ({ pageParam }) => getUserPostsPage(userId, pageParam, POSTS_PER_PAGE),
         initialPageParam: null as string | null,
         getNextPageParam: lastPage => lastPage.nextCursor,
-        enabled: Boolean(username),
+        enabled: Boolean(userId),
     });
 
     const posts = data?.pages.flatMap(page => page.posts) ?? [];

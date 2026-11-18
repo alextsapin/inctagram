@@ -10,13 +10,13 @@ import { PostGrid } from '../post-grid';
 import s from './infinite-post-grid.module.scss';
 
 type InfinitePostGridProps = {
-    username: string;
+    userId: string;
 };
 
 // Бесконечная загрузка постов профиля (задача 12 / BLD-142).
 // Композиция: чистый PostGrid + useInfiniteScroll + состояния загрузки.
 export const InfinitePostGrid = ({
-    username,
+    userId,
 }: InfinitePostGridProps): React.JSX.Element => {
     const {
         posts,
@@ -28,7 +28,7 @@ export const InfinitePostGrid = ({
         isError,
         isFetchNextPageError,
         refetch,
-    } = useUserPostsInfinite(username);
+    } = useUserPostsInfinite(userId);
 
     // onLoadMore должна быть мемоизирована, иначе observer пересоздаётся каждый рендер.
     // Возвращает Promise от fetchNextPage: по нему useInfiniteScroll снимает внутреннюю

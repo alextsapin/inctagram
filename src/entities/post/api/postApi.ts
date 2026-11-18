@@ -16,6 +16,7 @@ import type { Post, PostImage, UserPostsPage } from '../model/type';
 type PostWithAuthorResponseDto = {
     id: string;
     description: string;
+    previewUrl: string | null;
     photos: {
         id: number;
         url: string;
@@ -72,19 +73,19 @@ export const getPost = async (id: string): Promise<Post> => {
 };
 
 // Get a user's posts sorted from newest to oldest
-export const getUserPosts = async (username: string): Promise<Post[]> => {
-    return getMockUserPosts(username);
+export const getUserPosts = async (userId: string): Promise<Post[]> => {
+    return getMockUserPosts(userId);
 };
 
 // Get a page of a user's posts for infinite loading (задача 12 / BLD-142).
 // cursor — id последнего поста предыдущей страницы (null на первой странице).
 // Тонкая обёртка над моком; при переходе на реальный API тело заменим на запрос.
 export const getUserPostsPage = async (
-    username: string,
+    userId: string,
     cursor: string | null,
     limit: number,
 ): Promise<UserPostsPage> => {
-    return getMockUserPostsPage(username, cursor, limit);
+    return getMockUserPostsPage(userId, cursor, limit);
 };
 
 // Extract and normalize the description from FormData
