@@ -15,7 +15,12 @@ export const PostGrid = ({ posts }: Props): React.JSX.Element => {
         <div className={s.grid}>
             {posts.map(post => (
                 <PostGridItem
-                    key={post.id}
+                    // Ссылки тоже в key: если у поста поменялось превью или фото
+                    // (например, превью появилось после обновления данных), плитка
+                    // создаётся заново, и состояние загрузки начинается с нуля
+                    key={`${post.id}:${post.previewUrl ?? ''}:${
+                        post.images[0]?.url ?? ''
+                    }`}
                     postId={post.id}
                     // В сетке показываем превью. Пока бэкенд его не сделал, берём первое фото
                     previewUrl={post.previewUrl}
