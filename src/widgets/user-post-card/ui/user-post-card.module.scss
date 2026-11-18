@@ -27,16 +27,6 @@ $accent: rgb(190 27 117);
     background-color: $accent;
 }
 
-.post-image {
-    object-fit: cover;
-    background-color: $accent;
-}
-
-.author-avatar {
-    object-fit: cover;
-}
-
-
 .carousel-wrapper {
     width: 100%;
     max-width: $card-width;
@@ -44,19 +34,11 @@ $accent: rgb(190 27 117);
     overflow: hidden;
 }
 
-
-.post-image {
-    display: block;
-    width: 100%;
-    max-width: $card-width;
-    height: auto;
-    max-height: $post-height;
-}
-
 .author {
     display: flex;
     align-items: center;
     gap: 12px;
+    object-fit: cover;
 }
 
 .author-avatar {

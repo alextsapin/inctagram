@@ -23,6 +23,7 @@ export const Main = async (): Promise<React.JSX.Element> => {
         );
     }
 
+
     const { posts, registeredUsersCount } = data;
     const registeredUsers = String(registeredUsersCount).padStart(
         COUNTER_LENGTH,

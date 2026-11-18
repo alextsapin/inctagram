@@ -63,9 +63,9 @@ export const UserCard = ({
                         alt={`${username} avatar`}
                         fill
                         sizes="36px"
-                    />
-                    <h3 className={styles['author-name']}>{username}</h3>
+                    />                    
                 </div>
+                <h3 className={styles['author-name']}>{username}</h3>
             </div>
             <div>
                 <p className={styles['published-at']}>{publishedAt}</p>
