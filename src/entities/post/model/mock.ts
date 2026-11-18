@@ -291,7 +291,7 @@ export const MOCK_POSTS: Post[] = [
 
 export const getMockPost = (id: string): Post | undefined =>
     MOCK_POSTS.find(post => post.id === id);
-
+export const getMockFeedPosts = async (): Promise<Post[]> => [...MOCK_POSTS];
 export const getMockUserPosts = (username: string): Post[] =>
     MOCK_POSTS.filter(post => post.author.username === username).sort(newestFirst);
 

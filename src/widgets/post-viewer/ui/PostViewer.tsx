@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import {
     Carousel,
@@ -40,7 +40,6 @@ export const PostViewer = ({
     //  null  -  если мы просто пишем коммент, а не отвечаем
     const [replyToId, setReplyToId] = useState<string | null>(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
     const {
         id,
         author,
@@ -53,12 +52,18 @@ export const PostViewer = ({
         caption,
     } = post;
 
-    const handleDeleteConfirm = (): void => {
-        // В будущем муатция удаления
-
+    const handleDeleteFinished = (): void => {
         setIsDeleteModalOpen(false);
         onDeleted?.();
     };
+    const handleReply = useCallback((commentId: string) => setReplyToId(commentId), []);
+    const handleReplyReset = useCallback(() => setReplyToId(null), []);
+    const renderCommentActions = useCallback(
+        (comment: { id: string; isLiked: boolean }) => (
+            <LikeCommentButton commentId={comment.id} isLiked={comment.isLiked} />
+        ),
+        [],
+    );
 
     return (
         <section className={s.wrapper}>
@@ -93,18 +98,9 @@ export const PostViewer = ({
                         </div>
 
                         <CommentsSection
-                            onReply={isAuthed ? id => setReplyToId(id) : undefined}
+                            onReply={isAuthed ? handleReply : undefined}
                             postId={id}
-                            renderActions={
-                                isAuthed
-                                    ? comment => (
-                                          <LikeCommentButton
-                                              commentId={comment.id}
-                                              isLiked={comment.isLiked}
-                                          />
-                                      )
-                                    : undefined
-                            }
+                            renderActions={isAuthed ? renderCommentActions : undefined}
                         />
                     </div>
                     <div className={s.footer}>
@@ -133,20 +129,22 @@ export const PostViewer = ({
                                     postId={id}
                                     replyToId={replyToId}
                                     // функция сброса в форму
-                                    onCancelReply={() => setReplyToId(null)}
+                                    onCancelReply={handleReplyReset}
                                     // После успешной отправки сбрасываем replyToId
-                                    onSuccess={() => setReplyToId(null)}
+                                    onSuccess={handleReplyReset}
                                 />
                             </div>
                         )}
                     </div>
                 </div>
             </div>
-            {isAuthed && (
+
+            {isAuthed && isOwnPost && (
                 <DeletePostModal
+                    postId={id}
                     isOpen={isDeleteModalOpen}
                     onClose={() => setIsDeleteModalOpen(false)}
-                    onConfirm={handleDeleteConfirm}
+                    onDeleted={handleDeleteFinished}
                 />
             )}
         </section>

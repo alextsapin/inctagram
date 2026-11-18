@@ -25,13 +25,16 @@ export const PostPage = ({ postId, isModal }: Props): React.JSX.Element => {
         isLoading: isLoadingUser,
     } = useCurrentUser();
     const isAuthed = Boolean(currentUser) && !isErrorUser;
-    const isOwnPost = currentUser?.userId === post?.author.id;
+    const isOwnPost = Boolean(
+        currentUser && post && currentUser.userId === post.author.id,
+    );
 
     const handleClose = (): void => {
         // В модалке закрываем назад, на странице — редирект в ленту
         if (isModal) return router.back();
-        if (!isAuthed) return router.push('/');
-        router.push('/feed');
+        // if (!isAuthed) return router.push('/');
+        // router.push('/feed');
+        router.replace(isAuthed ? '/feed' : '/');
     };
 
     if (isLoading || isLoadingUser) {
@@ -65,8 +68,11 @@ export const PostPage = ({ postId, isModal }: Props): React.JSX.Element => {
         if (isModal) {
             router.back();
         } else {
-            // replace, чтобы не остаться в истории на удалённом посте
-            router.replace('/feed');
+            const profilePath = currentUser?.username
+                ? `/profile/${currentUser.username}`
+                : '/';
+
+            router.replace(profilePath);
         }
     };
 

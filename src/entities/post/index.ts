@@ -12,6 +12,7 @@ export {
     createMockPost,
     updateMockPost,
     deleteMockPost,
+    getMockFeedPosts,
 } from './model/mock';
 export { PostMenu } from './ui/post-menu';
 export { Carousel } from './ui/carousel';
@@ -30,4 +31,4 @@ export {
     deletePost,
 } from './api/postApi';
 export { postQueryKeys } from './api/queryKeys';
-export { usePost } from './model/queries';
+export { usePost, usePostFeed } from './model/queries';
