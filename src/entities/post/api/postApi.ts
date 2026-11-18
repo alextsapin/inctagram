@@ -111,7 +111,7 @@ export const updatePost = async (id: string, description: string): Promise<Post>
     return post;
 };
 
-// Delete a post and release the blob URLs created for its images
+// Delete a post via API. Only its author can delete it.
 export const deletePost = async (id: string): Promise<void> => {
     await instance.delete(`/api/v1/post/${encodeURIComponent(id)}`);
 };
