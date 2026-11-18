@@ -5,6 +5,15 @@ const MIN_SCALE = 0.5;
 // Качество JPEG как при обрезке (getCroppedImage). Для PNG не используется
 const JPEG_QUALITY = 0.9;
 
+// Фото не удалось уменьшить до лимита. Отдельный класс ошибки, чтобы окно
+// отличило её от других и показало текст про размер фото
+export class PhotoTooLargeError extends Error {
+    constructor() {
+        super('Photo is too large');
+        this.name = 'PhotoTooLargeError';
+    }
+}
+
 // Сохраняет canvas в файл того же формата
 const canvasToBlob = (canvas: HTMLCanvasElement, type: string): Promise<Blob> =>
     new Promise((resolve, reject) => {
@@ -52,5 +61,5 @@ export const fitFileSize = async (file: Blob, maxBytes: number): Promise<Blob> =
     }
 
     // Даже вдвое меньшее фото не влезло в лимит: ошибку покажет окно
-    throw new Error('Photo is too large');
+    throw new PhotoTooLargeError();
 };
