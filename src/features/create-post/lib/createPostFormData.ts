@@ -22,9 +22,7 @@ export const createPostFormData = (
         // Остальные варианты на всякий случай, чтобы не работать с null
         const file = photo.filteredFile ?? photo.croppedFile ?? photo.originalFile;
 
-        // TODO: бэкенд ждёт фото в поле photos, а мок задачи «API постов» пока читает files.
-        // Поменять имя поля, когда API постов переведут на настоящий запрос
-        formData.append('files', file, getFileName(file, index));
+        formData.append('photos', file, getFileName(file, index));
     });
 
     return formData;

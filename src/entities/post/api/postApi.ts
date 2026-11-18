@@ -84,9 +84,9 @@ export const getUserPosts = async (userId: string): Promise<Post[]> => {
     return getMockUserPosts(userId);
 };
 
-// Get a page of a user's posts for infinite loading (задача 12 / BLD-142).
-// cursor — id последнего поста предыдущей страницы (null на первой странице).
-// Тонкая обёртка над моком; при переходе на реальный API тело заменим на запрос.
+// Загружает страницу постов пользователя из API для бесконечной прокрутки.
+// cursor — ID последнего поста предыдущей страницы; null запрашивает первую страницу.
+// nextCursor из ответа используется для следующего запроса; null означает конец списка.
 export const getUserPostsPage = async (
     userId: string,
     cursor: string | null,
@@ -121,7 +121,7 @@ const getDescription = (formData: FormData): string => {
 
 // Extract and validate JPEG and PNG files from FormData
 const getImages = (formData: FormData): File[] => {
-    const files = formData.getAll('files');
+    const files = formData.getAll('photos');
 
     if (files.length === 0) {
         throw new Error('At least one image is required');
