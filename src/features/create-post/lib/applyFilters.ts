@@ -1,13 +1,17 @@
+import { POST_MAX_SIZE_BYTES } from '../model/photoRules';
 import type { CreatePostPhoto } from '../model/types';
 
 import { ccgram } from './filters';
+import { fitFileSize } from './fitFileSize';
 
 // Качество JPEG как при обрезке (getCroppedImage). Без него Chrome сохраняет файл
 // почти без сжатия, и он выходит в несколько раз тяжелее. Для PNG не используется
 const FILTERED_PHOTO_QUALITY = 0.9;
 
 // Рисует фильтр в сам файл и возвращает готовые файлы в том же порядке, что и фото.
-// На экране фильтр был только CSS-стилем, а на сервер должно уйти фото уже с фильтром
+// На экране фильтр был только CSS-стилем, а на сервер должно уйти фото уже с фильтром.
+// Каждый готовый файл подгоняем под лимит бэкенда: после обрезки и фильтра
+// он может стать тяжелее исходного
 export const applyFilters = (photos: CreatePostPhoto[]): Promise<Blob[]> =>
     Promise.all(
         photos.map(async photo => {
@@ -15,8 +19,8 @@ export const applyFilters = (photos: CreatePostPhoto[]): Promise<Blob[]> =>
             // originalFile — запасной вариант, чтобы не работать с null
             const file = photo.croppedFile ?? photo.originalFile;
 
-            // Без фильтра отдаём файл как есть: перерисовка изменила бы фото и его размер
-            if (photo.filter === null) return file;
+            // Без фильтра не перерисовываем: перерисовка изменила бы фото и его размер
+            if (photo.filter === null) return fitFileSize(file, POST_MAX_SIZE_BYTES);
 
             // getBlob работает с картинкой, поэтому делаем её из файла по временной ссылке
             const url = URL.createObjectURL(file);
@@ -35,7 +39,7 @@ export const applyFilters = (photos: CreatePostPhoto[]): Promise<Blob[]> =>
 
                 if (!filteredFile) throw new Error('Failed to apply the filter');
 
-                return filteredFile;
+                return await fitFileSize(filteredFile, POST_MAX_SIZE_BYTES);
             } finally {
                 URL.revokeObjectURL(url);
             }
