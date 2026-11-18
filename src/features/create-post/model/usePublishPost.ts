@@ -4,7 +4,7 @@ import {
     type UseMutationResult,
 } from '@tanstack/react-query';
 
-import { createPost, postQueryKeys, type Post } from '@/entities/post';
+import { createPost, postQueryKeys } from '@/entities/post';
 import { profileQueryKeys } from '@/entities/profile';
 
 import { createPostFormData } from '../lib/createPostFormData';
@@ -22,7 +22,7 @@ type PublishPostParams = {
 // Потом удаляет черновик: пост сохранён, черновик больше не нужен
 export const usePublishPost = (
     userId: string,
-): UseMutationResult<Post, Error, PublishPostParams> => {
+): UseMutationResult<void, Error, PublishPostParams> => {
     const queryClient = useQueryClient();
 
     return useMutation({
