@@ -16,7 +16,7 @@ export const PostGrid = ({ posts }: Props): React.JSX.Element => {
     return (
         <div className={s.grid}>
             {posts.map(post => {
-                const imageUrl = post.images?.[0]?.url;
+                const imageUrl = post.previewUrl ?? post.images[0]?.url;
 
                 return (
                     <Link key={post.id} href={`/post/${post.id}`} className={s.item}>
