@@ -129,7 +129,7 @@ export const ProfilePage = ({
                     description={profile.description}
                 />
 
-                <InfinitePostGrid username={profile.username} />
+                <InfinitePostGrid userId={profile.uid} />
             </div>
         </ProfileLayout>
     );

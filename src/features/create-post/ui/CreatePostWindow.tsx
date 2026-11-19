@@ -11,6 +11,7 @@ import { Modal } from '@/shared/ui/modal';
 
 import { createDraft } from '../lib/createDraft';
 import { deleteDraft, saveDraft } from '../lib/draft';
+import { PhotoTooLargeError } from '../lib/fitFileSize';
 import { getAspectRatio } from '../model/aspect';
 import { POST_PHOTO_ERROR, POST_PHOTO_RULES } from '../model/photoRules';
 import { STEP_SETTINGS } from '../model/stepSettings';
@@ -111,8 +112,14 @@ export const CreatePostWindow = ({
 
         try {
             await applyFiltersAndContinue();
-        } catch {
-            setError('Failed to apply the filter. Please try again');
+        } catch (error) {
+            // Фото не влезло в лимит даже после уменьшения: показываем текст про размер,
+            // а не про фильтр (фильтра могло и не быть)
+            setError(
+                error instanceof PhotoTooLargeError
+                    ? POST_PHOTO_ERROR
+                    : 'Failed to apply the filter. Please try again',
+            );
         } finally {
             setIsProcessing(false);
         }
