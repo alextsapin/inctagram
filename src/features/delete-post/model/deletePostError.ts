@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { isAxiosError } from 'axios';
 
 const BAD_REQUEST = 400;

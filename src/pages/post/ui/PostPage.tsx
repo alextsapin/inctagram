@@ -32,8 +32,6 @@ export const PostPage = ({ postId, isModal }: Props): React.JSX.Element => {
     const handleClose = (): void => {
         // В модалке закрываем назад, на странице — редирект в ленту
         if (isModal) return router.back();
-        // if (!isAuthed) return router.push('/');
-        // router.push('/feed');
         router.replace(isAuthed ? '/feed' : '/');
     };
 
