@@ -16,9 +16,11 @@ type ConfirmationProps = {
     disabled?: boolean;
     onConfirm: () => void;
     onClose: () => void;
+    children?: React.ReactNode;
 };
 
 export const Confirmation = ({
+    children,
     open,
     title,
     width,
@@ -50,6 +52,7 @@ export const Confirmation = ({
             }
         >
             <p>{text}</p>
+            {children}
         </Modal>
     );
 };
