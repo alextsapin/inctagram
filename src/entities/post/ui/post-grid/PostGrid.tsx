@@ -1,9 +1,7 @@
-import Image from 'next/image';
-import Link from 'next/link';
-
 import { Post } from '@/entities/post/model/type';
 
 import s from './post-grid.module.scss';
+import { PostGridItem } from './PostGridItem';
 
 type Props = {
     posts: Post[];
@@ -15,27 +13,20 @@ export const PostGrid = ({ posts }: Props): React.JSX.Element => {
 
     return (
         <div className={s.grid}>
-            {posts.map(post => {
-                const imageUrl = post.images?.[0]?.url;
-
-                return (
-                    <Link key={post.id} href={`/post/${post.id}`} className={s.item}>
-                        {imageUrl && (
-                            <Image
-                                src={imageUrl}
-                                alt=""
-                                fill
-                                className={s.image}
-                                // Ширина плитки: на телефоне половина экрана, иначе не больше 234px
-                                sizes="(max-width: 768px) 50vw, 234px"
-                                // Ленивая загрузка (задача 12: «В PostGrid поставить ленивую загрузку»).
-                                // eager был временным решением, пока постов в профиле мало.
-                                loading="lazy"
-                            />
-                        )}
-                    </Link>
-                );
-            })}
+            {posts.map(post => (
+                <PostGridItem
+                    // Ссылки тоже в key: если у поста поменялось превью или фото
+                    // (например, превью появилось после обновления данных), плитка
+                    // создаётся заново, и состояние загрузки начинается с нуля
+                    key={`${post.id}:${post.previewUrl ?? ''}:${
+                        post.images[0]?.url ?? ''
+                    }`}
+                    postId={post.id}
+                    // В сетке показываем превью. Пока бэкенд его не сделал, берём первое фото
+                    previewUrl={post.previewUrl}
+                    photoUrl={post.images[0]?.url}
+                />
+            ))}
         </div>
     );
 };

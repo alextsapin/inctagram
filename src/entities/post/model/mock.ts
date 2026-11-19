@@ -292,18 +292,19 @@ export const MOCK_POSTS: Post[] = [
 export const getMockPost = (id: string): Post | undefined =>
     MOCK_POSTS.find(post => post.id === id);
 export const getMockFeedPosts = async (): Promise<Post[]> => [...MOCK_POSTS];
-export const getMockUserPosts = (username: string): Post[] =>
-    MOCK_POSTS.filter(post => post.author.username === username).sort(newestFirst);
+
+export const getMockUserPosts = (userId: string): Post[] =>
+    MOCK_POSTS.filter(post => post.author.id === userId).sort(newestFirst);
 
 // Страница постов пользователя для бесконечной загрузки (задача 12 / BLD-142).
 // cursor — id последнего поста предыдущей страницы (null на первой странице).
 // nextCursor — id последнего поста страницы, либо null, если постов больше нет.
 export const getMockUserPostsPage = async (
-    username: string,
+    userId: string,
     cursor: string | null,
     limit: number,
 ): Promise<UserPostsPage> => {
-    const posts = getMockUserPosts(username);
+    const posts = getMockUserPosts(userId);
 
     const startIndex =
         cursor === null ? 0 : posts.findIndex(post => post.id === cursor) + 1;
