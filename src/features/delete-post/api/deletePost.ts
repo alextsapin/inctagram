@@ -1,5 +1,4 @@
-import { deletePost } from '@/entities/post';
-import { instance } from '@/shared/api';
+import { deleteMockPost, deletePost } from '@/entities/post';
 
 export const deletePostApi = async (id: string): Promise<void> => {
     const useMocks =
@@ -8,10 +7,10 @@ export const deletePostApi = async (id: string): Promise<void> => {
             process.env.NODE_ENV === 'development');
 
     if (useMocks) {
-        await deletePost(id);
+        deleteMockPost(id);
 
         return;
     }
 
-    await instance.delete(`/api/v1/post/${encodeURIComponent(id)}`);
+    await deletePost(id);
 };
