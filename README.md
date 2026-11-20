@@ -434,7 +434,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 │   ├── 📁 tabs/
 │   ├── 📁 pagination/
 │   ├── 📁 avatar/
-│   └── 📁 loader/
+│   └── 📁 spinner/
 ├── 📁 api/
 │   └── 📄 instance.ts
 ├── 📁 lib/
@@ -446,7 +446,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 └── 📁 types/
 ```
 
-**Общие UI-компоненты, уже подготовленные в проекте:** `Alert`, `Button`, `Checkbox`, `DatePicker` и `DateRangePicker`, `Input`, `Modal`, `PhotoCropper`, `Select`, `Tabs`, `Textarea`. Их подробное описание и примеры использования вынесены в [собственные README](#документация-общих-компонентов). Остальные названия в дереве — элементы целевой схемы и не означают, что компоненты уже реализованы.
+**Общие UI-компоненты, уже подготовленные в проекте:** `Alert`, `Button`, `Checkbox`, `DatePicker` и `DateRangePicker`, `Input`, `Modal`, `PhotoCropper`, `Select`, `Spinner`, `Tabs`, `Textarea`. Их подробное описание и примеры использования вынесены в [собственные README](#документация-общих-компонентов). Остальные названия в дереве — элементы целевой схемы и не означают, что компоненты уже реализованы.
 
 ### Примеры готовых слайсов
 
@@ -534,6 +534,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 | **PhotoCropper**                | `src/shared/ui/photo-cropper/` | [README PhotoCropper](src/shared/ui/photo-cropper/README.md) |
 | **Popover**                     | `src/shared/ui/popover/`       | [README Popover](src/shared/ui/popover/README.md)            |
 | **Select**                      | `src/shared/ui/select/`        | [README Select](src/shared/ui/select/README.md)              |
+| **Spinner**                     | `src/shared/ui/spinner/`       | [README Spinner](src/shared/ui/spinner/README.md)            |
 | **Tabs**                        | `src/shared/ui/tabs/`          | [README Tabs](src/shared/ui/tabs/README.md)                  |
 | **Textarea**                    | `src/shared/ui/textarea/`      | [README Textarea](src/shared/ui/textarea/README.md)          |
 

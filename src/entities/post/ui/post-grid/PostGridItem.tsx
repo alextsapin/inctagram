@@ -1,17 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { useImageRetry } from '@/shared/hooks';
+import { Spinner } from '@/shared/ui/spinner';
+
 import s from './post-grid.module.scss';
 
-// Бэкенд загружает фото в хранилище в фоне: сразу после публикации ссылка
-// может ещё не работать. Поэтому при ошибке пробуем загрузить картинку ещё раз
-const MAX_RETRIES = 5;
-// Пауза между попытками
-const RETRY_DELAY_MS = 3000;
+const SPINNER_SIZE = 24;
 
 type Props = {
     postId: string;
@@ -19,36 +18,24 @@ type Props = {
     photoUrl?: string; // первое фото поста: запасной вариант, если превью не открылось
 };
 
-// Плитка поста в сетке профиля. Пока картинка не загрузилась, на её месте
-// пульсирует скелетон, а не значок «сломанной» картинки
+// Плитка поста в сетке профиля. Пока картинка не загрузилась, на тёмной плитке
+// крутится спиннер, а не значок «сломанной» картинки
 export const PostGridItem = ({
     postId,
     previewUrl,
     photoUrl,
 }: Props): React.JSX.Element => {
-    const [isLoaded, setIsLoaded] = useState(false);
     // true, если превью не открылось и показываем первое фото
     const [isPreviewBroken, setIsPreviewBroken] = useState(false);
-    // Номер попытки. Меняется после ошибки: картинка создаётся заново и грузится ещё раз
-    const [attempt, setAttempt] = useState(0);
-    const [hasFailed, setHasFailed] = useState(false);
+    // Бэкенд загружает фото в хранилище в фоне: сразу после публикации ссылка
+    // может ещё не работать. Хук повторяет загрузку после ошибки
+    const { attempt, isLoaded, isWaiting, isGivenUp, handleLoad, handleError } =
+        useImageRetry();
 
     // Сначала превью, а если его нет или оно не открылось, то первое фото
     const imageUrl = previewUrl && !isPreviewBroken ? previewUrl : photoUrl;
 
-    useEffect(() => {
-        if (!hasFailed || attempt >= MAX_RETRIES) return;
-
-        const timer = setTimeout(() => {
-            setHasFailed(false);
-            setAttempt(prev => prev + 1);
-        }, RETRY_DELAY_MS);
-
-        // Если плитка исчезла раньше, чем прошла пауза, повтор не нужен
-        return (): void => clearTimeout(timer);
-    }, [hasFailed, attempt]);
-
-    const handleError = (): void => {
+    const handleImageError = (): void => {
         // Превью не открылось: сразу пробуем первое фото, без паузы
         if (imageUrl === previewUrl && photoUrl && photoUrl !== previewUrl) {
             setIsPreviewBroken(true);
@@ -56,19 +43,21 @@ export const PostGridItem = ({
             return;
         }
 
-        setHasFailed(true);
+        handleError();
     };
 
-    // Все попытки кончились или фото нет: не пульсируем, остаётся тёмная плитка
-    const isGivenUp = hasFailed && attempt >= MAX_RETRIES;
+    // Время вышло или фото нет: спиннер убираем, остаётся тёмная плитка
     const isLoading = Boolean(imageUrl) && !isLoaded && !isGivenUp;
 
     return (
-        <Link
-            href={`/post/${postId}`}
-            className={`${s.item} ${isLoading ? s.skeleton : ''}`}
-        >
-            {imageUrl && !hasFailed && (
+        <Link href={`/post/${postId}`} className={s.item}>
+            {isLoading && (
+                <div className={s.loader}>
+                    <Spinner size={SPINNER_SIZE} />
+                </div>
+            )}
+
+            {imageUrl && !isWaiting && !isGivenUp && (
                 <Image
                     // Новый key при смене ссылки или после ошибки: React создаёт картинку
                     // заново, и браузер повторяет запрос. Параметр в адрес добавить нельзя:
@@ -83,8 +72,8 @@ export const PostGridItem = ({
                     // Ленивая загрузка (задача 12: «В PostGrid поставить ленивую загрузку»).
                     // eager был временным решением, пока постов в профиле мало.
                     loading="lazy"
-                    onLoad={() => setIsLoaded(true)}
-                    onError={handleError}
+                    onLoad={handleLoad}
+                    onError={handleImageError}
                 />
             )}
         </Link>

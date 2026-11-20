@@ -3,6 +3,7 @@
 import { useCallback } from 'react';
 
 import { useInfiniteScroll } from '@/shared/hooks';
+import { Spinner } from '@/shared/ui/spinner';
 
 import { useUserPostsInfinite } from '../../model/useUserPostsInfinite';
 import { PostGrid } from '../post-grid';
@@ -51,7 +52,7 @@ export const InfinitePostGrid = ({
     if (isLoading) {
         return (
             <div className={s.loading} role="status">
-                <span className={s.spinner} />
+                <Spinner />
                 Loading posts…
             </div>
         );
@@ -102,7 +103,7 @@ export const InfinitePostGrid = ({
 
                 {!isError && isFetchingNextPage && (
                     <div className={s.loading} role="status">
-                        <span className={s.spinner} />
+                        <Spinner />
                         Loading more…
                     </div>
                 )}

@@ -2,14 +2,13 @@
 
 import { useState } from 'react';
 
-import Image from 'next/image';
-
 import { IconButton } from '@/shared/ui/icon-button/';
 import { ArrowLeftIcon, ArrowRightIcon } from '@/shared/ui/icons';
 
 import { PostImage } from '../../model/type';
 
 import s from './carousel.module.scss';
+import { CarouselSlide } from './CarouselSlide';
 
 type Props = {
     slides?: PostImage[];
@@ -42,30 +41,15 @@ export const Carousel = ({ slides = [], initialIndex = 0 }: Props): React.JSX.El
     if (total === 1) {
         return (
             <div className={s.container}>
-                <div className={s.viewport}>
-                    <Image
-                        src={slides[0].url}
-                        alt={slides[0].alt || ''}
-                        fill
-                        sizes="(max-width: 480px) 100vw, 480px"
-                        priority
-                    />
-                </div>
+                <CarouselSlide key={slides[0].url} slide={slides[0]} />
             </div>
         );
     }
 
     return (
         <div className={s.container}>
-            <div className={s.viewport}>
-                <Image
-                    src={slides[index].url}
-                    alt={slides[index].alt || ''}
-                    fill
-                    sizes="(max-width: 480px) 100vw, 480px"
-                    priority
-                />
-            </div>
+            {/* key по ссылке: при переключении фото попытки загрузки считаются заново */}
+            <CarouselSlide key={slides[index].url} slide={slides[index]} />
 
             <IconButton
                 size={40}
