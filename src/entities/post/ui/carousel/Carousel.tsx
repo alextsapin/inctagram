@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 
+import Link from 'next/link';
+
 import { IconButton } from '@/shared/ui/icon-button/';
 import { ArrowLeftIcon, ArrowRightIcon } from '@/shared/ui/icons';
 
@@ -22,12 +24,14 @@ type Props = {
     initialIndex?: number;
     // small: маленькие стрелки и точки для карточки на главной
     size?: 'medium' | 'small';
+    slideHref?: string;
 };
 
 export const Carousel = ({
     slides = [],
     initialIndex = 0,
     size = 'medium',
+    slideHref,
 }: Props): React.JSX.Element => {
     const [index, setIndex] = useState(initialIndex);
     const total = slides.length;
@@ -52,9 +56,17 @@ export const Carousel = ({
     }
 
     if (total === 1) {
+        const slide = <CarouselSlide key={slides[0].url} slide={slides[0]} />;
+
         return (
             <div className={s.container}>
-                <CarouselSlide key={slides[0].url} slide={slides[0]} />
+                {slideHref ? (
+                    <Link href={slideHref} className={s['slide-link']}>
+                        {slide}
+                    </Link>
+                ) : (
+                    slide
+                )}
             </div>
         );
     }
@@ -62,7 +74,13 @@ export const Carousel = ({
     return (
         <div className={`${s.container} ${size === 'small' ? s.small : ''}`}>
             {/* key по ссылке: при переключении фото попытки загрузки считаются заново */}
-            <CarouselSlide key={slides[index].url} slide={slides[index]} />
+            {slideHref ? (
+                <Link href={slideHref} className={s['slide-link']}>
+                    <CarouselSlide key={slides[index].url} slide={slides[index]} />
+                </Link>
+            ) : (
+                <CarouselSlide key={slides[index].url} slide={slides[index]} />
+            )}
 
             <IconButton
                 size={ARROW_SIZE[size]}

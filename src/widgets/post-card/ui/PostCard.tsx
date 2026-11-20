@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 
 import Image from 'next/image';
-import Link from 'next/link';
 
 import { Carousel, type PostImage } from '@/entities/post';
 import { formatRelativeTime } from '@/shared/lib/formatRelativeTime';
@@ -57,24 +56,13 @@ export const PostCard = ({
 
     return (
         <article className={styles.card}>
-            <Link
-                href={`/post/${postId}`}
-                className={styles.link}
-                onClick={e => {
-                    // Игнорируем клик, если нажали на кнопку (стрелки, точки)
-                    if ((e.target as HTMLElement).closest('button')) {
-                        e.preventDefault();
-                    }
-                }}
+            <div
+                className={`${styles['carousel-wrapper']} ${
+                    isExpanded ? styles['carousel-wrapper-expanded'] : ''
+                }`}
             >
-                <div
-                    className={`${styles['carousel-wrapper']} ${
-                        isExpanded ? styles['carousel-wrapper-expanded'] : ''
-                    }`}
-                >
-                    <Carousel slides={images} size="small" />
-                </div>
-            </Link>
+                <Carousel slides={images} size="small" slideHref={`/post/${postId}`} />
+            </div>
             <div className={styles.author}>
                 <div className={styles['author-avatar-wrapper']}>
                     <Image
