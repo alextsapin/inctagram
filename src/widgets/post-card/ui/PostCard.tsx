@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { Carousel, type PostImage } from '@/entities/post';
 import { formatRelativeTime } from '@/shared/lib/formatRelativeTime';
 
-import styles from './user-post-card.module.scss';
+import styles from './post-card.module.scss';
 
 const INITIAL_TEXT_LENGTH = 100;
 const EXPANDED_TEXT_LENGTH = 225;

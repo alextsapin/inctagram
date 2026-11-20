@@ -61,7 +61,11 @@ export const Carousel = ({
         return (
             <div className={s.container}>
                 {slideHref ? (
-                    <Link href={slideHref} className={s['slide-link']}>
+                    <Link
+                        href={slideHref}
+                        className={s['slide-link']}
+                        aria-label="Open post"
+                    >
                         {slide}
                     </Link>
                 ) : (
@@ -75,7 +79,7 @@ export const Carousel = ({
         <div className={`${s.container} ${size === 'small' ? s.small : ''}`}>
             {/* key по ссылке: при переключении фото попытки загрузки считаются заново */}
             {slideHref ? (
-                <Link href={slideHref} className={s['slide-link']}>
+                <Link href={slideHref} className={s['slide-link']} aria-label="Open post">
                     <CarouselSlide key={slides[index].url} slide={slides[index]} />
                 </Link>
             ) : (
