@@ -30,22 +30,19 @@
     cursor: pointer;
 }
 
-/* Пока картинка грузится, плитка серая и пульсирует, как скелетон окна поста.
-   Тёмный фон плитки совпадает с фоном страницы, на нём скелетон был бы не виден */
-.skeleton {
-    background-color: #363636;
-    animation: pulse 1.5s ease-in-out infinite;
+/* Пока картинка грузится, плитка серая, как подложка скелетона: тёмная плитка
+   сливается с фоном страницы, и без подложки не видно, где её граница */
+.loading {
+    background-color: var(--color-dark-500);
 }
 
-@keyframes pulse {
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.4;
-    }
+/* Спиннер по центру плитки */
+.loader {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .image {
