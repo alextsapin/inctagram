@@ -109,3 +109,39 @@
         }
     }
 }
+
+/* Маленькие стрелки и точки для карточки на главной (проп size="small").
+   Размеры из макета главной: стрелки 24x24 в 6px от края, точки 6px через 8px
+   на полупрозрачной подложке, 8px от низа фото. Селекторы из двух классов
+   весят больше обычных стилей стрелок и кнопки IconButton */
+.small .btn-prev,
+.small .btn-next {
+    padding: 0;
+    border-radius: 2px;
+}
+
+.small .btn-prev {
+    left: 6px;
+}
+
+.small .btn-next {
+    right: 6px;
+}
+
+.small .dots {
+    bottom: 8px;
+    gap: 8px;
+    padding: 3px 8px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--color-dark-300) 50%, transparent);
+
+    button {
+        width: 6px;
+        height: 6px;
+    }
+
+    /* По макету активная точка того же размера, только синяя */
+    .active {
+        transform: none;
+    }
+}
