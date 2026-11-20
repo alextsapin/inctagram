@@ -1,5 +1,3 @@
-/* eslint-disable no-magic-numbers */
-import { formatAbsoluteDate } from '@/shared/lib/formatDate';
 import { RegisteredUsers } from '@/widgets/registered-users';
 import { UserCard } from '@/widgets/user-post-card';
 
@@ -42,7 +40,7 @@ export const Main = async (): Promise<React.JSX.Element> => {
                             postId={post.id}
                             username={post.author.username}
                             authorAvatar={post.author.avatarUrl ?? '/profile/avatar.png'}
-                            publishedAt={formatAbsoluteDate(post.createdAt)}
+                            createdAt={post.createdAt}
                             postText={post.description}
                             images={post.photos.map(photo => ({
                                 id: String(photo.id),
