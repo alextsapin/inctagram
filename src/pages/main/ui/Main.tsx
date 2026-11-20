@@ -1,5 +1,5 @@
+import { PostCard } from '@/widgets/post-card';
 import { RegisteredUsers } from '@/widgets/registered-users';
-import { PostCard } from '@/widgets/user-post-card';
 
 import { getMainPageData } from '../api/getMainPageData';
 
