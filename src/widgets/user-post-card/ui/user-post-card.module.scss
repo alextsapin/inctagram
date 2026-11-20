@@ -9,10 +9,18 @@ $accent: #397df6;
     gap: 12px;
 }
 
+/* Отступы по макету: фото, строка автора и блок с датой и текстом идут
+   через 12px. Сверху 16px: вместе с нижним отступом счётчика (20px)
+   получается 36px, как в макете.
+   width: 100% нужен, потому что во flex-контейнере карточка без ширины
+   сжимается по содержимому: с коротким текстом она была уже 234px */
 .card {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
     max-width: $card-width;
-    margin: 25px 1px;
+    margin: 16px 0;
     color: inherit;
     text-decoration: none;
 }
@@ -32,6 +40,16 @@ $accent: #397df6;
     max-width: $card-width;
     height: $post-height;
     overflow: hidden;
+}
+
+/* Фото заполняет рамку целиком, лишнее обрезается, как в макете,
+   и в обычной карточке (240px), и после Show more (120px).
+   Карусель сама вписывает фото целиком (contain, нужно в окне поста),
+   поэтому здесь переопределяем. Селектор из двух классов весит больше,
+   чем .viewport img в карусели, и не зависит от порядка подключения стилей:
+   иначе после открытия поста фото в карточке снова становится contain */
+.link .carousel-wrapper img {
+    object-fit: cover;
 }
 
 .author {
@@ -65,6 +83,8 @@ $accent: #397df6;
 .published-at {
     @include text(400, 12px, 16px);
 
+    /* По макету между датой и текстом поста 3px */
+    margin-bottom: 3px;
     color: rgb(255 255 255 / 60%);
 }
 
@@ -72,12 +92,10 @@ $accent: #397df6;
     @include text(600, 16px, 24px);
 }
 
+/* После Show more фото становится ниже, как в макете: 234x120 вместо 234x240.
+   Освободившееся место занимает развёрнутый текст */
 .carousel-wrapper-expanded {
     height: $post-height / 2;
-
-    img {
-        object-fit: cover;
-    }
 }
 
 .text-toggle {
