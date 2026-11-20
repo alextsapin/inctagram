@@ -4,7 +4,8 @@ import {
     useQueryClient,
 } from '@tanstack/react-query';
 
-import { postQueryKeys } from '@/entities/post';
+import { Post, postQueryKeys } from '@/entities/post';
+import { profileQueryKeys } from '@/entities/profile';
 
 import { editPost } from '../api/editPostApi';
 
@@ -19,9 +20,27 @@ export const useEditPost = (): UseMutationResult<void, Error, EditPostVariables>
     return useMutation({
         mutationFn: ({ postId, caption }: EditPostVariables) => editPost(postId, caption),
 
-        onSuccess: async (_, variables) => {
-            await queryClient.invalidateQueries({
-                queryKey: postQueryKeys.detail(variables.postId),
+        onSuccess: (_, variables) => {
+            // 1. СИНХРОННО и МГНОВЕННО обновляем кэш детального поста.
+
+            queryClient.setQueryData<Post>(postQueryKeys.detail(variables.postId), old =>
+                old ? { ...old, caption: variables.caption.trim() } : old,
+            );
+
+            // 2. Обновляем ленту (Feed)
+            queryClient.invalidateQueries({
+                queryKey: postQueryKeys.feed(),
+            });
+
+            // 3. Инвалидируем посты пользователя.
+            queryClient.invalidateQueries({
+                queryKey: postQueryKeys.all,
+                predicate: query => query.queryKey[1] === 'userPosts',
+            });
+
+            // 4. Обновляем сущность профиля (счетчики, описание и т.д.)
+            queryClient.invalidateQueries({
+                queryKey: profileQueryKeys.all,
             });
         },
     });

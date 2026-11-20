@@ -23,12 +23,16 @@ const CLOSE_MODAL_WIDTH = 432;
 
 export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element | null => {
     const router = useRouter();
-    // const safeClose = useSafeClose('/feed');
+
     const [isDirty, setIsDirty] = useState(false);
 
     const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
     const { data: post, isLoading, isError, error } = usePost(postId);
-    const { data: currentUser, isLoading: isUserLoading } = useCurrentUser();
+    const {
+        data: currentUser,
+        isLoading: isUserLoading,
+        isError: isErrorUser,
+    } = useCurrentUser();
 
     useEffect(() => {
         if (!isLoading && !isUserLoading && post) {
@@ -52,14 +56,13 @@ export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element | nu
         );
     }
 
-    if (isError || !post) {
+    if (isError || !post || isErrorUser) {
+        const errorText = isErrorUser
+            ? 'Не удалось получить данные пользователя'
+            : error?.message || 'Не удалось загрузить пост';
+
         return (
-            <Alert
-                open
-                onClose={() => router.back()}
-                type="error"
-                message={error?.message || 'Не удалось загрузить пост'}
-            />
+            <Alert open onClose={() => router.back()} type="error" message={errorText} />
         );
     }
 
