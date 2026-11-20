@@ -1,5 +1,5 @@
 import { RegisteredUsers } from '@/widgets/registered-users';
-import { UserCard } from '@/widgets/user-post-card';
+import { PostCard } from '@/widgets/user-post-card';
 
 import { getMainPageData } from '../api/getMainPageData';
 
@@ -35,7 +35,7 @@ export const Main = async (): Promise<React.JSX.Element> => {
                     <p>No posts yet.</p>
                 ) : (
                     posts.map(post => (
-                        <UserCard
+                        <PostCard
                             key={post.id}
                             postId={post.id}
                             username={post.author.username}

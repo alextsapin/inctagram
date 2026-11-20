@@ -13,7 +13,7 @@ import styles from './user-post-card.module.scss';
 const INITIAL_TEXT_LENGTH = 100;
 const EXPANDED_TEXT_LENGTH = 225;
 
-type UserCardProps = {
+type PostCardProps = {
     postId: string;
     username?: string;
     postText?: string;
@@ -24,14 +24,14 @@ type UserCardProps = {
 
 const TIME_REFRESH_MS = 60_000;
 
-export const UserCard = ({
+export const PostCard = ({
     postId,
     username,
     postText,
     createdAt,
     images,
     authorAvatar,
-}: UserCardProps): React.JSX.Element => {
+}: PostCardProps): React.JSX.Element => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const [relativeTime, setRelativeTime] = useState('');
