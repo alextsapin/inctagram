@@ -52,7 +52,7 @@ export const UserCard = ({
                         isExpanded ? styles['carousel-wrapper-expanded'] : ''
                     }`}
                 >
-                    <Carousel slides={images} />
+                    <Carousel slides={images} size="small" />
                 </div>
             </Link>
             <div className={styles.author}>

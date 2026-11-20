@@ -10,12 +10,25 @@ import { PostImage } from '../../model/type';
 import s from './carousel.module.scss';
 import { CarouselSlide } from './CarouselSlide';
 
+// Размер стрелок в пикселях. Обычные для окна поста, маленькие для карточки
+// на главной: по макету там стрелки 24x24
+const ARROW_SIZE = {
+    medium: 40,
+    small: 24,
+};
+
 type Props = {
     slides?: PostImage[];
     initialIndex?: number;
+    // small: маленькие стрелки и точки для карточки на главной
+    size?: 'medium' | 'small';
 };
 
-export const Carousel = ({ slides = [], initialIndex = 0 }: Props): React.JSX.Element => {
+export const Carousel = ({
+    slides = [],
+    initialIndex = 0,
+    size = 'medium',
+}: Props): React.JSX.Element => {
     const [index, setIndex] = useState(initialIndex);
     const total = slides.length;
 
@@ -47,12 +60,12 @@ export const Carousel = ({ slides = [], initialIndex = 0 }: Props): React.JSX.El
     }
 
     return (
-        <div className={s.container}>
+        <div className={`${s.container} ${size === 'small' ? s.small : ''}`}>
             {/* key по ссылке: при переключении фото попытки загрузки считаются заново */}
             <CarouselSlide key={slides[index].url} slide={slides[index]} />
 
             <IconButton
-                size={40}
+                size={ARROW_SIZE[size]}
                 label="Prev slide"
                 className={s['btn-prev']}
                 onClick={() => goTo(index - 1)}
@@ -61,7 +74,7 @@ export const Carousel = ({ slides = [], initialIndex = 0 }: Props): React.JSX.El
             </IconButton>
 
             <IconButton
-                size={40}
+                size={ARROW_SIZE[size]}
                 label="Next slide"
                 className={s['btn-next']}
                 onClick={() => goTo(index + 1)}
