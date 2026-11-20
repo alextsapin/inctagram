@@ -1,7 +1,9 @@
+/* Ширина контента по макету 972px. Внутренние отступы по 10px
+   входят в max-width (border-box), поэтому 972 + 10 + 10 */
 .main {
     box-sizing: border-box;
     width: 100%;
-    max-width: 972px;
+    max-width: 992px;
     margin-inline: auto;
     padding-inline: 10px;
 }
@@ -9,6 +11,9 @@
 .container {
     display: flex;
     flex-wrap: wrap;
+
+    /* Между карточками 12px по горизонтали, как в макете */
+    column-gap: 12px;
     justify-content: center;
     align-items: flex-start;
 }
