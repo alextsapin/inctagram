@@ -24,7 +24,6 @@ type UserCardProps = {
 
 const TIME_REFRESH_MS = 60_000;
 
-// eslint-disable-next-line prettier/prettier
 export const UserCard = ({
     postId,
     username,
