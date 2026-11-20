@@ -23,12 +23,8 @@ export const Main = async (): Promise<React.JSX.Element> => {
         );
     }
 
-
     const { posts, registeredUsersCount } = data;
-    const registeredUsers = String(registeredUsersCount).padStart(
-        COUNTER_LENGTH,
-        '0'
-    );
+    const registeredUsers = String(registeredUsersCount).padStart(COUNTER_LENGTH, '0');
 
     return (
         <MainClientLayout>
@@ -45,9 +41,7 @@ export const Main = async (): Promise<React.JSX.Element> => {
                             key={post.id}
                             postId={post.id}
                             username={post.author.username}
-                            authorAvatar={
-                                post.author.avatarUrl ?? '/profile/avatar.png'
-                            }
+                            authorAvatar={post.author.avatarUrl ?? '/profile/avatar.png'}
                             publishedAt={formatAbsoluteDate(post.createdAt)}
                             postText={post.description}
                             images={post.photos.map(photo => ({
