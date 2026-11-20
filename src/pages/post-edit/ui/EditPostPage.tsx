@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
+import { isAxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 
 import { usePost } from '@/entities/post';
@@ -20,6 +21,7 @@ type Props = {
 
 const EDIT_POST_MODAL_WIDTH = 972;
 const CLOSE_MODAL_WIDTH = 432;
+const UNAUTHORIZED = 401;
 
 export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element | null => {
     const router = useRouter();
@@ -27,22 +29,50 @@ export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element | nu
     const [isDirty, setIsDirty] = useState(false);
 
     const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
-    const { data: post, isLoading, isError, error } = usePost(postId);
+    const {
+        data: post,
+        isLoading,
+        isError: isErrorPost,
+        error: errorPost,
+    } = usePost(postId);
+
     const {
         data: currentUser,
         isLoading: isUserLoading,
         isError: isErrorUser,
+        error: errorUser,
     } = useCurrentUser();
 
+    // 401 — сессии нет, это гость.
+    // Любая другая ошибка (404, 500, сеть) не означает «гость
+    const isUnauthorized =
+        isAxiosError(errorUser) && errorUser.response?.status === UNAUTHORIZED;
+    const isRealUserError = isErrorUser && !isUnauthorized;
+
+    // Гость: юзера нет и это не ошибка, ЛИБО упал 401.
+    const isGuest = !isUserLoading && !currentUser && !isRealUserError;
+
+    const isAuthor = !!currentUser && !!post && currentUser.userId === post.author.id;
+    const canEdit = !isGuest && isAuthor;
+
     useEffect(() => {
-        if (!isLoading && !isUserLoading && post) {
-            // Если гость (currentUser === null) ИЛИ ID не совпадают
-            // Проверяем чтобы в url руками не ввели postId/edit
-            if (!currentUser || currentUser.userId !== post.author.id) {
-                router.replace(`/post/${postId}`);
-            }
+        // Если загрузка завершена и это не реальная ошибка сервера,
+        // но пользователь не может редактировать (гость или не автор) — редиректим
+        if (!isLoading && !isUserLoading && !isRealUserError && post && !canEdit) {
+            if (isModal) router.back();
+            else router.replace(`/post/${postId}`);
         }
-    }, [post, currentUser, isLoading, isUserLoading, router, postId]);
+    }, [
+        post,
+        currentUser,
+        isLoading,
+        isUserLoading,
+        router,
+        postId,
+        canEdit,
+        isModal,
+        isRealUserError,
+    ]);
 
     if (isLoading || isUserLoading) {
         return isModal ? (
@@ -55,11 +85,16 @@ export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element | nu
             </main>
         );
     }
+    // Если это гость (401 или просто нет юзера) — уходим сразу. редирект сделает useEffect
+    // Нам неважно, упал пост или нет, гость не должен видеть ошибки редактирования.
+    if (isGuest) {
+        return null;
+    }
 
-    if (isError || !post || isErrorUser) {
-        const errorText = isErrorUser
-            ? 'Не удалось получить данные пользователя'
-            : error?.message || 'Не удалось загрузить пост';
+    if (isRealUserError || isErrorPost || !post) {
+        const errorText = isRealUserError
+            ? 'Failed to load user data'
+            : errorPost?.message || 'Failed to load post';
 
         return (
             <Alert open onClose={() => router.back()} type="error" message={errorText} />
@@ -67,7 +102,7 @@ export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element | nu
     }
 
     // Блокируем рендер формы для не-автора (пока срабатывает useEffect)
-    if (!currentUser || currentUser.userId !== post.author.id) {
+    if (!canEdit) {
         return null;
     }
     // Единая функция закрытия (выполняется, если нет несохраненных изменений или юзер подтвердил)
