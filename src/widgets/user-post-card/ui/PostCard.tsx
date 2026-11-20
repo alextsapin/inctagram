@@ -1,35 +1,55 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Image from 'next/image';
 import Link from 'next/link';
 
 import { Carousel, type PostImage } from '@/entities/post';
+import { formatRelativeTime } from '@/shared/lib/formatRelativeTime';
 
 import styles from './user-post-card.module.scss';
 
 const INITIAL_TEXT_LENGTH = 100;
 const EXPANDED_TEXT_LENGTH = 225;
 
-type UserCardProps = {
+type PostCardProps = {
     postId: string;
     username?: string;
     postText?: string;
-    publishedAt?: string;
+    createdAt: string;
     images: PostImage[];
     authorAvatar: string;
 };
 
-export const UserCard = ({
+const TIME_REFRESH_MS = 60_000;
+
+export const PostCard = ({
     postId,
     username,
     postText,
-    publishedAt,
+    createdAt,
     images,
     authorAvatar,
-}: UserCardProps): React.JSX.Element => {
+}: PostCardProps): React.JSX.Element => {
     const [isExpanded, setIsExpanded] = useState(false);
+
+    const [relativeTime, setRelativeTime] = useState('');
+
+    useEffect(() => {
+        const updateTime = (): void => {
+            setRelativeTime(formatRelativeTime(createdAt));
+        };
+
+        const timeout = window.setTimeout(updateTime, 0);
+        const interval = window.setInterval(updateTime, TIME_REFRESH_MS);
+
+        return () => {
+            window.clearTimeout(timeout);
+            window.clearInterval(interval);
+        };
+    }, [createdAt]);
+
     const text = postText ?? '';
     const textLimit = isExpanded ? EXPANDED_TEXT_LENGTH : INITIAL_TEXT_LENGTH;
     const visibleText = text.slice(0, textLimit);
@@ -68,7 +88,9 @@ export const UserCard = ({
                 <h3 className={styles['author-name']}>{username}</h3>
             </div>
             <div>
-                <p className={styles['published-at']}>{publishedAt}</p>
+                <time dateTime={createdAt} className={styles['published-at']}>
+                    {relativeTime}
+                </time>
 
                 <p className={styles['post-text']}>
                     {visibleText}

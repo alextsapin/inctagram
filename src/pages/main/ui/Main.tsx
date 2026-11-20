@@ -1,7 +1,5 @@
-/* eslint-disable no-magic-numbers */
-import { formatAbsoluteDate } from '@/shared/lib/formatDate';
 import { RegisteredUsers } from '@/widgets/registered-users';
-import { UserCard } from '@/widgets/user-post-card';
+import { PostCard } from '@/widgets/user-post-card';
 
 import { getMainPageData } from '../api/getMainPageData';
 
@@ -37,12 +35,12 @@ export const Main = async (): Promise<React.JSX.Element> => {
                     <p>No posts yet.</p>
                 ) : (
                     posts.map(post => (
-                        <UserCard
+                        <PostCard
                             key={post.id}
                             postId={post.id}
                             username={post.author.username}
                             authorAvatar={post.author.avatarUrl ?? '/profile/avatar.png'}
-                            publishedAt={formatAbsoluteDate(post.createdAt)}
+                            createdAt={post.createdAt}
                             postText={post.description}
                             images={post.photos.map(photo => ({
                                 id: String(photo.id),

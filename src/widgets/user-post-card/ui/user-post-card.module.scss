@@ -81,6 +81,8 @@ $accent: #397df6;
 }
 
 .published-at {
+    display: block;
+
     @include text(400, 12px, 16px);
 
     /* По макету между датой и текстом поста 3px */
