@@ -18,8 +18,8 @@ type Props = {
     photoUrl?: string; // первое фото поста: запасной вариант, если превью не открылось
 };
 
-// Плитка поста в сетке профиля. Пока картинка не загрузилась, на тёмной плитке
-// крутится спиннер, а не значок «сломанной» картинки
+// Плитка поста в сетке профиля. Пока картинка не загрузилась, плитка серая
+// и на ней крутится спиннер, а не значок «сломанной» картинки
 export const PostGridItem = ({
     postId,
     previewUrl,
@@ -50,7 +50,10 @@ export const PostGridItem = ({
     const isLoading = Boolean(imageUrl) && !isLoaded && !isGivenUp;
 
     return (
-        <Link href={`/post/${postId}`} className={s.item}>
+        <Link
+            href={`/post/${postId}`}
+            className={`${s.item} ${isLoading ? s.loading : ''}`}
+        >
             {isLoading && (
                 <div className={s.loader}>
                     <Spinner size={SPINNER_SIZE} />
