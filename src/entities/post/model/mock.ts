@@ -323,6 +323,7 @@ export const MOCK_POSTS: Post[] = [
 
 export const getMockPost = (id: string): Post | undefined =>
     MOCK_POSTS.find(post => post.id === id);
+
 export const getMockFeedPosts = async (): Promise<Post[]> => [...MOCK_POSTS];
 
 export const getMockUserPosts = (userId: string): Post[] =>
@@ -385,7 +386,7 @@ export const updateMockPost = (id: string, caption: string): Post | undefined =>
         caption: caption.trim(),
     };
     // Обновляем все массивы, в которых может находиться пост.
-    const collections = [MOCK_POSTS];
+    const collections = [MOCK_POSTS, MOCK_FEED_POSTS, MOCK_PROFILE_POSTS];
 
     collections.forEach(collection => {
         collection.forEach((item, index) => {

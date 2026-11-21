@@ -56,12 +56,13 @@ export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element | nu
 
     const isAuthor = !!currentUser && !!post && currentUser.userId === post.author.id;
     const canEdit = !isGuest && isAuthor;
+
     // Единая навигация на страницу просмотра поста.
     const navigateToPost = useCallback((): void => {
         if (isModal) {
             router.back();
         } else {
-            window.location.replace(`/post/${postId}`);
+            router.replace(`/post/${postId}`);
         }
     }, [isModal, postId, router]);
 
