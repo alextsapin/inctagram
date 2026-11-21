@@ -16,7 +16,7 @@ type Props = {
 };
 const POST_MODAL_WIDTH = 975;
 
-export const PostPage = ({ postId, isModal }: Props): React.JSX.Element => {
+export const Post = ({ postId, isModal }: Props): React.JSX.Element => {
     const router = useRouter();
     const { data: post, isLoading, isError, error } = usePost(postId);
     const {
