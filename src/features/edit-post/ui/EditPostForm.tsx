@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 
 import { useForm, useWatch } from 'react-hook-form';
 
+import { Alert } from '@/shared/ui/alert';
 import { Button } from '@/shared/ui/button';
 
 import { useEditPost } from '../model/useEditPost';
@@ -41,20 +42,31 @@ export const EditPostForm = ({
         // Поднимаем наверх изменения
         onDirtyChange(isDirty);
     }, [isDirty, onDirtyChange]);
+    const { mutateAsync, isPending, isError, error, reset } = useEditPost();
 
     // Следим за длиной текста для счетчика
     const captionValue = useWatch({ control, name: 'caption' });
     const currentLength = captionValue?.length || 0;
-    const { mutateAsync, isPending } = useEditPost();
 
     const onSubmit = async (data: FormValues): Promise<void> => {
-        // TODO мутация
-        await mutateAsync({ postId, caption: data.caption });
-        onSuccess();
+        try {
+            await mutateAsync({ postId, caption: data.caption });
+            onSuccess();
+        } catch {
+            // Ошибка уже обрабатывается через isError в JSX
+        }
     };
 
     return (
         <form className={s.form} onSubmit={handleSubmit(onSubmit)}>
+            {isError && (
+                <Alert
+                    open
+                    onClose={reset}
+                    type="error"
+                    message={error?.message || 'Failed to save changes'}
+                />
+            )}
             <div className={s.body}>
                 <label htmlFor="caption" className={s.label}>
                     Add publication descriptions

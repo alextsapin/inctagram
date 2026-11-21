@@ -1,26 +1,47 @@
-/* eslint-disable no-magic-numbers */
-import { useState } from 'react';
+import {
+    useMutation,
+    type UseMutationResult,
+    useQueryClient,
+} from '@tanstack/react-query';
 
-type EditPostPayload = {
+import { Post, postQueryKeys } from '@/entities/post';
+import { profileQueryKeys } from '@/entities/profile';
+
+import { editPost } from '../api/editPostApi';
+
+type EditPostVariables = {
     postId: string;
     caption: string;
 };
-type UseEditPostReturn = {
-    mutateAsync: (payload: EditPostPayload) => Promise<void>;
-    isPending: boolean;
-};
-export const useEditPost = (): UseEditPostReturn => {
-    const [isPending, setIsPending] = useState(false);
 
-    const mutateAsync = async (payload: EditPostPayload): Promise<void> => {
-        setIsPending(true);
+export const useEditPost = (): UseMutationResult<void, Error, EditPostVariables> => {
+    const queryClient = useQueryClient();
 
-        await new Promise(resolve => {
-            setTimeout(() => resolve(payload), 800);
-        });
+    return useMutation({
+        mutationFn: ({ postId, caption }: EditPostVariables) => editPost(postId, caption),
 
-        setIsPending(false);
-    };
+        onSuccess: (_, variables) => {
+            // 1. СИНХРОННО и МГНОВЕННО обновляем кэш детального поста.
 
-    return { mutateAsync, isPending };
+            queryClient.setQueryData<Post>(postQueryKeys.detail(variables.postId), old =>
+                old ? { ...old, caption: variables.caption.trim() } : old,
+            );
+
+            // 2. Обновляем ленту (Feed)
+            queryClient.invalidateQueries({
+                queryKey: postQueryKeys.feed(),
+            });
+
+            // 3. Инвалидируем посты пользователя.
+            queryClient.invalidateQueries({
+                queryKey: postQueryKeys.all,
+                predicate: query => query.queryKey[1] === 'userPosts',
+            });
+
+            // 4. Обновляем сущность профиля (счетчики, описание и т.д.)
+            queryClient.invalidateQueries({
+                queryKey: profileQueryKeys.all,
+            });
+        },
+    });
 };
