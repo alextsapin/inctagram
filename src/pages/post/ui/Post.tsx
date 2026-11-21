@@ -8,7 +8,7 @@ import { Alert } from '@/shared/ui/alert';
 import { Modal } from '@/shared/ui/modal';
 import { PostViewer, PostViewerSkeleton } from '@/widgets/post-viewer';
 
-import s from './post-page.module.scss';
+import s from './post.module.scss';
 
 type Props = {
     postId: string;
