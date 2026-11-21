@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { isAxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
@@ -31,7 +31,7 @@ export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element | nu
     const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
     const {
         data: post,
-        isLoading,
+        isLoading: isLoadingPost,
         isError: isErrorPost,
         error: errorPost,
     } = usePost(postId);
@@ -47,36 +47,57 @@ export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element | nu
     // Любая другая ошибка (404, 500, сеть) не означает «гость
     const isUnauthorized =
         isAxiosError(errorUser) && errorUser.response?.status === UNAUTHORIZED;
+
     const isRealUserError = isErrorUser && !isUnauthorized;
 
     // Гость: юзера нет и это не ошибка, ЛИБО упал 401.
-    const isGuest = !isUserLoading && !currentUser && !isRealUserError;
+    const isGuest =
+        !isUserLoading && (isUnauthorized || (!currentUser && !isRealUserError));
 
     const isAuthor = !!currentUser && !!post && currentUser.userId === post.author.id;
     const canEdit = !isGuest && isAuthor;
+    // Единая навигация на страницу просмотра поста.
+    const navigateToPost = useCallback((): void => {
+        if (isModal) {
+            router.back();
+        } else {
+            window.location.replace(`/post/${postId}`);
+        }
+    }, [isModal, postId, router]);
 
+    // Обработка доступа к странице редактирования.
     useEffect(() => {
-        // Если загрузка завершена и это не реальная ошибка сервера,
-        // но пользователь не может редактировать (гость или не автор) — редиректим
-        if (!isLoading && !isUserLoading && !isRealUserError && post && !canEdit) {
-            if (isModal) router.back();
-            else router.replace(`/post/${postId}`);
+        // Ждём определения пользователя.
+        if (isUserLoading) return;
+
+        // 1. Гость: редирект независимо от результата загрузки поста.
+        if (isGuest) {
+            navigateToPost();
+
+            return;
+        }
+
+        // 2. Для авторизованного пользователя ждём загрузку поста.
+        if (isLoadingPost) return;
+
+        // 3. Если пост загружен, но пользователь не автор — редирект.
+        if (!isRealUserError && post && !canEdit) {
+            navigateToPost();
         }
     }, [
         post,
         currentUser,
-        isLoading,
+        isLoadingPost,
         isUserLoading,
-        router,
-        postId,
         canEdit,
-        isModal,
         isRealUserError,
+        isGuest,
+        navigateToPost,
     ]);
 
-    if (isLoading || isUserLoading) {
-        return isModal ? (
-            <Modal open onClose={() => router.back()} width={EDIT_POST_MODAL_WIDTH}>
+    const renderSkeleton = (): React.JSX.Element =>
+        isModal ? (
+            <Modal open onClose={navigateToPost} width={EDIT_POST_MODAL_WIDTH}>
                 <PostEditSkeleton />
             </Modal>
         ) : (
@@ -84,71 +105,48 @@ export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element | nu
                 <PostEditSkeleton />
             </main>
         );
-    }
+
     // Если это гость (401 или просто нет юзера) — уходим сразу. редирект сделает useEffect
     // Нам неважно, упал пост или нет, гость не должен видеть ошибки редактирования.
+
+    // Пока загружается пользователь, показываем Skeleton.
+    if (isUserLoading) {
+        return renderSkeleton();
+    }
+
     if (isGuest) {
         return null;
     }
 
+    if (isLoadingPost) {
+        return renderSkeleton();
+    }
     if (isRealUserError || isErrorPost || !post) {
         const errorText = isRealUserError
             ? 'Failed to load user data'
             : errorPost?.message || 'Failed to load post';
 
-        return (
-            <Alert open onClose={() => router.back()} type="error" message={errorText} />
-        );
+        return <Alert open onClose={navigateToPost} type="error" message={errorText} />;
     }
 
-    // Блокируем рендер формы для не-автора (пока срабатывает useEffect)
+    //  // Блокируем отображение формы для пользователей, которые не могут редактировать пост. (пока срабатывает useEffect)
     if (!canEdit) {
         return null;
     }
     // Единая функция закрытия (выполняется, если нет несохраненных изменений или юзер подтвердил)
     // --- ФУНКЦИИ НАВИГАЦИИ ---
-    const executeClose = (): void => {
-        if (isModal) {
-            // Если это модалка — возвращаемся туда, откуда пришли (к просмотру поста)
-            router.back();
-        } else {
-            router.replace(`/post/${postId}`);
-        }
-    };
-
-    // Клик по кнопке "Назад" (только для страницы)
-    const handleBackClick = (): void => {
-        if (isDirty) {
-            setIsCloseModalOpen(true); // Показываем модалку "Вы уверены?"
-        } else {
-            executeClose();
-        }
-    };
-
-    // Попытка закрыть модалку редактирования (крестик, клик мимо)
     const handleCloseAttempt = (): void => {
         if (isDirty) {
             setIsCloseModalOpen(true);
         } else {
-            executeClose();
+            navigateToPost();
         }
     };
 
-    // Подтверждение закрытия в модалке "Unsaved Changes"
+    // Попытка закрыть модалку редактирования (крестик, клик мимо)
     const handleCloseConfirm = (): void => {
         setIsCloseModalOpen(false);
-        executeClose(); // Изменения отбрасываются, принудительно закрываем
-    };
-
-    // Успешное сохранение формы
-    const handleSuccess = (): void => {
-        if (isModal) {
-            // Если были в модалке — закрываем её (возвращаемся к просмотру поста)
-            router.back();
-        } else {
-            // Если на странице — переходим на страницу поста
-            router.replace(`/post/${postId}`);
-        }
+        navigateToPost();
     };
 
     return (
@@ -165,7 +163,7 @@ export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element | nu
                     <PostEdit
                         post={post}
                         onDirtyChange={setIsDirty}
-                        onSuccess={handleSuccess}
+                        onSuccess={navigateToPost}
                     />
                 </Modal>
             ) : (
@@ -176,7 +174,7 @@ export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element | nu
 
                             <button
                                 type="button"
-                                onClick={handleBackClick}
+                                onClick={handleCloseAttempt}
                                 className={s['back-btn']}
                             >
                                 Back
@@ -185,7 +183,7 @@ export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element | nu
                         <PostEdit
                             post={post}
                             onDirtyChange={setIsDirty}
-                            onSuccess={handleSuccess}
+                            onSuccess={navigateToPost}
                         />
                     </div>
                 </main>

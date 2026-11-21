@@ -343,11 +343,27 @@ export const createMockPost = (post: Post): Post => {
 export const updateMockPost = (id: string, caption: string): Post | undefined => {
     const post = getMockPost(id);
 
-    if (post) {
-        post.caption = caption;
+    if (!post) {
+        return undefined;
     }
 
-    return post;
+    // Создаём новый объект, не изменяя старый.
+    const updatedPost: Post = {
+        ...post,
+        caption: caption.trim(),
+    };
+    // Обновляем все массивы, в которых может находиться пост.
+    const collections = [MOCK_POSTS];
+
+    collections.forEach(collection => {
+        collection.forEach((item, index) => {
+            if (item.id === id) {
+                collection.splice(index, 1, updatedPost);
+            }
+        });
+    });
+
+    return updatedPost;
 };
 
 export const deleteMockPost = (id: string): boolean => {
