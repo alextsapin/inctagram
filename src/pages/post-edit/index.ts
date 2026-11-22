@@ -1,1 +1,1 @@
-export { EditPostPage } from './ui/EditPostPage';
+export { EditPostPage } from './ui/PostEdit';

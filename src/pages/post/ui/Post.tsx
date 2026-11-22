@@ -30,8 +30,17 @@ export const Post = ({ postId, isModal }: Props): React.JSX.Element => {
     );
 
     const handleClose = (): void => {
-        // В модалке закрываем назад, на странице — редирект в ленту
-        if (isModal) return router.back();
+        if (isModal) {
+            // eslint-disable-next-line prettier/prettier
+            const fromEdit = new URLSearchParams(window.location.search).get('fromEdit') === '1';
+
+            if (!fromEdit) {
+                router.back();
+
+                return;
+            }
+        }
+
         router.replace(isAuthed ? '/feed' : '/');
     };
 

@@ -12,7 +12,7 @@ import { Confirmation } from '@/shared/ui/confirmation';
 import { Modal } from '@/shared/ui/modal';
 import { PostEdit, PostEditSkeleton } from '@/widgets/post-editor';
 
-import s from './edit-post-page.module.scss';
+import s from './post-edit.module.scss';
 
 type Props = {
     postId: string;
@@ -61,9 +61,11 @@ export const EditPostPage = ({ postId, isModal }: Props): React.JSX.Element | nu
     const navigateToPost = useCallback((): void => {
         if (isModal) {
             router.back();
-        } else {
-            router.replace(`/post/${postId}`);
+
+            return;
         }
+
+        router.replace(`/post/${postId}?fromEdit=1`);
     }, [isModal, postId, router]);
 
     // Обработка доступа к странице редактирования.
