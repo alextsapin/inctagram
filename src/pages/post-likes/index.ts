@@ -1,1 +1,1 @@
-export { PostLikesPage } from './ui/PostLikesPage';
+export { PostLikesPage } from './ui/PostLikes';

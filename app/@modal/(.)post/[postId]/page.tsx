@@ -1,6 +1,6 @@
 import { use } from 'react';
 
-import { PostPage } from '@/pages/post';
+import { Post } from '@/pages/post';
 
 type Props = {
     params: Promise<{ postId: string }>;
@@ -9,7 +9,7 @@ type Props = {
 const PostModalPage = ({ params }: Props): React.JSX.Element => {
     const { postId } = use(params);
 
-    return <PostPage postId={postId} isModal />;
+    return <Post postId={postId} isModal />;
 };
 
 export default PostModalPage;

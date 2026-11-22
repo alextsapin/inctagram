@@ -8,7 +8,7 @@ import { Alert } from '@/shared/ui/alert';
 import { Modal } from '@/shared/ui/modal';
 import { PostViewer, PostViewerSkeleton } from '@/widgets/post-viewer';
 
-import s from './post-page.module.scss';
+import s from './post.module.scss';
 
 type Props = {
     postId: string;
@@ -16,7 +16,7 @@ type Props = {
 };
 const POST_MODAL_WIDTH = 975;
 
-export const PostPage = ({ postId, isModal }: Props): React.JSX.Element => {
+export const Post = ({ postId, isModal }: Props): React.JSX.Element => {
     const router = useRouter();
     const { data: post, isLoading, isError, error } = usePost(postId);
     const {
@@ -30,8 +30,17 @@ export const PostPage = ({ postId, isModal }: Props): React.JSX.Element => {
     );
 
     const handleClose = (): void => {
-        // В модалке закрываем назад, на странице — редирект в ленту
-        if (isModal) return router.back();
+        if (isModal) {
+            // eslint-disable-next-line prettier/prettier
+            const fromEdit = new URLSearchParams(window.location.search).get('fromEdit') === '1';
+
+            if (!fromEdit) {
+                router.back();
+
+                return;
+            }
+        }
+
         router.replace(isAuthed ? '/feed' : '/');
     };
 

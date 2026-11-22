@@ -1,4 +1,4 @@
-import { PostPage } from '@/pages/post';
+import { Post } from '@/pages/post';
 
 type Props = {
     params: Promise<{ postId: string }>;
@@ -7,7 +7,7 @@ type Props = {
 const PostModalPage = async ({ params }: Props): Promise<React.JSX.Element> => {
     const { postId } = await params;
 
-    return <PostPage postId={postId} />;
+    return <Post postId={postId} />;
 };
 
 export default PostModalPage;
