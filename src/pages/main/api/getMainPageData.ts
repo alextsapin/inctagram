@@ -73,16 +73,33 @@ export const getMainPageData = async (): Promise<MainPageData> => {
         return isDevelopment ? getMockMainPageData() : { source: 'unavailable' };
     }
 
+    const requestStartedAt = performance.now();
+    let responseStatus: number | null = null;
+    let timeToHeadersMs: number | null = null;
+
     try {
         const response = await fetch(`${apiUrl.replace(/\/$/, '')}/api/v1/public/main`, {
             signal: AbortSignal.timeout(API_TIMEOUT_MS),
         });
 
+        responseStatus = response.status;
+        timeToHeadersMs = Math.round(performance.now() - requestStartedAt);
+
         if (!response.ok) {
             throw new Error(`Main API returned ${response.status}`);
         }
 
+        const bodyStartedAt = performance.now();
         const data = (await response.json()) as MainFeedResponseDto;
+
+        // eslint-disable-next-line no-console
+        console.info('[Main ISR] API request completed', {
+            status: responseStatus,
+            timeToHeadersMs,
+            bodyReadMs: Math.round(performance.now() - bodyStartedAt),
+            totalMs: Math.round(performance.now() - requestStartedAt),
+            postsCount: data.items.length,
+        });
 
         return {
             source: 'api',
@@ -90,6 +107,23 @@ export const getMainPageData = async (): Promise<MainPageData> => {
             registeredUsersCount: data.registeredUsersCount,
         };
     } catch (error) {
+        const cause = error instanceof Error ? error.cause : undefined;
+        const causeCode =
+            cause && typeof cause === 'object' && 'code' in cause
+                ? String(cause.code)
+                : null;
+
+        // eslint-disable-next-line no-console
+        console.error('[Main ISR] API request failed', {
+            status: responseStatus,
+            timeToHeadersMs,
+            elapsedMs: Math.round(performance.now() - requestStartedAt),
+            errorName: error instanceof Error ? error.name : 'UnknownError',
+            errorMessage: error instanceof Error ? error.message : String(error),
+            causeCode,
+            causeMessage: cause instanceof Error ? cause.message : null,
+        });
+
         if (isDevelopment) {
             return getMockMainPageData();
         }
