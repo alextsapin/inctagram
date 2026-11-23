@@ -40,6 +40,14 @@ ENV NEXT_PUBLIC_RECAPTCHA_SITE_KEY_CHECKBOX=$NEXT_PUBLIC_RECAPTCHA_SITE_KEY_CHEC
 ENV NEXT_PUBLIC_RECAPTCHA_SITE_KEY_INVISIBLE=$NEXT_PUBLIC_RECAPTCHA_SITE_KEY_INVISIBLE
 ENV SERVER_API_URL=$SERVER_API_URL
 
+# TEMPORARY: backend TLS certificate is not trusted by Node.js.
+# The main page is prerendered during the build and requests the backend,
+# so the build needs the same bypass as deployment.yaml. Without it the build
+# caches "Publications are temporarily unavailable" instead of posts.
+# Set only in this build stage: the runtime stage gets it from deployment.yaml.
+# Remove together with the one in deployment.yaml after the backend receives a trusted certificate.
+ENV NODE_TLS_REJECT_UNAUTHORIZED=0
+
 RUN corepack enable \
     && corepack pnpm build
 
