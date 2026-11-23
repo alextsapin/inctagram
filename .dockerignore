@@ -24,6 +24,7 @@ coverage
 
 # Local secrets
 *.pem
+!certificates/blackdragonmedia.info.pem
 *.key
 
 # Jenkins workspace toolchain

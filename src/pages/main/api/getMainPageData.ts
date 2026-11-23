@@ -1,8 +1,6 @@
-import {
-    getMockLatestPosts,
-    MOCK_REGISTERED_USERS_COUNT,
-    type Post,
-} from '@/entities/post';
+import { readFileSync } from 'node:fs';
+import { request as httpsRequest } from 'node:https';
+import path from 'node:path';
 
 type MainPost = {
     id: string;
@@ -27,7 +25,7 @@ type MainFeedResponseDto = {
 
 export type MainPageData =
     | {
-          source: 'api' | 'mock';
+          source: 'api';
           posts: MainPost[];
           registeredUsersCount: number;
       }
@@ -36,41 +34,121 @@ export type MainPageData =
       };
 
 const API_TIMEOUT_MS = 15_000;
-const POSTS_LIMIT = 4;
+const HTTP_SUCCESS_MIN = 200;
+const HTTP_REDIRECT_MIN = 300;
+const PINNED_API_ORIGIN = 'https://blackdragonmedia.info';
+const PINNED_CERTIFICATE_FINGERPRINT =
+    'D4:FA:65:4B:3A:7B:65:11:C9:02:8F:FF:FA:00:6B:CB:4D:29:16:8D:52:82:81:E8:C0:F7:1C:AA:4F:F8:ED:0D';
+const PINNED_CERTIFICATE_PATH = path.join(
+    process.cwd(),
+    'certificates',
+    'blackdragonmedia.info.pem',
+);
 
-const mapMockPost = (post: Post): MainPost => ({
-    id: post.id,
-    description: post.caption ?? '',
-    photos: post.images.map((image, index) => ({
-        id: index,
-        url: image.url,
-    })),
-    previewUrl: post.images[0]?.url ?? null,
-    createdAt: post.createdAt,
-    author: {
-        id: post.author.id,
-        username: post.author.username,
-        avatarUrl: post.author.avatarUrl,
-    },
-});
+type MainFeedHttpResponse = {
+    body: string;
+    ok: boolean;
+    status: number;
+    timeToHeadersMs: number;
+    tlsMode: 'system' | 'pinned';
+};
 
-const getMockMainPageData = (): MainPageData => ({
-    source: 'mock',
-    posts: getMockLatestPosts(POSTS_LIMIT).map(mapMockPost),
-    registeredUsersCount: MOCK_REGISTERED_USERS_COUNT,
-});
+const getErrorCauseCode = (error: unknown): string | null => {
+    if (!(error instanceof Error)) return null;
+
+    const { cause } = error;
+
+    return cause && typeof cause === 'object' && 'code' in cause
+        ? String(cause.code)
+        : null;
+};
+
+const requestWithPinnedCertificate = (
+    url: URL,
+    signal: AbortSignal,
+    requestStartedAt: number,
+): Promise<MainFeedHttpResponse> =>
+    new Promise((resolve, reject) => {
+        const certificate = readFileSync(PINNED_CERTIFICATE_PATH);
+        let timeToHeadersMs = 0;
+
+        const request = httpsRequest(
+            url,
+            {
+                ca: certificate,
+                checkServerIdentity: (_hostname, peerCertificate) => {
+                    if (
+                        peerCertificate.fingerprint256 !== PINNED_CERTIFICATE_FINGERPRINT
+                    ) {
+                        return new Error(
+                            'Main API TLS certificate fingerprint does not match',
+                        );
+                    }
+
+                    return undefined;
+                },
+                rejectUnauthorized: true,
+                signal,
+            },
+            response => {
+                timeToHeadersMs = Math.round(performance.now() - requestStartedAt);
+                const chunks: Buffer[] = [];
+
+                response.on('data', chunk => chunks.push(Buffer.from(chunk)));
+                response.on('end', () => {
+                    const status = response.statusCode ?? 0;
+
+                    resolve({
+                        body: Buffer.concat(chunks).toString('utf8'),
+                        ok: status >= HTTP_SUCCESS_MIN && status < HTTP_REDIRECT_MIN,
+                        status,
+                        timeToHeadersMs,
+                        tlsMode: 'pinned',
+                    });
+                });
+                response.on('error', reject);
+            },
+        );
+
+        request.on('error', reject);
+        request.end();
+    });
+
+const requestMainFeed = async (
+    url: URL,
+    signal: AbortSignal,
+    requestStartedAt: number,
+): Promise<MainFeedHttpResponse> => {
+    try {
+        const response = await fetch(url, { signal });
+        const timeToHeadersMs = Math.round(performance.now() - requestStartedAt);
+
+        return {
+            body: await response.text(),
+            ok: response.ok,
+            status: response.status,
+            timeToHeadersMs,
+            tlsMode: 'system',
+        };
+    } catch (error) {
+        const causeCode = getErrorCauseCode(error);
+        const canUsePinnedCertificate =
+            url.origin === PINNED_API_ORIGIN &&
+            (causeCode === 'DEPTH_ZERO_SELF_SIGNED_CERT' ||
+                causeCode === 'ERR_TLS_CERT_ALTNAME_INVALID');
+
+        if (!canUsePinnedCertificate) throw error;
+
+        return requestWithPinnedCertificate(url, signal, requestStartedAt);
+    }
+};
 
 export const getMainPageData = async (): Promise<MainPageData> => {
     const isDevelopment = process.env.NODE_ENV === 'development';
-
-    if (isDevelopment && process.env.NEXT_PUBLIC_USE_MOCKS === 'true') {
-        return getMockMainPageData();
-    }
-
     const apiUrl = process.env.SERVER_API_URL;
 
     if (!apiUrl) {
-        return isDevelopment ? getMockMainPageData() : { source: 'unavailable' };
+        return { source: 'unavailable' };
     }
 
     const requestStartedAt = performance.now();
@@ -78,19 +156,22 @@ export const getMainPageData = async (): Promise<MainPageData> => {
     let timeToHeadersMs: number | null = null;
 
     try {
-        const response = await fetch(`${apiUrl.replace(/\/$/, '')}/api/v1/public/main`, {
-            signal: AbortSignal.timeout(API_TIMEOUT_MS),
-        });
+        const endpoint = new URL(`${apiUrl.replace(/\/$/, '')}/api/v1/public/main`);
+        const response = await requestMainFeed(
+            endpoint,
+            AbortSignal.timeout(API_TIMEOUT_MS),
+            requestStartedAt,
+        );
 
         responseStatus = response.status;
-        timeToHeadersMs = Math.round(performance.now() - requestStartedAt);
+        timeToHeadersMs = response.timeToHeadersMs;
 
         if (!response.ok) {
             throw new Error(`Main API returned ${response.status}`);
         }
 
         const bodyStartedAt = performance.now();
-        const data = (await response.json()) as MainFeedResponseDto;
+        const data = JSON.parse(response.body) as MainFeedResponseDto;
 
         // eslint-disable-next-line no-console
         console.info('[Main ISR] API request completed', {
@@ -99,6 +180,7 @@ export const getMainPageData = async (): Promise<MainPageData> => {
             bodyReadMs: Math.round(performance.now() - bodyStartedAt),
             totalMs: Math.round(performance.now() - requestStartedAt),
             postsCount: data.items.length,
+            tlsMode: response.tlsMode,
         });
 
         return {
@@ -108,10 +190,7 @@ export const getMainPageData = async (): Promise<MainPageData> => {
         };
     } catch (error) {
         const cause = error instanceof Error ? error.cause : undefined;
-        const causeCode =
-            cause && typeof cause === 'object' && 'code' in cause
-                ? String(cause.code)
-                : null;
+        const causeCode = getErrorCauseCode(error);
 
         // eslint-disable-next-line no-console
         console.error('[Main ISR] API request failed', {
@@ -125,7 +204,7 @@ export const getMainPageData = async (): Promise<MainPageData> => {
         });
 
         if (isDevelopment) {
-            return getMockMainPageData();
+            return { source: 'unavailable' };
         }
 
         // Build stays available even when the backend is down.
