@@ -35,7 +35,7 @@ export type MainPageData =
           source: 'unavailable';
       };
 
-const API_TIMEOUT_MS = 5_000;
+const API_TIMEOUT_MS = 15_000;
 const POSTS_LIMIT = 4;
 
 const mapMockPost = (post: Post): MainPost => ({
