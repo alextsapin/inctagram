@@ -2,7 +2,7 @@ import { isAxiosError } from 'axios';
 
 import { instance } from '@/shared/api';
 
-import type { Profile } from '../model/types';
+import type { Profile, UpdateProfileDto } from '../model/types';
 
 const NOT_FOUND = 404;
 
@@ -34,5 +34,12 @@ export const profileApi = {
 
             throw error;
         }
+    },
+
+    // PUT /api/v1/profile (UpdateProfileDto). Access token добавляет
+    // interceptor instance, вручную его не передаём.
+    // 204 No Content — тело ответа не читаем.
+    async updateProfile(dto: UpdateProfileDto): Promise<void> {
+        await instance.put('/api/v1/profile', dto);
     },
 };
