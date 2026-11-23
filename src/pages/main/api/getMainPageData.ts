@@ -81,6 +81,7 @@ export const getMainPageData = async (): Promise<MainPageData> => {
         const response = await fetch(`${apiUrl.replace(/\/$/, '')}/api/v1/public/main`, {
             signal: AbortSignal.timeout(API_TIMEOUT_MS),
         });
+
         responseStatus = response.status;
         timeToHeadersMs = Math.round(performance.now() - requestStartedAt);
 
@@ -91,6 +92,7 @@ export const getMainPageData = async (): Promise<MainPageData> => {
         const bodyStartedAt = performance.now();
         const data = (await response.json()) as MainFeedResponseDto;
 
+        // eslint-disable-next-line no-console
         console.info('[Main ISR] API request completed', {
             status: responseStatus,
             timeToHeadersMs,
@@ -111,6 +113,7 @@ export const getMainPageData = async (): Promise<MainPageData> => {
                 ? String(cause.code)
                 : null;
 
+        // eslint-disable-next-line no-console
         console.error('[Main ISR] API request failed', {
             status: responseStatus,
             timeToHeadersMs,
