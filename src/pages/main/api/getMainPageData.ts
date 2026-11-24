@@ -1,8 +1,4 @@
-import {
-    getMockLatestPosts,
-    MOCK_REGISTERED_USERS_COUNT,
-    type Post,
-} from '@/entities/post';
+import { requestServerApi } from '@/shared/api/server';
 
 type MainPost = {
     id: string;
@@ -27,7 +23,7 @@ type MainFeedResponseDto = {
 
 export type MainPageData =
     | {
-          source: 'api' | 'mock';
+          source: 'api';
           posts: MainPost[];
           registeredUsersCount: number;
       }
@@ -36,41 +32,23 @@ export type MainPageData =
       };
 
 const API_TIMEOUT_MS = 15_000;
-const POSTS_LIMIT = 4;
 
-const mapMockPost = (post: Post): MainPost => ({
-    id: post.id,
-    description: post.caption ?? '',
-    photos: post.images.map((image, index) => ({
-        id: index,
-        url: image.url,
-    })),
-    previewUrl: post.images[0]?.url ?? null,
-    createdAt: post.createdAt,
-    author: {
-        id: post.author.id,
-        username: post.author.username,
-        avatarUrl: post.author.avatarUrl,
-    },
-});
+const getErrorCauseCode = (error: unknown): string | null => {
+    if (!(error instanceof Error)) return null;
 
-const getMockMainPageData = (): MainPageData => ({
-    source: 'mock',
-    posts: getMockLatestPosts(POSTS_LIMIT).map(mapMockPost),
-    registeredUsersCount: MOCK_REGISTERED_USERS_COUNT,
-});
+    const { cause } = error;
+
+    return cause && typeof cause === 'object' && 'code' in cause
+        ? String(cause.code)
+        : null;
+};
 
 export const getMainPageData = async (): Promise<MainPageData> => {
     const isDevelopment = process.env.NODE_ENV === 'development';
-
-    if (isDevelopment && process.env.NEXT_PUBLIC_USE_MOCKS === 'true') {
-        return getMockMainPageData();
-    }
-
     const apiUrl = process.env.SERVER_API_URL;
 
     if (!apiUrl) {
-        return isDevelopment ? getMockMainPageData() : { source: 'unavailable' };
+        return { source: 'unavailable' };
     }
 
     const requestStartedAt = performance.now();
@@ -78,19 +56,20 @@ export const getMainPageData = async (): Promise<MainPageData> => {
     let timeToHeadersMs: number | null = null;
 
     try {
-        const response = await fetch(`${apiUrl.replace(/\/$/, '')}/api/v1/public/main`, {
+        const endpoint = new URL(`${apiUrl.replace(/\/$/, '')}/api/v1/public/main`);
+        const response = await requestServerApi(endpoint, {
             signal: AbortSignal.timeout(API_TIMEOUT_MS),
         });
 
         responseStatus = response.status;
-        timeToHeadersMs = Math.round(performance.now() - requestStartedAt);
+        timeToHeadersMs = response.timeToHeadersMs;
 
         if (!response.ok) {
             throw new Error(`Main API returned ${response.status}`);
         }
 
         const bodyStartedAt = performance.now();
-        const data = (await response.json()) as MainFeedResponseDto;
+        const data = JSON.parse(response.body.toString('utf8')) as MainFeedResponseDto;
 
         // eslint-disable-next-line no-console
         console.info('[Main ISR] API request completed', {
@@ -99,6 +78,7 @@ export const getMainPageData = async (): Promise<MainPageData> => {
             bodyReadMs: Math.round(performance.now() - bodyStartedAt),
             totalMs: Math.round(performance.now() - requestStartedAt),
             postsCount: data.items.length,
+            tlsMode: response.tlsMode,
         });
 
         return {
@@ -108,10 +88,7 @@ export const getMainPageData = async (): Promise<MainPageData> => {
         };
     } catch (error) {
         const cause = error instanceof Error ? error.cause : undefined;
-        const causeCode =
-            cause && typeof cause === 'object' && 'code' in cause
-                ? String(cause.code)
-                : null;
+        const causeCode = getErrorCauseCode(error);
 
         // eslint-disable-next-line no-console
         console.error('[Main ISR] API request failed', {
@@ -125,7 +102,7 @@ export const getMainPageData = async (): Promise<MainPageData> => {
         });
 
         if (isDevelopment) {
-            return getMockMainPageData();
+            return { source: 'unavailable' };
         }
 
         // Build stays available even when the backend is down.

@@ -26,8 +26,6 @@ export const Main = async (): Promise<React.JSX.Element> => {
 
     return (
         <MainClientLayout>
-            {data.source === 'mock' && <span>Demo data</span>}
-
             <RegisteredUsers values={registeredUsers} />
 
             <div className={style.container}>

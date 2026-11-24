@@ -39,11 +39,6 @@ spec:
               value: "0.0.0.0"
             - name: SERVER_API_URL
               value: "SERVER_API_URL_PLACEHOLDER"
-            # TEMPORARY: backend TLS certificate is not trusted by Node.js.
-            # WARNING: this disables TLS certificate verification for ALL Node.js HTTPS requests.
-            # Remove immediately after the backend receives a trusted certificate.
-            - name: NODE_TLS_REJECT_UNAUTHORIZED
-              value: "0"
 
           securityContext:
             allowPrivilegeEscalation: false
