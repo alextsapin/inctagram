@@ -6,6 +6,7 @@ const FORBIDDEN = 403;
 const CONFLICT = 409;
 
 const DEFAULT_ERROR_MESSAGE = 'Something went wrong. Please try again later';
+const INVALID_VALUE_MESSAGE = 'Invalid value';
 const EMAIL_NOT_CONFIRMED_MESSAGE =
     'Your email is not confirmed. Please check your email';
 const USERNAME_TAKEN_MESSAGE = 'This username is already taken';
@@ -20,8 +21,9 @@ export type ProfileError = {
 };
 
 // Приводит ошибку axios к понятному виду. Для 400 возвращает по элементу на
-// каждое невалидное поле, чтобы форма разложила их по своим полям. Для 403,
-// 409 и остальных — одну общую ошибку (409 привязан к полю username).
+// каждое невалидное поле, чтобы форма разложила их по своим полям. Текст от
+// сервера не используем: финальные формулировки по полям задаёт задача 7.
+// Для 403, 409 и остальных — одну общую ошибку (409 привязан к полю username).
 export const normalizeProfileError = (error: unknown): ProfileError[] => {
     if (!isAxiosError(error)) {
         return [{ message: DEFAULT_ERROR_MESSAGE }];
@@ -34,7 +36,10 @@ export const normalizeProfileError = (error: unknown): ProfileError[] => {
         const fieldErrors = data?.errorsMessages ?? [];
 
         if (fieldErrors.length > 0) {
-            return fieldErrors.map(({ field, message }) => ({ field, message }));
+            return fieldErrors.map(({ field }) => ({
+                field,
+                message: INVALID_VALUE_MESSAGE,
+            }));
         }
 
         return [{ message: DEFAULT_ERROR_MESSAGE }];

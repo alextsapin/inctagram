@@ -8,23 +8,16 @@ import {
 
 import { postQueryKeys } from '@/entities/post';
 import { profileApi, profileQueryKeys, type UpdateProfileDto } from '@/entities/profile';
-import { currentUserQueryKey, useCurrentUser } from '@/entities/session';
-
-export type UpdateProfileVariables = {
-    data: UpdateProfileDto;
-    // Username до сохранения: по нему удаляем старый ключ профиля из кэша.
-    currentUsername: string;
-};
+import { currentUserQueryKey, type Me } from '@/entities/session';
 
 /**
  * Сохраняет профиль через `PUT /api/v1/profile`.
  *
- * Принимает `{ data, currentUsername }`: `data` — только изменённые поля
- * `UpdateProfileDto`, `currentUsername` — username до сохранения (нужен, чтобы
- * удалить из кэша старый ключ профиля при смене username).
+ * Принимает только изменённые поля `UpdateProfileDto` (`mutate(data)`).
+ * Username до сохранения хук читает из кэша `/me` в момент вызова мутации:
+ * по нему удаляется старый ключ профиля при смене username.
  *
- * При успехе возвращает `void` (бэкенд отвечает 204 без тела) и инвалидирует
- * `/me`, профиль и посты текущего пользователя. При ошибке пробрасывает
+ * При успехе инвалидирует `/me`, профиль и все посты. При ошибке пробрасывает
  * исходную ошибку axios — для текста и раскладки по полям используй
  * `normalizeProfileError` из `@/entities/profile`.
  *
@@ -33,45 +26,62 @@ export type UpdateProfileVariables = {
  * хук эту таблицу не задаёт.
  */
 export const useUpdateProfile = (): UseMutationResult<
-    void,
+    string | undefined,
     Error,
-    UpdateProfileVariables
+    UpdateProfileDto
 > => {
     const queryClient = useQueryClient();
-    const { data: currentUser } = useCurrentUser();
 
     return useMutation({
-        mutationFn: ({ data }: UpdateProfileVariables) => profileApi.updateProfile(data),
+        // Username читаем здесь, а не на рендере: к моменту вызова /me уже
+        // загружен, а кэш мог обновиться после рендера компонента.
+        mutationFn: async (data: UpdateProfileDto) => {
+            const oldUsername =
+                queryClient.getQueryData<Me>(currentUserQueryKey)?.username;
 
-        onSuccess: (_, { data, currentUsername }) => {
-            const nextUsername = data.username ?? currentUsername;
-            const isUsernameChanged = nextUsername !== currentUsername;
+            await profileApi.updateProfile(data);
 
+            return oldUsername;
+        },
+
+        onSuccess: (oldUsername, data) => {
             // 1. /me: username в шапке, сайдбаре и других местах.
             queryClient.invalidateQueries({ queryKey: currentUserQueryKey });
 
             // 2. Профиль. При смене username старый ключ удаляем, а не
             // инвалидируем: иначе браузер запросит старый username и получит 404.
-            if (isUsernameChanged) {
-                queryClient.removeQueries({
-                    queryKey: profileQueryKeys.detail(currentUsername),
-                });
-                queryClient.invalidateQueries({
-                    queryKey: profileQueryKeys.detail(nextUsername),
-                });
+            if (oldUsername === undefined) {
+                // На странице настроек /me уже загружен, поэтому сюда попадать
+                // не должны. Чистить нечего: ключа старого username ещё нет.
+                if (process.env.NODE_ENV === 'development') {
+                    // eslint-disable-next-line no-console
+                    console.warn(
+                        '[useUpdateProfile] /me is not in cache: skip removing the old profile key',
+                    );
+                }
+
+                queryClient.invalidateQueries({ queryKey: profileQueryKeys.all });
             } else {
-                queryClient.invalidateQueries({
-                    queryKey: profileQueryKeys.detail(currentUsername),
-                });
+                const nextUsername = data.username ?? oldUsername;
+
+                if (nextUsername !== oldUsername) {
+                    queryClient.removeQueries({
+                        queryKey: profileQueryKeys.detail(oldUsername),
+                    });
+                    queryClient.invalidateQueries({
+                        queryKey: profileQueryKeys.detail(nextUsername),
+                    });
+                } else {
+                    queryClient.invalidateQueries({
+                        queryKey: profileQueryKeys.detail(oldUsername),
+                    });
+                }
             }
 
-            // 3. Посты: username/avatar автора лежат внутри каждого поста в кэше.
-            // Инвалидируем только посты текущего пользователя, а не все подряд.
-            if (currentUser) {
-                queryClient.invalidateQueries({
-                    queryKey: postQueryKeys.userPosts(currentUser.userId),
-                });
-            }
+            // 3. Посты: username/avatar автора лежат внутри каждого поста в кэше,
+            // включая postQueryKeys.detail(id). Точечно инвалидировать посты
+            // пользователя нельзя без знания id, поэтому инвалидируем все.
+            queryClient.invalidateQueries({ queryKey: postQueryKeys.all });
         },
     });
 };
