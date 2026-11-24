@@ -4,10 +4,8 @@ import {
     useQueryClient,
 } from '@tanstack/react-query';
 
-import { Post, postQueryKeys } from '@/entities/post';
+import { Post, postQueryKeys, updatePost } from '@/entities/post';
 import { profileQueryKeys } from '@/entities/profile';
-
-import { editPost } from '../api/editPostApi';
 
 type EditPostVariables = {
     postId: string;
@@ -18,7 +16,8 @@ export const useEditPost = (): UseMutationResult<void, Error, EditPostVariables>
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ postId, caption }: EditPostVariables) => editPost(postId, caption),
+        mutationFn: ({ postId, caption }: EditPostVariables) =>
+            updatePost(postId, caption),
 
         onSuccess: (_, variables) => {
             // 1. СИНХРОННО и МГНОВЕННО обновляем кэш детального поста.

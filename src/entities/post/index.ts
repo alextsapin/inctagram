@@ -1,19 +1,5 @@
 export { PostCaption } from './ui/caption/postCaption';
-export {
-    MOCK_COMMENTS,
-    MOCK_FEED_POSTS,
-    MOCK_POSTS,
-    MOCK_PROFILE_POSTS,
-    MOCK_REGISTERED_USERS_COUNT,
-    MOCK_SIGNED_IN_AUTHOR,
-    getMockPost,
-    getMockUserPosts,
-    getMockLatestPosts,
-    createMockPost,
-    updateMockPost,
-    deleteMockPost,
-    getMockFeedPosts,
-} from './model/mock';
+export { MOCK_COMMENTS, MOCK_POSTS, getMockFeedPosts } from './model/mock';
 export { PostMenu } from './ui/post-menu';
 export { Carousel } from './ui/carousel';
 export { PostHeader } from './ui/header';
@@ -24,7 +10,6 @@ export type { User, PostImage, Post, UserPostsPage } from './model/type';
 export { useUserPostsInfinite } from './model/useUserPostsInfinite';
 export {
     getPost,
-    getUserPosts,
     getUserPostsPage,
     createPost,
     updatePost,

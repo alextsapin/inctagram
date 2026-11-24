@@ -1,6 +1,5 @@
 import { instance } from '@/shared/api';
 
-import { getMockPost, getMockUserPosts, updateMockPost } from '../model/mock';
 import type { Post, UserPostsPage } from '../model/type';
 
 type PostWithAuthorResponseDto = {
@@ -48,31 +47,11 @@ const toPost = (dto: PostWithAuthorResponseDto): Post => ({
 });
 
 export const getPost = async (id: string): Promise<Post> => {
-    const mockPost = getMockPost(id);
-
-    // Сохраняем возможность открывать моковые публикации
-    // во время локальной разработки.
-    if (
-        process.env.NEXT_PUBLIC_USE_MOCKS === 'true' ||
-        (process.env.NODE_ENV === 'development' && mockPost)
-    ) {
-        if (!mockPost) {
-            throw new Error(`Post with id ${id} not found`);
-        }
-
-        return mockPost;
-    }
-
     const { data } = await instance.get<PostWithAuthorResponseDto>(
         `/api/v1/post/${encodeURIComponent(id)}`,
     );
 
     return toPost(data);
-};
-
-// Get a user's posts sorted from newest to oldest
-export const getUserPosts = async (userId: string): Promise<Post[]> => {
-    return getMockUserPosts(userId);
 };
 
 // Загружает страницу постов пользователя из API для бесконечной прокрутки.
@@ -100,15 +79,11 @@ export const createPost = async (formData: FormData): Promise<void> => {
     await instance.post('/api/v1/post', formData);
 };
 
-// Update a post's description or throw an error if the post is not found
-export const updatePost = async (id: string, description: string): Promise<Post> => {
-    const post = updateMockPost(id, description.trim());
-
-    if (!post) {
-        throw new Error(`Post with id ${id} not found`);
-    }
-
-    return post;
+// Update a post's description. Only its author can update it.
+export const updatePost = async (id: string, description: string): Promise<void> => {
+    await instance.put(`/api/v1/post/${encodeURIComponent(id)}`, {
+        description: description.trim(),
+    });
 };
 
 // Delete a post via API. Only its author can delete it.

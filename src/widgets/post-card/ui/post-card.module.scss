@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 $card-width: 234px;
 $post-height: 240px;
 $avatar-size: 36px;
@@ -91,7 +93,7 @@ $accent: #397df6;
 /* После Show more фото становится ниже, как в макете: 234x120 вместо 234x240.
    Освободившееся место занимает развёрнутый текст */
 .carousel-wrapper-expanded {
-    height: $post-height / 2;
+    height: math.div($post-height, 2);
 }
 
 .text-toggle {

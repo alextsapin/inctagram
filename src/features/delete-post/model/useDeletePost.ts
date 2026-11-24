@@ -4,17 +4,15 @@ import {
     useQueryClient,
 } from '@tanstack/react-query';
 
-import { postQueryKeys } from '@/entities/post';
+import { deletePost, postQueryKeys } from '@/entities/post';
 import { profileQueryKeys } from '@/entities/profile';
-
-import { deletePostApi } from '../api/deletePost';
 
 export const useDeletePost = (): UseMutationResult<void, Error, string> => {
     const qc = useQueryClient();
 
     return useMutation({
         mutationKey: ['post', 'delete'],
-        mutationFn: deletePostApi,
+        mutationFn: deletePost,
 
         onSuccess: (_, postId) => {
             // 1. Publications в профиле
