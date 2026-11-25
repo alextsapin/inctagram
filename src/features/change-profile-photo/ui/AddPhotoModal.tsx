@@ -120,13 +120,16 @@ export const AddPhotoModal = ({
                 photo.type,
             );
 
-            // TODO: загрузить фото на сервер, когда бэкенд подтвердит финальный
-            // путь ручки — см. заметки по задаче 9. Сборка FormData уже готова:
-            // createAvatarFormData(croppedPhoto)
+            // onSave загружает фото на сервер и завершается, когда запрос закончен
             await onSave(croppedPhoto);
             handleClose();
-        } catch {
-            setError('Failed to save the photo. Please try again');
+        } catch (error) {
+            // Ошибку загрузки родитель уже привёл к тексту для пользователя
+            setError(
+                error instanceof Error && error.message
+                    ? error.message
+                    : 'Failed to save the photo. Please try again',
+            );
         } finally {
             setIsSaving(false);
         }

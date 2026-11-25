@@ -1,36 +1,45 @@
-import { Button } from '@/shared/ui/button';
-import { Modal } from '@/shared/ui/modal';
+import { Alert } from '@/shared/ui/alert';
+import { Confirmation } from '@/shared/ui/confirmation';
 
 const DELETE_PHOTO_MODAL_WIDTH = 438;
 
 type DeletePhotoModalProps = {
     open: boolean;
+    // Пока идёт запрос, обе кнопки неактивны
+    isPending: boolean;
+    // Текст ошибки удаления; null — ошибки нет
+    errorText: string | null;
     onConfirm: () => void;
     onClose: () => void;
+    onDismissError: () => void;
 };
 
-// Подтверждение удаления фото, по примеру из README Modal (раздел 2)
+// Подтверждение удаления фото. Ошибку показываем внутри окна, как в
+// DeletePostModal: Alert кладётся в children Confirmation
 export const DeletePhotoModal = ({
     open,
+    isPending,
+    errorText,
     onConfirm,
     onClose,
+    onDismissError,
 }: DeletePhotoModalProps): React.JSX.Element => {
     return (
-        <Modal
+        <Confirmation
             open={open}
-            onClose={onClose}
             title="Delete Photo"
+            text="Are you sure you want to delete the photo?"
+            confirmText="Yes"
+            cancelText="No"
             width={DELETE_PHOTO_MODAL_WIDTH}
-            actions={
-                <>
-                    <Button variant="outlined" onClick={onConfirm}>
-                        Yes
-                    </Button>
-                    <Button onClick={onClose}>No</Button>
-                </>
-            }
+            disabled={isPending}
+            onConfirm={onConfirm}
+            onCancel={onClose}
+            onClose={onClose}
         >
-            <p>Are you sure you want to delete the photo?</p>
-        </Modal>
+            {errorText && (
+                <Alert open onClose={onDismissError} type="error" message={errorText} />
+            )}
+        </Confirmation>
     );
 };

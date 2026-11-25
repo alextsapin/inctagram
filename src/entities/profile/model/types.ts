@@ -10,8 +10,8 @@ export type UpdateProfileDto = {
     description?: string | null;
 };
 
-// Ответ загрузки аватара. Имя поля подтверждено бэкендом 24.11, полная
-// структура ответа (обёртка, соседние поля) — нет, уточняется.
+// TODO(BLD-165): подтверждено только имя поля avatarUrl, полная
+// структура ответа (обёртка, соседние поля) — нет
 export type UploadAvatarResponse = {
     avatarUrl: string;
 };

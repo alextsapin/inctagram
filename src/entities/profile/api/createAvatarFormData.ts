@@ -9,8 +9,7 @@ const getFileName = (file: Blob): string => {
     return `avatar.${extension}`;
 };
 
-// Собирает FormData для загрузки аватара. Пока не используется: путь ручки
-// ещё не финальный, сетевой вызов появится в этапе Б
+// Собирает FormData для загрузки аватара (multipart/form-data, поле avatar)
 export const createAvatarFormData = (photo: Blob): FormData => {
     const formData = new FormData();
 
