@@ -2,7 +2,9 @@ import { instance } from '@/shared/api';
 
 import type { Post, UserPostsPage } from '../model/type';
 
-type PostWithAuthorResponseDto = {
+// Типы ответа и toPost экспортируются для postApi.server.ts: серверные функции
+// возвращают посты в том же виде, что и клиентские
+export type PostWithAuthorResponseDto = {
     id: string;
     description: string;
     previewUrl: string | null;
@@ -20,12 +22,12 @@ type PostWithAuthorResponseDto = {
     };
 };
 
-type PostsResponseDto = {
+export type PostsResponseDto = {
     items: PostWithAuthorResponseDto[];
     nextCursor: string | null;
 };
 
-const toPost = (dto: PostWithAuthorResponseDto): Post => ({
+export const toPost = (dto: PostWithAuthorResponseDto): Post => ({
     id: dto.id,
     author: {
         id: dto.author.id,

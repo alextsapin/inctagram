@@ -72,18 +72,83 @@ const [queryClient] = useState(createQueryClient);
 
 ## Особенности Next.js
 
-Используем обычные клиентские запросы через `useQuery`. Серверный prefetch,
-`dehydrate` и `HydrationBoundary` не настроены. Конкретные endpoints добавляются
-по задачам; базовая настройка сама по себе не отправляет запросы к backend.
-
 Корневой layout остаётся серверным компонентом, а провайдер использует
 `'use client'`, поскольку ему нужны React Context и `useState`.
 Это сохраняет стандартное предварительное формирование HTML в Next.js.
 Директива `'use client'` не отключает такой рендеринг, но обычный `useQuery`
 без серверного prefetch получает данные после подключения компонента в браузере.
 
-Если ТЗ потребует серверное получение данных для конкретной страницы,
-интеграцию серверной загрузки с клиентским кэшем добавляем отдельной задачей.
+### Данные с сервера (prefetch и HydrationBoundary)
+
+По ТЗ профиль и пост приходят с сервера уже с данными. Для этого серверный
+компонент страницы сам запрашивает данные, кладёт их в кэш TanStack Query
+и передаёт этот кэш в браузер:
+
+```tsx
+// app/profile/[username]/page.tsx (серверный компонент)
+const queryClient = createQueryClient(); // новый на каждое открытие страницы
+const result = await prefetchProfileWithPosts(queryClient, username);
+
+if (result === 'not-found') notFound();
+
+return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+        <UserProfile username={username} />
+    </HydrationBoundary>
+);
+```
+
+`dehydrate` превращает кэш в обычный объект, `HydrationBoundary` передаёт его
+в браузер вместе с HTML. В браузере `useQuery` с тем же ключом находит данные
+в кэше. Они свежие (`staleTime` 60 секунд), поэтому повторного запроса нет.
+
+Правила:
+
+-   **Новый `QueryClient` на каждый запрос** через `createQueryClient()`. Общий на
+    весь сервер нельзя: данные одного посетителя попадут к другому.
+    `createQueryClient` тот же, что в `QueryProvider`, поэтому настройки совпадают.
+-   **Ключи те же, что у клиентских хуков**: `profileQueryKeys.detail(username)`,
+    `postQueryKeys.userPosts(userId)`, `postQueryKeys.detail(id)`. С другим ключом
+    браузер не найдёт данные и запросит их заново.
+-   **Посты профиля только через `queryClient.infiniteQuery`** с
+    `initialPageParam: null`: сетка работает на `useInfiniteQuery` и ждёт данные
+    вида `{ pages, pageParams }`. Ошибку ловим через `.catch()` и дальше не
+    пробрасываем: если посты не загрузились, их загрузит браузер. `prefetchQuery`,
+    `prefetchInfiniteQuery` и `fetchQuery` в TanStack Query 5.104 устарели, вместо
+    них `queryClient.query` и `queryClient.infiniteQuery`.
+-   **`/me` на сервере не запрашиваем.** ТЗ требует проверять вход в браузере.
+    Данные с сервера одинаковые для всех, то, что зависит от входа, дорисовывает
+    браузер.
+
+Где лежит код:
+
+| Что                                                                         | Где                                                   |
+| --------------------------------------------------------------------------- | ----------------------------------------------------- |
+| GET-запрос к бэкенду с сервера (`getFromServer`)                            | `src/shared/api/server/getFromServer.ts`              |
+| Профиль по username (`getProfileOnServer`)                                  | `src/entities/profile/api/profileApi.server.ts`       |
+| Первые 8 постов и один пост (`getUserPostsPageOnServer`, `getPostOnServer`) | `src/entities/post/api/postApi.server.ts`             |
+| Профиль и первые 8 постов в кэш (`prefetchProfileWithPosts`)                | `src/widgets/profile/api/prefetchProfileWithPosts.ts` |
+
+Серверный код подключаем через отдельный публичный файл слайса `server.ts`
+(`@/entities/profile/server`, `@/entities/post/server`, `@/widgets/profile/server`),
+а не через `index.ts`: `index.ts` подключает клиентские компоненты. Каждый серверный
+файл начинается с `import 'server-only'`: если такой файл случайно импортировать
+в клиентский компонент, сборка упадёт с понятной ошибкой.
+
+Серверные функции завёрнуты в `cache()` из React: за одно открытие страницы запрос
+уходит один раз, даже если функцию вызвали и в `generateMetadata`, и в самой
+странице. Next сам склеивает одинаковые `fetch`, но мы ходим через
+`requestServerApi` (он проверяет сертификат бэкенда), поэтому нужен `cache()`.
+
+Ошибки:
+
+-   404 и 400 значат «такого нет» (на кривой username или id не в формате UUID
+    бэкенд отвечает 400): функции возвращают `null`, `prefetchProfileWithPosts`
+    возвращает `'not-found'`;
+-   любая другая ошибка или таймаут 5 секунд: в кэш ничего не кладём, страница
+    работает как без серверной загрузки, браузер сам запросит данные и при
+    ошибке покажет Retry. Ошибку `prefetchProfileWithPosts` пишет в лог сервера
+    с меткой `[Profile SSR]`, иначе на проде сбой никто не заметит.
 
 ## Документация библиотеки
 
