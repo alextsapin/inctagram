@@ -24,8 +24,10 @@ export const ProfilePhoto = (): React.JSX.Element => {
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-    const savePhoto = (photo: Blob): void => {
-        // TODO: загрузить фото на сервер, когда в API появится эндпоинт аватарки
+    const savePhoto = async (photo: Blob): Promise<void> => {
+        // TODO: загрузить фото на сервер, когда бэкенд подтвердит финальный путь
+        // ручки — см. заметки по задаче 9. Сборка FormData уже готова:
+        // createAvatarFormData(photo)
 
         // Старая временная ссылка больше не нужна, освобождаем память
         if (photoUrl) {

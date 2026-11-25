@@ -10,6 +10,12 @@ export type UpdateProfileDto = {
     description?: string | null;
 };
 
+// Ответ загрузки аватара. Имя поля подтверждено бэкендом 24.11, полная
+// структура ответа (обёртка, соседние поля) — нет, уточняется.
+export type UploadAvatarResponse = {
+    avatarUrl: string;
+};
+
 // Ответ GET /api/v1/{username}/profile (ProfileResponseDto).
 export type Profile = {
     uid: string;
