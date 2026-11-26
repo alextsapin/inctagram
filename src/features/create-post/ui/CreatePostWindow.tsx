@@ -8,6 +8,7 @@ import { Button } from '@/shared/ui/button';
 import { Confirmation } from '@/shared/ui/confirmation';
 import { ArrowLeftIcon } from '@/shared/ui/icons';
 import { Modal } from '@/shared/ui/modal';
+import { useSuccessAlert } from '@/shared/ui/success-alert';
 
 import { createDraft } from '../lib/createDraft';
 import { deleteDraft, saveDraft } from '../lib/draft';
@@ -58,6 +59,7 @@ export const CreatePostWindow = ({
     const { mutateAsync: publishPost } = usePublishPost(userId);
     const { title, width, back, next } = STEP_SETTINGS[state.step];
     const savedDraft = useSavedDraft(userId);
+    const showSuccess = useSuccessAlert();
 
     // Next на шагах Cropping и Filters готовит файлы, Publish отправляет пост,
     // Save draft и Discard сохраняют или удаляют черновик.
@@ -132,6 +134,7 @@ export const CreatePostWindow = ({
 
         try {
             await publishPost({ photos: state.photos, description: state.description });
+            showSuccess('Your post has been published');
             // После успеха кнопки не включаем: окно закроется переходом в профиль,
             // а до этого второй клик по Publish создал бы второй такой же пост
             onGoToProfile();

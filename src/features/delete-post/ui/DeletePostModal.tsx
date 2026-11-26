@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 
 import { Alert } from '@/shared/ui/alert';
 import { Confirmation } from '@/shared/ui/confirmation';
+import { useSuccessAlert } from '@/shared/ui/success-alert';
 
 import { getDeletePostError } from '../model/deletePostError';
 import { useDeletePost } from '../model/useDeletePost';
@@ -24,6 +25,7 @@ export const DeletePostModal = ({
     onDeleted,
 }: Props): React.JSX.Element => {
     const { mutateAsync, isPending, error, reset } = useDeletePost();
+    const showSuccess = useSuccessAlert();
 
     const errorInfo = useMemo(() => (error ? getDeletePostError(error) : null), [error]);
 
@@ -39,11 +41,13 @@ export const DeletePostModal = ({
         try {
             await mutateAsync(postId);
             reset();
+            showSuccess('Post deleted successfully');
             onDeleted();
         } catch (err) {
             // 404 — пост уже удалён, ведём себя как при успехе
             if (getDeletePostError(err).isAlreadyDeleted) {
                 reset();
+                showSuccess('Post deleted successfully');
                 onDeleted();
             }
         }

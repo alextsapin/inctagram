@@ -6,6 +6,12 @@ import styles from './alert.module.scss';
 
 type AlertType = 'success' | 'error';
 
+// Слово перед текстом, как в макете: «Error!» у ошибки, «Success!» у успеха
+const LABELS: Record<AlertType, string> = {
+    error: 'Error!',
+    success: 'Success!',
+};
+
 type AlertProps = {
     open: boolean;
     onClose: () => void;
@@ -25,9 +31,7 @@ export const Alert = ({
         <div>
             {open && (
                 <div className={`${styles.alert} ${styles[type]}`} role="alert">
-                    {type === 'error' && (
-                        <strong className={styles['error-label']}>Error!</strong>
-                    )}
+                    <strong className={styles.label}>{LABELS[type]}</strong>
                     <span className={styles.message}>{message}</span>
 
                     <button
