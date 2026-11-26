@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+import Link from 'next/link';
+
 import { formatRelativeTime } from '@/shared/lib';
 import { Avatar } from '@/shared/ui/avatar';
 
@@ -22,18 +24,24 @@ export const PostHeader = ({
 }: Props): React.JSX.Element => {
     return (
         <div className={s.header}>
-            <div className={s.author}>
-                <Avatar src={author.avatarUrl} alt="" size={size} />
-                <span>{author.username}</span>
+            <Link
+                href={`/profile/${encodeURIComponent(author.username ?? '')}`}
+                className={s.author}
+            >
+                <div className={s.author}>
+                    <Avatar src={author.avatarUrl} alt="" size={size} />
+                    <span>{author.username}</span>
 
-                {subtext && (
-                    <div>
-                        <span className={s.dot}>•</span>
-                        <span className={s.subtext}>{formatRelativeTime(subtext)}</span>
-                    </div>
-                )}
-            </div>
-
+                    {subtext && (
+                        <div>
+                            <span className={s.dot}>•</span>
+                            <span className={s.subtext}>
+                                {formatRelativeTime(subtext)}
+                            </span>
+                        </div>
+                    )}
+                </div>
+            </Link>
             {actionSlot}
         </div>
     );

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 
 import Image from 'next/image';
+import Link from 'next/link';
 
 import { Carousel, type PostImage } from '@/entities/post';
 import { formatRelativeTime } from '@/shared/lib/formatRelativeTime';
@@ -64,16 +65,21 @@ export const PostCard = ({
                 <Carousel slides={images} size="small" slideHref={`/post/${postId}`} />
             </div>
             <div className={styles.author}>
-                <div className={styles['author-avatar-wrapper']}>
-                    <Image
-                        className={styles['author-avatar']}
-                        src={authorAvatar}
-                        alt={`${username} avatar`}
-                        fill
-                        sizes="36px"
-                    />
-                </div>
-                <h3 className={styles['author-name']}>{username}</h3>
+                <Link
+                    href={`/profile/${encodeURIComponent(username ?? '')}`}
+                    className={styles.author}
+                >
+                    <div className={styles['author-avatar-wrapper']}>
+                        <Image
+                            className={styles['author-avatar']}
+                            src={authorAvatar}
+                            alt={`${username} avatar`}
+                            fill
+                            sizes="36px"
+                        />
+                    </div>
+                    <h3 className={styles['author-name']}>{username}</h3>
+                </Link>
             </div>
             <div>
                 <time dateTime={createdAt} className={styles['published-at']}>
