@@ -224,8 +224,12 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 ```text
 📁 src/
 ├── 📁 app/
-│   └── 📁 providers/
-│       ├── 📄 QueryProvider.tsx
+│   ├── 📁 providers/
+│   │   ├── 📄 QueryProvider.tsx
+│   │   ├── 📄 StoreProvider.tsx
+│   │   └── 📄 index.ts
+│   └── 📁 store/
+│       ├── 📄 makeStore.ts
 │       └── 📄 index.ts
 └── 📁 pages/
     ├── 📁 home/
@@ -434,7 +438,8 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 │   ├── 📁 tabs/
 │   ├── 📁 pagination/
 │   ├── 📁 avatar/
-│   └── 📁 spinner/
+│   ├── 📁 spinner/
+│   └── 📁 success-alert/
 ├── 📁 api/
 │   └── 📄 instance.ts
 ├── 📁 lib/
@@ -446,7 +451,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 └── 📁 types/
 ```
 
-**Общие UI-компоненты, уже подготовленные в проекте:** `Alert`, `Button`, `Checkbox`, `DatePicker` и `DateRangePicker`, `Input`, `Modal`, `PhotoCropper`, `Select`, `Spinner`, `Tabs`, `Textarea`. Их подробное описание и примеры использования вынесены в [собственные README](#документация-общих-компонентов). Остальные названия в дереве — элементы целевой схемы и не означают, что компоненты уже реализованы.
+**Общие UI-компоненты, уже подготовленные в проекте:** `Alert`, `Button`, `Checkbox`, `DatePicker` и `DateRangePicker`, `Input`, `Modal`, `PhotoCropper`, `Select`, `Spinner`, `SuccessAlert`, `Tabs`, `Textarea`. Их подробное описание и примеры использования вынесены в [собственные README](#документация-общих-компонентов). Остальные названия в дереве — элементы целевой схемы и не означают, что компоненты уже реализованы.
 
 ### Примеры готовых слайсов
 
@@ -535,6 +540,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 | **Popover**                     | `src/shared/ui/popover/`       | [README Popover](src/shared/ui/popover/README.md)            |
 | **Select**                      | `src/shared/ui/select/`        | [README Select](src/shared/ui/select/README.md)              |
 | **Spinner**                     | `src/shared/ui/spinner/`       | [README Spinner](src/shared/ui/spinner/README.md)            |
+| **SuccessAlert**                | `src/shared/ui/success-alert/` | [README SuccessAlert](src/shared/ui/success-alert/README.md) |
 | **Tabs**                        | `src/shared/ui/tabs/`          | [README Tabs](src/shared/ui/tabs/README.md)                  |
 | **Textarea**                    | `src/shared/ui/textarea/`      | [README Textarea](src/shared/ui/textarea/README.md)          |
 
@@ -545,6 +551,7 @@ src/pages/<слайс>/ui/<Компонент>.tsx
 _Источник архитектурных схем и деревьев: `inctagram-fsd-v3(1).pdf` (8 страниц). Изображения каждой страницы включены рядом с соответствующим текстовым разделом. Корневой README — основная текстовая документация архитектуры; PDF хранить в репозитории необязательно._
 
 -   [TanStack Query — настройка и использование](docs/tanstack-query.md).
+-   [Redux: стор для состояния интерфейса](docs/redux.md).
 -   [API — axios instance, access token, переменные окружения](docs/api.md).
 -   [Вход в систему (Sign In) — бизнес-логика и структура слайсов](docs/sign-in.md).
 -   [General Information — форма настроек профиля и фото профиля](docs/general-information.md).

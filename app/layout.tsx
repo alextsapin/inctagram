@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
-import { QueryProvider } from '@/app/providers';
+import { QueryProvider, StoreProvider } from '@/app/providers';
+import { SuccessAlert } from '@/shared/ui/success-alert';
 import { Header } from '@/widgets/header';
 
 import './globals.scss';
@@ -28,11 +29,14 @@ const RootLayout = ({
     return (
         <html lang="en" className={inter.variable}>
             <body className={inter.className}>
-                <QueryProvider>
-                    <Header />
-                    {children}
-                    {modal}
-                </QueryProvider>
+                <StoreProvider>
+                    <QueryProvider>
+                        <Header />
+                        {children}
+                        {modal}
+                        <SuccessAlert />
+                    </QueryProvider>
+                </StoreProvider>
             </body>
         </html>
     );

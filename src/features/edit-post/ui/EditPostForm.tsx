@@ -6,6 +6,7 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import { Alert } from '@/shared/ui/alert';
 import { Button } from '@/shared/ui/button';
+import { useSuccessAlert } from '@/shared/ui/success-alert';
 
 import { useEditPost } from '../model/useEditPost';
 
@@ -43,6 +44,7 @@ export const EditPostForm = ({
         onDirtyChange(isDirty);
     }, [isDirty, onDirtyChange]);
     const { mutateAsync, isPending, isError, error, reset } = useEditPost();
+    const showSuccess = useSuccessAlert();
 
     // Следим за длиной текста для счетчика
     const captionValue = useWatch({ control, name: 'caption' });
@@ -51,6 +53,7 @@ export const EditPostForm = ({
     const onSubmit = async (data: FormValues): Promise<void> => {
         try {
             await mutateAsync({ postId, caption: data.caption });
+            showSuccess('Post updated successfully');
             onSuccess();
         } catch {
             // Ошибка уже обрабатывается через isError в JSX
