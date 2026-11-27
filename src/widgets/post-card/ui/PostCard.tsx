@@ -15,7 +15,7 @@ const EXPANDED_TEXT_LENGTH = 225;
 
 type PostCardProps = {
     postId: string;
-    username?: string;
+    username: string;
     postText?: string;
     createdAt: string;
     images: PostImage[];
@@ -64,7 +64,7 @@ export const PostCard = ({
             >
                 <Carousel slides={images} size="small" slideHref={`/post/${postId}`} />
             </div>
-            <div className={styles.author}>
+            
                 <Link
                     href={`/profile/${encodeURIComponent(username ?? '')}`}
                     className={styles.author}
@@ -80,12 +80,11 @@ export const PostCard = ({
                     </div>
                     <h3 className={styles['author-name']}>{username}</h3>
                 </Link>
-            </div>
+            
             <div>
                 <time dateTime={createdAt} className={styles['published-at']}>
                     {relativeTime}
                 </time>
-
                 <p className={styles['post-text']}>
                     {visibleText}
                     {isTextTruncated && '...'}{' '}

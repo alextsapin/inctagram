@@ -25,10 +25,10 @@ export const PostHeader = ({
     return (
         <div className={s.header}>
             <Link
-                href={`/profile/${encodeURIComponent(author.username ?? '')}`}
+                href={`/profile/${encodeURIComponent(author.username)}`}
                 className={s.author}
             >
-                <div className={s.author}>
+                
                     <Avatar src={author.avatarUrl} alt="" size={size} />
                     <span>{author.username}</span>
 
@@ -40,7 +40,7 @@ export const PostHeader = ({
                             </span>
                         </div>
                     )}
-                </div>
+                
             </Link>
             {actionSlot}
         </div>
