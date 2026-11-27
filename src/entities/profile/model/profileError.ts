@@ -55,3 +55,33 @@ export const normalizeProfileError = (error: unknown): ProfileError[] => {
 
     return [{ message: DEFAULT_ERROR_MESSAGE }];
 };
+
+// Коды ответов — из сообщения бэкенда от 24.11.2026 (POST аватара).
+// TODO(BLD-165): коды и их смысл не подтверждены Swagger'ом — уточнить
+// вместе с финальным путём ручки.
+const PAYLOAD_TOO_LARGE = 413;
+
+const AVATAR_TOO_LARGE_MESSAGE = 'Photo size must be less than 1 MB!';
+
+// Приводит ошибку загрузки аватара к одной строке. В отличие от
+// normalizeProfileError, полей у этой формы нет: раскладывать ошибку по
+// полям некуда, поэтому возвращаем текст.
+export const normalizeAvatarUploadError = (error: unknown): string => {
+    if (!isAxiosError(error)) {
+        return DEFAULT_ERROR_MESSAGE;
+    }
+
+    const status = error.response?.status;
+
+    // 413 — файл больше лимита
+    if (status === PAYLOAD_TOO_LARGE) {
+        return AVATAR_TOO_LARGE_MESSAGE;
+    }
+
+    // 403 — почта не подтверждена
+    if (status === FORBIDDEN) {
+        return EMAIL_NOT_CONFIRMED_MESSAGE;
+    }
+
+    return DEFAULT_ERROR_MESSAGE;
+};

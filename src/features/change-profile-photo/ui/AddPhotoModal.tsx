@@ -20,7 +20,7 @@ import css from './add-photo-modal.module.scss';
 
 const ADD_PHOTO_MODAL_WIDTH = 492;
 const ICON_SIZE = 48;
-const AVATAR_MAX_SIZE_MB = 10;
+const AVATAR_MAX_SIZE_MB = 1;
 const INITIAL_CROP: Point = { x: 0, y: 0 }; // фото по центру, без сдвига
 const INITIAL_ZOOM = 1; // без приближения
 
@@ -39,8 +39,9 @@ type SelectedPhoto = {
 type AddPhotoModalProps = {
     open: boolean;
     onClose: () => void;
-    // Получает уже обрезанное фото
-    onSave: (photo: Blob) => void;
+    // Получает уже обрезанное фото. Промис завершается, когда фото сохранено:
+    // пока он не завершён, кнопка Save неактивна
+    onSave: (photo: Blob) => Promise<void>;
 };
 
 export const AddPhotoModal = ({
@@ -52,6 +53,7 @@ export const AddPhotoModal = ({
 
     const [photo, setPhoto] = useState<SelectedPhoto | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [isSaving, setIsSaving] = useState(false);
     const [croppedArea, setCroppedArea] = useState<Area | null>(null);
     // Сдвиг и приближение фото под кругом. PhotoCropper их не хранит, поэтому храним здесь
     const [crop, setCrop] = useState<Point>(INITIAL_CROP);
@@ -73,6 +75,7 @@ export const AddPhotoModal = ({
 
         setPhoto(null);
         setError(null);
+        setIsSaving(false);
         setCroppedArea(null);
         setCrop(INITIAL_CROP);
         setZoom(INITIAL_ZOOM);
@@ -104,7 +107,10 @@ export const AddPhotoModal = ({
     const handleSave = async (): Promise<void> => {
         // Кнопка Save видна только с фото, а croppedArea появляется через мгновение,
         // как только фото отрисовалось под кругом. Проверка нужна и для TypeScript
-        if (!photo || !croppedArea) return;
+        if (!photo || !croppedArea || isSaving) return;
+
+        setIsSaving(true);
+        setError(null);
 
         try {
             const croppedPhoto = await getCroppedImage(
@@ -113,10 +119,19 @@ export const AddPhotoModal = ({
                 photo.type,
             );
 
-            onSave(croppedPhoto);
+            // onSave загружает фото на сервер и завершается, когда запрос закончен
+            await onSave(croppedPhoto);
+            // handleClose сбрасывает isSaving вместе с остальным стейтом
             handleClose();
-        } catch {
-            setError('Failed to save the photo. Please try again');
+        } catch (error) {
+            // Ошибку загрузки родитель уже привёл к тексту для пользователя
+            setError(
+                error instanceof Error && error.message
+                    ? error.message
+                    : 'Failed to save the photo. Please try again',
+            );
+            // Окно остаётся открытым, поэтому isSaving сбрасываем здесь
+            setIsSaving(false);
         }
     };
 
@@ -127,7 +142,13 @@ export const AddPhotoModal = ({
             title="Add a Profile Photo"
             width={ADD_PHOTO_MODAL_WIDTH}
             // Кнопка Save есть только после выбора фото
-            actions={photo && <Button onClick={handleSave}>Save</Button>}
+            actions={
+                photo && (
+                    <Button onClick={handleSave} disabled={isSaving}>
+                        Save
+                    </Button>
+                )
+            }
         >
             <div className={css.content}>
                 {error && (

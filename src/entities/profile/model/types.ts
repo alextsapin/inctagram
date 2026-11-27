@@ -10,6 +10,12 @@ export type UpdateProfileDto = {
     description?: string | null;
 };
 
+// TODO(BLD-165): подтверждено только имя поля avatarUrl, полная
+// структура ответа (обёртка, соседние поля) — нет
+export type UploadAvatarResponse = {
+    avatarUrl: string;
+};
+
 // Ответ GET /api/v1/{username}/profile (ProfileResponseDto).
 export type Profile = {
     uid: string;
