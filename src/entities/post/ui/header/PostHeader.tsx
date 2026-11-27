@@ -28,19 +28,15 @@ export const PostHeader = ({
                 href={`/profile/${encodeURIComponent(author.username)}`}
                 className={s.author}
             >
-                
-                    <Avatar src={author.avatarUrl} alt="" size={size} />
-                    <span>{author.username}</span>
+                <Avatar src={author.avatarUrl} alt="" size={size} />
+                <span>{author.username}</span>
 
-                    {subtext && (
-                        <div>
-                            <span className={s.dot}>•</span>
-                            <span className={s.subtext}>
-                                {formatRelativeTime(subtext)}
-                            </span>
-                        </div>
-                    )}
-                
+                {subtext && (
+                    <div>
+                        <span className={s.dot}>•</span>
+                        <span className={s.subtext}>{formatRelativeTime(subtext)}</span>
+                    </div>
+                )}
             </Link>
             {actionSlot}
         </div>
