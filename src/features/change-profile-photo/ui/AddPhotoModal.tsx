@@ -12,7 +12,6 @@ import {
     type PhotoRules,
     validatePhoto,
 } from '@/shared/lib';
-import { Alert } from '@/shared/ui/alert';
 import { Button } from '@/shared/ui/button';
 import { Modal } from '@/shared/ui/modal';
 import { PhotoCropper } from '@/shared/ui/photo-cropper';
@@ -122,6 +121,7 @@ export const AddPhotoModal = ({
 
             // onSave загружает фото на сервер и завершается, когда запрос закончен
             await onSave(croppedPhoto);
+            // handleClose сбрасывает isSaving вместе с остальным стейтом
             handleClose();
         } catch (error) {
             // Ошибку загрузки родитель уже привёл к тексту для пользователя
@@ -130,7 +130,7 @@ export const AddPhotoModal = ({
                     ? error.message
                     : 'Failed to save the photo. Please try again',
             );
-        } finally {
+            // Окно остаётся открытым, поэтому isSaving сбрасываем здесь
             setIsSaving(false);
         }
     };
@@ -152,12 +152,9 @@ export const AddPhotoModal = ({
         >
             <div className={css.content}>
                 {error && (
-                    <Alert
-                        open
-                        onClose={() => setError(null)}
-                        type="error"
-                        message={error}
-                    />
+                    <p className={css.error} role="alert">
+                        <b>Error!</b> {error}
+                    </p>
                 )}
 
                 {photo ? (
