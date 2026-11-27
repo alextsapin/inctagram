@@ -9,6 +9,8 @@ const FORWARDED_REQUEST_HEADERS = [
     'content-type',
     'cookie',
     'user-agent',
+    'x-recaptcha-token',
+    'x-recaptcha-type',
 ];
 const HOP_BY_HOP_HEADERS = [
     'connection',

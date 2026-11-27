@@ -11,7 +11,7 @@ const UNAUTHORIZED = 401;
 const NO_REFRESH_URLS = ['/api/v1/auth/login', '/api/v1/auth/logout'];
 
 export const instance = axios.create({
-    // пусто — запросы идут на тот же домен (/api/v1/...), как в кластере
+    // Пусто — запросы идут через прокси Next.js на том же origin.
     baseURL: process.env.NEXT_PUBLIC_API_URL ?? '',
     // чтобы браузер сохранял и отправлял cookie с refresh-токеном
     withCredentials: true,
