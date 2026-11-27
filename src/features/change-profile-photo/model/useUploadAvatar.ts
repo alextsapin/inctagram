@@ -32,7 +32,8 @@ export const useUploadAvatar = (): UseMutationResult<
         mutationFn: (file: Blob) => profileApi.uploadAvatar(file),
 
         onSuccess: () => {
-            invalidateAvatarCaches(queryClient);
+            // Возвращаем промис: мутация закончится, когда данные перезапросятся
+            return invalidateAvatarCaches(queryClient);
         },
     });
 };

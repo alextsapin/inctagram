@@ -7,19 +7,17 @@ import { currentUserQueryKey, type Me } from '@/entities/session';
 // Инвалидация после смены аватара (загрузка или удаление). Набор ключей тот же,
 // что в useUpdateProfile при смене avatar: /me, профиль текущего пользователя
 // и все посты — avatar автора лежит внутри каждого поста в кэше.
-export const invalidateAvatarCaches = (queryClient: QueryClient): void => {
-    queryClient.invalidateQueries({ queryKey: currentUserQueryKey });
-
+// Возвращает промис, чтобы мутация завершалась только после перезапроса данных.
+export const invalidateAvatarCaches = (queryClient: QueryClient): Promise<void> => {
     // Username берём из кэша /me: ключ профиля строится по username, а не по uid
     const username = queryClient.getQueryData<Me>(currentUserQueryKey)?.username;
 
-    if (username === undefined) {
-        queryClient.invalidateQueries({ queryKey: profileQueryKeys.all });
-    } else {
-        queryClient.invalidateQueries({
-            queryKey: profileQueryKeys.detail(username),
-        });
-    }
+    const profileKey =
+        username === undefined ? profileQueryKeys.all : profileQueryKeys.detail(username);
 
-    queryClient.invalidateQueries({ queryKey: postQueryKeys.all });
+    return Promise.all([
+        queryClient.invalidateQueries({ queryKey: currentUserQueryKey }),
+        queryClient.invalidateQueries({ queryKey: profileKey }),
+        queryClient.invalidateQueries({ queryKey: postQueryKeys.all }),
+    ]).then(() => undefined);
 };

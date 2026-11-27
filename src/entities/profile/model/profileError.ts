@@ -59,19 +59,13 @@ export const normalizeProfileError = (error: unknown): ProfileError[] => {
 // Коды ответов — из сообщения бэкенда от 24.11.2026 (POST аватара).
 // TODO(BLD-165): коды и их смысл не подтверждены Swagger'ом — уточнить
 // вместе с финальным путём ручки.
-const UNAUTHORIZED = 401;
-const NOT_FOUND = 404;
 const PAYLOAD_TOO_LARGE = 413;
 
-// TODO(BLD-165): тексты временные, финальную формулировку должна выбрать
-// команда — см. открытый вопрос в документе спринта.
-const TEMP_UPLOAD_ERROR_MESSAGE = 'Upload error';
+const AVATAR_TOO_LARGE_MESSAGE = 'Photo size must be less than 1 MB!';
 
 // Приводит ошибку загрузки аватара к одной строке. В отличие от
 // normalizeProfileError, полей у этой формы нет: раскладывать ошибку по
 // полям некуда, поэтому возвращаем текст.
-// Ветки по кодам сохранены как карта ответов бэкенда: когда команда выберет
-// формулировки, каждая ветка получит свой текст.
 export const normalizeAvatarUploadError = (error: unknown): string => {
     if (!isAxiosError(error)) {
         return DEFAULT_ERROR_MESSAGE;
@@ -79,29 +73,14 @@ export const normalizeAvatarUploadError = (error: unknown): string => {
 
     const status = error.response?.status;
 
-    // 400 — невалидный или пустой файл
-    if (status === BAD_REQUEST) {
-        return TEMP_UPLOAD_ERROR_MESSAGE;
-    }
-
-    // 401 — access token отсутствует, невалиден или истёк
-    if (status === UNAUTHORIZED) {
-        return TEMP_UPLOAD_ERROR_MESSAGE;
+    // 413 — файл больше лимита
+    if (status === PAYLOAD_TOO_LARGE) {
+        return AVATAR_TOO_LARGE_MESSAGE;
     }
 
     // 403 — почта не подтверждена
     if (status === FORBIDDEN) {
-        return TEMP_UPLOAD_ERROR_MESSAGE;
-    }
-
-    // 404 — пользователь не найден
-    if (status === NOT_FOUND) {
-        return TEMP_UPLOAD_ERROR_MESSAGE;
-    }
-
-    // 413 — файл больше лимита
-    if (status === PAYLOAD_TOO_LARGE) {
-        return TEMP_UPLOAD_ERROR_MESSAGE;
+        return EMAIL_NOT_CONFIRMED_MESSAGE;
     }
 
     return DEFAULT_ERROR_MESSAGE;

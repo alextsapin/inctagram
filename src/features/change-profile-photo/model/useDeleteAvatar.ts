@@ -27,7 +27,8 @@ export const useDeleteAvatar = (): UseMutationResult<void, Error, void> => {
         mutationFn: () => profileApi.updateProfile({ avatar: null }),
 
         onSuccess: () => {
-            invalidateAvatarCaches(queryClient);
+            // Возвращаем промис: мутация закончится, когда данные перезапросятся
+            return invalidateAvatarCaches(queryClient);
         },
     });
 };
