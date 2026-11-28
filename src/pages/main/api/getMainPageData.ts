@@ -78,7 +78,6 @@ export const getMainPageData = async (): Promise<MainPageData> => {
             bodyReadMs: Math.round(performance.now() - bodyStartedAt),
             totalMs: Math.round(performance.now() - requestStartedAt),
             postsCount: data.items.length,
-            tlsMode: response.tlsMode,
         });
 
         return {
